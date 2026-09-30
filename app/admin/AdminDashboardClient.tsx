@@ -37,6 +37,11 @@ import {
   BarChart3,
   RefreshCw,
   Sparkle,
+  Wand2,
+  Search,
+  CheckSquare,
+  Square,
+  Camera,
 } from "lucide-react";
 import { formatArticleDate } from "@/lib/utils";
 
@@ -588,9 +593,236 @@ export function AdminDashboardClient({
   const [newCover, setNewCover] = useState("");
   const [newFeatured, setNewFeatured] = useState(false);
 
+  // Bulk Actions State
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkLoading, setBulkLoading] = useState(false);
+
+  // Pipeline Webhook Trigger State
+  const [pipelineRunning, setPipelineRunning] = useState(false);
+  const [pipelineLastRun, setPipelineLastRun] = useState<string | null>(null);
+  const [pipelineMessage, setPipelineMessage] = useState<string | null>(null);
+
+  // AI Copilot Assist State
+  const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [aiTargetField, setAiTargetField] = useState<"title" | "summary" | "tags">("title");
+  const [aiTargetForm, setAiTargetForm] = useState<"create" | "edit">("create");
+  const [aiSeed, setAiSeed] = useState("");
+  const [aiMode, setAiMode] = useState<"headline" | "hook" | "seo" | "tags">("headline");
+  const [aiCategory, setAiCategory] = useState("AI & Robotics");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+
+  // Unsplash Image Picker State
+  const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [imageTargetForm, setImageTargetForm] = useState<"create" | "edit">("create");
+  const [imageSearchQuery, setImageSearchQuery] = useState("");
+  const [imageSearchLoading, setImageSearchLoading] = useState(false);
+  const [imageSearchResults, setImageSearchResults] = useState<any[]>([]);
+
   const showToast = (text: string, type: "success" | "error" = "success") => {
     setMsg({ type, text });
     setTimeout(() => setMsg(null), 3500);
+  };
+
+  useEffect(() => {
+    // Check initial pipeline status
+    fetch("/api/admin/pipeline/trigger")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setPipelineRunning(data.status === "running");
+          setPipelineLastRun(data.last_run || null);
+          setPipelineMessage(data.last_message || null);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Pipeline Trigger Handler
+  const handleTriggerPipeline = async () => {
+    setPipelineRunning(true);
+    showToast("Launching autonomous news ingest pipeline...", "success");
+    try {
+      const res = await fetch("/api/admin/pipeline/trigger", { method: "POST" });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setPipelineLastRun(data.started_at);
+        showToast("Pipeline cycle started! Ingesting stories in background...");
+        const interval = setInterval(async () => {
+          try {
+            const check = await fetch("/api/admin/pipeline/trigger");
+            const checkData = await check.json();
+            if (checkData.success && checkData.status === "idle") {
+              setPipelineRunning(false);
+              setPipelineLastRun(checkData.last_run);
+              setPipelineMessage(checkData.last_message);
+              clearInterval(interval);
+              showToast("Pipeline ingest completed! Refreshing articles...");
+              router.refresh();
+            }
+          } catch {
+            clearInterval(interval);
+            setPipelineRunning(false);
+          }
+        }, 5000);
+      } else {
+        setPipelineRunning(false);
+        showToast(data.error || "Failed to trigger pipeline", "error");
+      }
+    } catch {
+      setPipelineRunning(false);
+      showToast("Network error triggering pipeline", "error");
+    }
+  };
+
+  // Bulk Actions Handlers
+  const handleToggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleToggleSelectAll = () => {
+    const pageIds = displayedArticles.map((a) => a.id);
+    const allSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+    if (allSelected) {
+      setSelectedIds((prev) => prev.filter((id) => !pageIds.includes(id)));
+    } else {
+      setSelectedIds((prev) => Array.from(new Set([...prev, ...pageIds])));
+    }
+  };
+
+  const handleBulkAction = async (
+    action: "publish" | "draft" | "archive" | "category" | "delete",
+    category_id?: string
+  ) => {
+    if (selectedIds.length === 0) return;
+    if (action === "delete" && !confirm(`Permanently delete ${selectedIds.length} selected articles?`)) {
+      return;
+    }
+
+    setBulkLoading(true);
+    try {
+      const res = await fetch("/api/admin/articles/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, ids: selectedIds, category_id }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        if (action === "delete") {
+          setArticles((prev) => prev.filter((a) => !selectedIds.includes(a.id)));
+        } else if (action === "publish" || action === "draft" || action === "archive") {
+          setArticles((prev) =>
+            prev.map((a) =>
+              selectedIds.includes(a.id)
+                ? { ...a, status: action === "archive" ? "archived" : action }
+                : a
+            )
+          );
+        } else if (action === "category" && category_id) {
+          const cat = categories.find((c) => c.id === category_id);
+          if (cat) {
+            setArticles((prev) =>
+              prev.map((a) => (selectedIds.includes(a.id) ? { ...a, category: cat } : a))
+            );
+          }
+        }
+        showToast(`Bulk ${action} succeeded for ${data.count} stories!`);
+        setSelectedIds([]);
+      } else {
+        showToast(data.error || "Bulk action failed", "error");
+      }
+    } catch {
+      showToast("Network error executing bulk action", "error");
+    } finally {
+      setBulkLoading(false);
+    }
+  };
+
+  // AI Copilot Assist Handlers
+  const handleOpenAiAssist = async (
+    field: "title" | "summary" | "tags",
+    form: "create" | "edit",
+    seedText: string,
+    categoryName: string
+  ) => {
+    setAiTargetField(field);
+    setAiTargetForm(form);
+    setAiSeed(seedText || "");
+    setAiCategory(categoryName || "AI & Robotics");
+    const initialMode = field === "title" ? "headline" : field === "summary" ? "hook" : "tags";
+    setAiMode(initialMode);
+    setAiModalOpen(true);
+    setAiSuggestions([]);
+
+    await fetchAiAssist(seedText, initialMode, categoryName);
+  };
+
+  const fetchAiAssist = async (seed: string, mode: string, category: string) => {
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/admin/ai/assist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: seed, mode, category }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAiSuggestions(data.suggestions || []);
+      } else {
+        showToast(data.error || "Failed to generate suggestions", "error");
+      }
+    } catch {
+      showToast("Error generating AI suggestions", "error");
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleApplyAiSuggestion = (suggestion: string) => {
+    if (aiTargetForm === "create") {
+      if (aiTargetField === "title") setNewTitle(suggestion);
+      else if (aiTargetField === "summary") setNewSummary(suggestion);
+    } else if (aiTargetForm === "edit" && editingArticle) {
+      if (aiTargetField === "title") setEditingArticle({ ...editingArticle, title: suggestion });
+      else if (aiTargetField === "summary") setEditingArticle({ ...editingArticle, summary: suggestion });
+    }
+    setAiModalOpen(false);
+    showToast(`Applied ${aiTargetField} suggestion!`);
+  };
+
+  // Unsplash Image Picker Handlers
+  const handleOpenImagePicker = async (form: "create" | "edit") => {
+    setImageTargetForm(form);
+    setImageModalOpen(true);
+    setImageSearchQuery("");
+    await searchImages("");
+  };
+
+  const searchImages = async (q: string) => {
+    setImageSearchLoading(true);
+    try {
+      const res = await fetch(`/api/admin/images/search?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setImageSearchResults(data.images || []);
+      }
+    } catch {
+      showToast("Failed to fetch image gallery", "error");
+    } finally {
+      setImageSearchLoading(false);
+    }
+  };
+
+  const handleSelectImage = (url: string) => {
+    if (imageTargetForm === "create") {
+      setNewCover(url);
+    } else if (imageTargetForm === "edit" && editingArticle) {
+      setEditingArticle({ ...editingArticle, cover_image_url: url });
+    }
+    setImageModalOpen(false);
+    showToast("Cover image applied!");
   };
 
   const handleLogout = async () => {
@@ -923,6 +1155,15 @@ export function AdminDashboardClient({
 
         <div className="flex items-center space-x-3">
           <button
+            onClick={handleTriggerPipeline}
+            disabled={pipelineRunning}
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+            title="Execute immediate autonomous news ingest cycle"
+          >
+            <Zap className={`w-3.5 h-3.5 ${pipelineRunning ? "animate-spin text-amber-200" : ""}`} />
+            <span>{pipelineRunning ? "Ingesting Stories..." : "⚡ Run Ingest Pipeline"}</span>
+          </button>
+          <button
             onClick={() => setActiveTab("create")}
             className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-xs font-medium transition-colors shadow-xs"
           >
@@ -982,13 +1223,21 @@ export function AdminDashboardClient({
             Agent Status
           </span>
           <div className="flex items-center space-x-1.5 mt-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-              Autonomous
+            <span
+              className={`w-2.5 h-2.5 rounded-full ${
+                pipelineRunning ? "bg-amber-500 animate-ping" : "bg-emerald-500 animate-pulse"
+              }`}
+            />
+            <span className={`text-sm font-semibold ${pipelineRunning ? "text-amber-600" : "text-emerald-600 dark:text-emerald-400"}`}>
+              {pipelineRunning ? "Ingesting Live..." : "Autonomous Ready"}
             </span>
           </div>
-          <span className="text-[11px] text-[#8E8B82] font-mono">
-            50+ sources armed
+          <span className="text-[11px] text-[#8E8B82] font-mono truncate block" title={pipelineMessage || undefined}>
+            {pipelineRunning
+              ? "Executing pipeline cycle"
+              : pipelineLastRun
+              ? `Last: ${new Date(pipelineLastRun).toLocaleTimeString()}`
+              : "50+ sources armed"}
           </span>
         </div>
       </div>
@@ -1138,12 +1387,91 @@ export function AdminDashboardClient({
             </div>
           </div>
 
+          {/* Floating / Sticky Bulk Action Bar */}
+          {selectedIds.length > 0 && (
+            <div className="p-3.5 rounded-2xl bg-[#1F1E1D] dark:bg-[#FAF7F0] text-white dark:text-[#1F1E1D] flex flex-wrap items-center justify-between gap-3 shadow-lg border border-[#33322E] dark:border-[#EBE8DF] animate-in fade-in slide-in-from-top-2">
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded-lg bg-white/10 dark:bg-black/10 text-white dark:text-[#1F1E1D]">
+                  {selectedIds.length} stories selected
+                </span>
+                <button
+                  onClick={() => setSelectedIds([])}
+                  className="text-xs text-white/70 dark:text-black/70 hover:underline"
+                >
+                  Clear Selection
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+                <button
+                  onClick={() => handleBulkAction("publish")}
+                  disabled={bulkLoading}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                >
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  <span>Publish All</span>
+                </button>
+
+                <button
+                  onClick={() => handleBulkAction("draft")}
+                  disabled={bulkLoading}
+                  className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                >
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>Move to Draft</span>
+                </button>
+
+                <select
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleBulkAction("category", e.target.value);
+                      e.target.value = "";
+                    }
+                  }}
+                  disabled={bulkLoading}
+                  defaultValue=""
+                  className="px-3 py-1.5 rounded-xl bg-white/15 dark:bg-black/10 text-white dark:text-black border border-white/20 dark:border-black/20 text-xs focus:outline-hidden"
+                >
+                  <option value="" disabled className="text-black">
+                    Assign Category...
+                  </option>
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.id} className="text-black">
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  onClick={() => handleBulkAction("delete")}
+                  disabled={bulkLoading}
+                  className="px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete Selected</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Table Container */}
           <div className="rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#FAF7F0] dark:bg-[#1A1917] border-b border-[#EBE8DF] dark:border-[#33322E] text-[#8E8B82] font-mono uppercase tracking-wider">
                   <tr>
+                    <th className="py-3 px-3 w-10 text-center">
+                      <input
+                        type="checkbox"
+                        checked={
+                          displayedArticles.length > 0 &&
+                          displayedArticles.every((a) => selectedIds.includes(a.id))
+                        }
+                        onChange={handleToggleSelectAll}
+                        className="rounded border-[#D6D2C4] accent-[#C96442] cursor-pointer"
+                        title="Select / Deselect all on this page"
+                      />
+                    </th>
                     <th className="py-3 px-4">Featured</th>
                     <th className="py-3 px-4">Headline / Slug</th>
                     <th className="py-3 px-4">Category</th>
@@ -1158,8 +1486,22 @@ export function AdminDashboardClient({
                   {displayedArticles.map((art) => (
                     <tr
                       key={art.id}
-                      className="hover:bg-[#FAF7F0]/60 dark:hover:bg-[#2A2925]/60 transition-colors"
+                      className={`transition-colors ${
+                        selectedIds.includes(art.id)
+                          ? "bg-[#C96442]/5 dark:bg-[#C96442]/10"
+                          : "hover:bg-[#FAF7F0]/60 dark:hover:bg-[#2A2925]/60"
+                      }`}
                     >
+                      {/* Checkbox */}
+                      <td className="py-3 px-3 text-center">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(art.id)}
+                          onChange={() => handleToggleSelect(art.id)}
+                          className="rounded border-[#D6D2C4] accent-[#C96442] cursor-pointer"
+                        />
+                      </td>
+
                       {/* Featured Star */}
                       <td className="py-3 px-4">
                         <button
@@ -1259,7 +1601,7 @@ export function AdminDashboardClient({
 
                   {displayedArticles.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="py-12 text-center text-xs font-mono text-[#8E8B82]">
+                      <td colSpan={9} className="py-12 text-center text-xs font-mono text-[#8E8B82]">
                         No matching articles found. Try adjusting your search query or domain filter.
                       </td>
                     </tr>
@@ -1326,9 +1668,19 @@ export function AdminDashboardClient({
 
           <form onSubmit={handleCreateArticle} className="space-y-5">
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                Headline *
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D]">
+                  Headline *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => handleOpenAiAssist("title", "create", newTitle, newCategory)}
+                  className="inline-flex items-center gap-1 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>✨ AI Headline Copilot</span>
+                </button>
+              </div>
               <input
                 type="text"
                 value={newTitle}
@@ -1340,9 +1692,19 @@ export function AdminDashboardClient({
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                Executive 1-Line Summary *
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D]">
+                  Executive 1-Line Summary *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => handleOpenAiAssist("summary", "create", newSummary || newTitle, newCategory)}
+                  className="inline-flex items-center gap-1 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>✨ AI Hook Assist</span>
+                </button>
+              </div>
               <textarea
                 value={newSummary}
                 onChange={(e) => setNewSummary(e.target.value)}
@@ -1372,9 +1734,19 @@ export function AdminDashboardClient({
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                  Cover Image URL
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D]">
+                    Cover Image URL
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenImagePicker("create")}
+                    className="inline-flex items-center gap-1 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                  >
+                    <Camera className="w-3 h-3" />
+                    <span>🔍 Browse Photos</span>
+                  </button>
+                </div>
                 <input
                   type="url"
                   value={newCover}
@@ -2005,9 +2377,21 @@ print(response.json())`}
 
             <form onSubmit={handleSaveEdit} className="space-y-4">
               <div>
-                <label className="block text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D] mb-1">
-                  Title
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D]">
+                    Title
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleOpenAiAssist("title", "edit", editingArticle.title, editingArticle.category?.name || "AI & Robotics")
+                    }
+                    className="inline-flex items-center gap-1 text-[11px] font-mono font-medium text-[#C96442] hover:underline"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    <span>✨ AI Assist</span>
+                  </button>
+                </div>
                 <input
                   type="text"
                   value={editingArticle.title}
@@ -2020,9 +2404,21 @@ print(response.json())`}
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D] mb-1">
-                  Summary
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D]">
+                    Summary
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleOpenAiAssist("summary", "edit", editingArticle.summary || editingArticle.title, editingArticle.category?.name || "AI & Robotics")
+                    }
+                    className="inline-flex items-center gap-1 text-[11px] font-mono font-medium text-[#C96442] hover:underline"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    <span>✨ AI Assist</span>
+                  </button>
+                </div>
                 <textarea
                   value={editingArticle.summary}
                   onChange={(e) =>
@@ -2031,6 +2427,31 @@ print(response.json())`}
                   rows={2}
                   className="w-full px-3.5 py-2 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB]"
                   required
+                />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D]">
+                    Cover Image URL
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenImagePicker("edit")}
+                    className="inline-flex items-center gap-1 text-[11px] font-mono font-medium text-[#C96442] hover:underline"
+                  >
+                    <Camera className="w-3 h-3" />
+                    <span>🔍 Browse Photos</span>
+                  </button>
+                </div>
+                <input
+                  type="url"
+                  value={editingArticle.cover_image_url || ""}
+                  onChange={(e) =>
+                    setEditingArticle({ ...editingArticle, cover_image_url: e.target.value })
+                  }
+                  placeholder="https://images.unsplash.com/..."
+                  className="w-full px-3.5 py-2 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB]"
                 />
               </div>
 
@@ -2102,6 +2523,234 @@ print(response.json())`}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* AI COPILOT ASSIST MODAL */}
+      {aiModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    AI Editorial Copilot
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#8E8B82]">
+                    High-Signal Editorial Generator &bull; {aiCategory}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setAiModalOpen(false)}
+                className="p-1 rounded-lg text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Mode Selector */}
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: "headline", label: "🎯 Viral Headlines", field: "title" },
+                { id: "hook", label: "⚡ Executive Hooks", field: "summary" },
+                { id: "tags", label: "🏷️ Technical Tags", field: "tags" },
+                { id: "seo", label: "🔍 SEO Meta Descriptions", field: "summary" },
+              ].map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => {
+                    setAiMode(m.id as any);
+                    setAiTargetField(m.field as any);
+                    fetchAiAssist(aiSeed, m.id, aiCategory);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-medium transition-colors ${
+                    aiMode === m.id
+                      ? "bg-[#C96442] text-white shadow-xs"
+                      : "bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442]/40"
+                  }`}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Seed Topic Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D]">
+                Topic Seed / Headline Prompt
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={aiSeed}
+                  onChange={(e) => setAiSeed(e.target.value)}
+                  placeholder="e.g. OpenAI GPT-5 reasoning model benchmarks..."
+                  className="flex-1 px-3.5 py-2 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                />
+                <button
+                  type="button"
+                  onClick={() => fetchAiAssist(aiSeed, aiMode, aiCategory)}
+                  disabled={aiLoading}
+                  className="px-4 py-2 rounded-xl bg-[#C96442] text-white text-xs font-medium hover:bg-[#B35334] transition-colors disabled:opacity-50 shrink-0 flex items-center gap-1.5"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${aiLoading ? "animate-spin" : ""}`} />
+                  <span>{aiLoading ? "Generating..." : "Generate"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Suggestions List */}
+            <div className="space-y-2.5 pt-2">
+              <span className="text-xs font-mono uppercase text-[#8E8B82] block">
+                {aiLoading ? "Consulting AI Intelligence..." : `Calibrated Suggestions (${aiSuggestions.length})`}
+              </span>
+
+              {aiLoading ? (
+                <div className="p-8 text-center space-y-2">
+                  <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#C96442]" />
+                  <p className="text-xs font-mono text-[#8E8B82]">Synthesizing high-impact editorial angles...</p>
+                </div>
+              ) : aiSuggestions.length > 0 ? (
+                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                  {aiSuggestions.map((sug, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/60 dark:bg-[#181816]/70 flex items-center justify-between gap-3 group hover:border-[#C96442]/60 transition-colors"
+                    >
+                      <span className="text-xs text-[#1F1E1D] dark:text-[#F5F2EB] leading-relaxed flex-1">
+                        {sug}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyAiSuggestion(sug)}
+                        className="px-3 py-1.5 rounded-xl bg-[#C96442] text-white text-[11px] font-medium opacity-90 group-hover:opacity-100 hover:bg-[#B35334] transition-all shrink-0"
+                      >
+                        Apply →
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-6 text-center text-xs font-mono text-[#8E8B82]">
+                  Enter a seed phrase and click Generate.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* UNSPLASH IMAGE PICKER MODAL */}
+      {imageModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                  <Camera className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    High-Resolution Editorial Imagery
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#8E8B82]">
+                    Unsplash Curated Tech Collection &bull; 1-Click Cover Photo
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setImageModalOpen(false)}
+                className="p-1 rounded-lg text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Search Input & Quick Category Pills */}
+            <div className="space-y-3">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={imageSearchQuery}
+                  onChange={(e) => {
+                    setImageSearchQuery(e.target.value);
+                    searchImages(e.target.value);
+                  }}
+                  placeholder="Search keywords (e.g. ai, robotics, cybersecurity, chips, cloud, quantum)..."
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                />
+                <Search className="w-4 h-4 absolute left-3 top-3 text-[#8E8B82]" />
+              </div>
+
+              <div className="flex flex-wrap gap-1.5">
+                {["all", "ai", "robotics", "chips", "cybersecurity", "cloud", "startups", "quantum"].map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => {
+                      const q = cat === "all" ? "" : cat;
+                      setImageSearchQuery(q);
+                      searchImages(q);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-mono capitalize transition-colors ${
+                      (cat === "all" && !imageSearchQuery) || imageSearchQuery.toLowerCase() === cat
+                        ? "bg-[#C96442] text-white"
+                        : "bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442]"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Image Grid */}
+            <div className="space-y-2">
+              <span className="text-xs font-mono uppercase text-[#8E8B82] block">
+                {imageSearchLoading ? "Loading Gallery..." : `Available Photos (${imageSearchResults.length})`}
+              </span>
+
+              {imageSearchLoading ? (
+                <div className="p-8 text-center">
+                  <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#C96442]" />
+                  <p className="text-xs font-mono text-[#8E8B82] mt-2">Fetching imagery...</p>
+                </div>
+              ) : imageSearchResults.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5 max-h-96 overflow-y-auto pr-1">
+                  {imageSearchResults.map((img) => (
+                    <div
+                      key={img.id}
+                      onClick={() => handleSelectImage(img.url)}
+                      className="group relative rounded-2xl overflow-hidden border border-[#EBE8DF] dark:border-[#33322E] bg-stone-100 dark:bg-stone-800 aspect-16/10 cursor-pointer shadow-xs hover:border-[#C96442] transition-all"
+                    >
+                      <img
+                        src={img.thumb || img.url}
+                        alt={img.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2.5 text-white">
+                        <p className="text-xs font-semibold line-clamp-1">{img.title}</p>
+                        <span className="text-[10px] text-white/80 font-mono">By {img.author}</span>
+                        <span className="mt-1 inline-block text-[10px] font-mono text-[#C96442] bg-white px-2 py-0.5 rounded-md font-bold self-start">
+                          Use This Image ✓
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-8 text-center text-xs font-mono text-[#8E8B82]">
+                  No images found for &quot;{imageSearchQuery}&quot;. Try another search term.
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
