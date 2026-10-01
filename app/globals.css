@@ -164,67 +164,54 @@ body {
 
 /* ==========================================================================
    THEME BOX SHADOW SYSTEM
-   - Light Mode: Rich, crisp, organized depth behind every box
-   - Dark Mode: Radiant light-orange (#C96442) outline glow shadow
+   - Outer Boxes Only: Crisp, tight outline with light orange (#C96442) in dark mode
+   - Inner Boxes: Explicitly clean and flat with no shadow, glow, or light
+   - Not too much spread: Tight, laser-clean outline contour only (no hazy spread)
    ========================================================================== */
 
 :root {
-  --theme-box-shadow: 0 4px 20px -2px rgba(28, 25, 23, 0.08), 0 2px 6px -1px rgba(28, 25, 23, 0.04);
-  --theme-box-shadow-hover: 0 8px 30px -4px rgba(28, 25, 23, 0.12), 0 4px 12px -2px rgba(28, 25, 23, 0.06);
-  --theme-box-shadow-sm: 0 2px 8px -1px rgba(28, 25, 23, 0.05), 0 1px 3px rgba(28, 25, 23, 0.03);
+  /* Light mode: crisp, clean subtle elevation on outer cards */
+  --outer-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px -1px rgba(28, 25, 23, 0.06);
+  --outer-box-shadow-hover: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 14px -2px rgba(28, 25, 23, 0.08);
 }
 
 .dark {
-  /* Warm Light Orange (#C96442) outline glow shadow matching brand theme */
-  --theme-box-shadow: 0 0 0 1px rgba(201, 100, 66, 0.24), 0 0 24px -2px rgba(201, 100, 66, 0.18), 0 4px 16px -2px rgba(201, 100, 66, 0.12);
-  --theme-box-shadow-hover: 0 0 0 1px rgba(201, 100, 66, 0.45), 0 0 32px -1px rgba(201, 100, 66, 0.30), 0 6px 20px -2px rgba(201, 100, 66, 0.18);
-  --theme-box-shadow-sm: 0 0 0 1px rgba(201, 100, 66, 0.18), 0 0 14px -2px rgba(201, 100, 66, 0.14);
+  /* Dark mode: crisp, tight light-orange (#C96442) outline only, minimal spread */
+  --outer-box-shadow: 0 0 0 1px rgba(201, 100, 66, 0.45), 0 0 6px 0 rgba(201, 100, 66, 0.18);
+  --outer-box-shadow-hover: 0 0 0 1px rgba(201, 100, 66, 0.70), 0 0 10px 0 rgba(201, 100, 66, 0.28);
 }
 
-/* Apply proper box shadow to all dashboard cards, panels, and boxed containers */
-.admin-dashboard-container main [class*="rounded-3xl"][class*="border"],
-.admin-dashboard-container main [class*="rounded-2xl"][class*="border"],
-.admin-dashboard-container main [class*="rounded-xl"][class*="border"],
-.admin-dashboard-container main div[class*="rounded-"][class*="border"][class*="p-"],
-.admin-dashboard-container main button[class*="rounded-"][class*="border"][class*="p-"],
-.admin-dashboard-container main .shadow-xs,
-.admin-dashboard-container main .shadow-2xs,
-.admin-dashboard-container main .shadow-sm,
-.admin-dashboard-container main .shadow-md,
-.admin-dashboard-container main .shadow-lg,
-.theme-box-shadow {
-  box-shadow: var(--theme-box-shadow) !important;
-  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+/* Apply outline shadow ONLY to outer cards / primary boxes */
+.admin-card {
+  box-shadow: var(--outer-box-shadow) !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-/* Elevated hover state for interactive cards and buttons */
-.admin-dashboard-container main div[class*="rounded-"][class*="border"][class*="p-"]:hover,
-.admin-dashboard-container main button[class*="rounded-"][class*="border"][class*="p-"]:hover,
-.admin-dashboard-container main a[class*="rounded-"][class*="border"][class*="p-"]:hover,
-.theme-box-shadow:hover {
-  box-shadow: var(--theme-box-shadow-hover) !important;
+.admin-card:hover {
+  box-shadow: var(--outer-box-shadow-hover) !important;
 }
 
-/* Micro badges, small icon squares, and pill indicators should not inherit heavy shadows */
-.admin-dashboard-container [class*="w-5"],
-.admin-dashboard-container [class*="w-6"],
-.admin-dashboard-container [class*="w-7"],
-.admin-dashboard-container [class*="w-8"],
-.admin-dashboard-container [class*="w-9"],
-.admin-dashboard-container [class*="w-10"],
-.admin-dashboard-container [class*="rounded-full"][class*="px-"] {
+/* Absolutely NO shadow or glow on any inner boxes, buttons, inputs, rows, or elements inside an outer card */
+.admin-card .admin-card,
+.admin-card div,
+.admin-card button,
+.admin-card a,
+.admin-card input,
+.admin-card textarea,
+.admin-card select,
+.admin-card span,
+.admin-card [class*="rounded-"],
+.admin-card .shadow-xs,
+.admin-card .shadow-2xs,
+.admin-card .shadow-sm,
+.admin-card .shadow-md,
+.admin-card .shadow-lg {
   box-shadow: none !important;
 }
 
-/* Subtle depth for form inputs */
-.admin-dashboard-container input,
-.admin-dashboard-container textarea,
-.admin-dashboard-container select {
-  box-shadow: var(--theme-box-shadow-sm);
-}
-
-.admin-dashboard-container input:focus,
-.admin-dashboard-container textarea:focus,
-.admin-dashboard-container select:focus {
+/* Specific focus ring for active form inputs */
+.admin-card input:focus,
+.admin-card textarea:focus,
+.admin-card select:focus {
   box-shadow: 0 0 0 2px rgba(201, 100, 66, 0.45) !important;
 }

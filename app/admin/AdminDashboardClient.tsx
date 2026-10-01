@@ -224,7 +224,7 @@ function DomainAdSlotCard({
   };
 
   return (
-    <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+    <div className="admin-card p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
         <div className="space-y-1">
@@ -1469,7 +1469,7 @@ export function AdminDashboardClient({
             <div className="space-y-8">
               {/* Top KPI Metric Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                <div className="admin-card p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D]">
                   <div className="flex items-center justify-between text-[#8E8B82]">
                     <span className="text-xs font-mono uppercase tracking-wider">Total Articles</span>
                     <Database className="w-4 h-4 text-[#C96442]" />
@@ -1483,7 +1483,7 @@ export function AdminDashboardClient({
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                <div className="admin-card p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D]">
                   <div className="flex items-center justify-between text-[#8E8B82]">
                     <span className="text-xs font-mono uppercase tracking-wider">Reader Views</span>
                     <TrendingUp className="w-4 h-4 text-emerald-500" />
@@ -1497,7 +1497,7 @@ export function AdminDashboardClient({
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                <div className="admin-card p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D]">
                   <div className="flex items-center justify-between text-[#8E8B82]">
                     <span className="text-xs font-mono uppercase tracking-wider">Subscribers</span>
                     <Sparkles className="w-4 h-4 text-amber-500" />
@@ -1511,7 +1511,7 @@ export function AdminDashboardClient({
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                <div className="admin-card p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D]">
                   <div className="flex items-center justify-between text-[#8E8B82]">
                     <span className="text-xs font-mono uppercase tracking-wider">Agent Status</span>
                     <Activity className="w-4 h-4 text-emerald-500" />
@@ -1537,7 +1537,7 @@ export function AdminDashboardClient({
               </div>
 
               {/* Quick Actions Shortcuts */}
-              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+              <div className="admin-card p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] space-y-4">
                 <h2 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                   Quick Editorial Actions
                 </h2>
@@ -1608,7 +1608,7 @@ export function AdminDashboardClient({
               {/* Domain Breakdown & Recent Stories Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
                 {/* Left 2 Cols: Recent Articles Dispatched */}
-                <div className="lg:col-span-2 h-full flex flex-col justify-between p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+                <div className="admin-card lg:col-span-2 h-full flex flex-col justify-between p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] space-y-4">
                   <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                     <div>
                       <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
@@ -1641,7 +1641,7 @@ export function AdminDashboardClient({
                             <span
                               className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full ${
                                 art.status === "published"
-                                  ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                                   ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
                                   : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
                               }`}
                             >
@@ -1674,7 +1674,7 @@ export function AdminDashboardClient({
                 </div>
 
                 {/* Right 1 Col: Category / Domain Inventory Breakdown */}
-                <div className="h-full flex flex-col justify-between p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+                <div className="admin-card h-full flex flex-col justify-between p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] space-y-4">
                   <div className="pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                     <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                       Domain Desk Volume
@@ -1726,7 +1726,7 @@ export function AdminDashboardClient({
       {activeTab === "articles" && (
         <div className="space-y-4">
           {/* Admin Usable Tool: Instant Filter & Search Bar */}
-          <div className="p-4 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] flex flex-col md:flex-row items-center justify-between gap-3 shadow-xs">
+          <div className="admin-card p-4 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] flex flex-col md:flex-row items-center justify-between gap-3">
             <div className="relative w-full md:w-80">
               <input
                 type="text"
@@ -1865,7 +1865,7 @@ export function AdminDashboardClient({
           )}
 
           {/* Table Container */}
-          <div className="rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] overflow-hidden shadow-xs">
+          <div className="admin-card rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#FAF7F0] dark:bg-[#1A1917] border-b border-[#EBE8DF] dark:border-[#33322E] text-[#8E8B82] font-mono uppercase tracking-wider">
@@ -2070,7 +2070,7 @@ export function AdminDashboardClient({
           <form onSubmit={handleCreateArticle} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Main Writing Canvas (8 cols) */}
             <div className="lg:col-span-8 flex flex-col">
-              <div className="h-full flex flex-col justify-between p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+              <div className="admin-card h-full flex flex-col justify-between p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-6">
                 <div className="flex items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E]">
                   <div className="flex items-center space-x-2.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#C96442]" />
@@ -2164,7 +2164,7 @@ export function AdminDashboardClient({
 
             {/* Publishing & Metadata Sidebar (4 cols) */}
             <div className="lg:col-span-4 flex flex-col">
-              <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+              <div className="admin-card h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-6">
                 <div className="space-y-6">
                   {/* 1. Header & Live Dispatch Action */}
                   <div className="space-y-4">
@@ -2352,7 +2352,7 @@ export function AdminDashboardClient({
       {activeTab === "api" && (
         <div className="w-full space-y-8">
           {/* 1. TOP FULL-WIDTH HERO CARD: Key & Ingest Controls */}
-          <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs">
+          <div className="admin-card p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F]">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
               {/* Left Side: Agent Ingestion Key (7 cols) */}
               <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
@@ -2424,7 +2424,7 @@ export function AdminDashboardClient({
           </div>
 
           {/* 2. MIDDLE FULL-WIDTH CARD: API Protocol & Endpoints */}
-          <div className="w-full p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+          <div className="admin-card w-full p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-6">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
               <div className="flex items-center space-x-3">
@@ -2714,7 +2714,7 @@ export function AdminDashboardClient({
           </div>
 
           {/* 3. BOTTOM FULL-WIDTH CARD: Client Integration SDK Studio */}
-          <div className="w-full p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+          <div className="admin-card w-full p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-6">
             {/* Header & Language Tabs */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-4">
               <div className="flex items-center space-x-3">
@@ -2881,7 +2881,7 @@ console.log("Ingestion Response:", data);`
       {activeTab === "jev" && (
         <div className="w-full space-y-8">
           {/* Header Banner & Status */}
-          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+          <div className="admin-card p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1.5">
                 <div className="flex items-center space-x-2.5">
@@ -2941,7 +2941,7 @@ console.log("Ingestion Response:", data);`
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             {/* Column 1: Configuration Form Card */}
             <div className="flex flex-col space-y-6">
-              <div className="flex-1 flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+              <div className="admin-card flex-1 flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-6">
                 <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                   <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                     API Key &amp; Triage Settings
@@ -3131,7 +3131,7 @@ console.log("Ingestion Response:", data);`
 
             {/* Column 2: Interactive Sandbox Playground Card */}
             <div className="flex flex-col">
-              <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+              <div className="admin-card h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                 <div>
                   <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
@@ -3284,7 +3284,7 @@ console.log("Ingestion Response:", data);`
             const avgCtr = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : "0.00";
 
             return (
-              <div className="p-4 sm:p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-3.5">
+              <div className="admin-card p-4 sm:p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-3.5">
                 <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
                   {/* Left: Concise Title, Badges & Subtitle */}
                   <div className="space-y-1">
@@ -3376,7 +3376,7 @@ console.log("Ingestion Response:", data);`
           })()}
 
           {/* Domain Desk Selector Grid */}
-          <div className="p-4 sm:p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-3.5">
+          <div className="admin-card p-4 sm:p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-3.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#C96442]" />
