@@ -51,6 +51,7 @@ import {
   CheckSquare,
   Square,
   Camera,
+  Send,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeContext";
 import { formatArticleDate } from "@/lib/utils";
@@ -223,328 +224,330 @@ function DomainAdSlotCard({
   };
 
   return (
-    <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
-        <div className="space-y-1">
-          <div className="flex items-center space-x-2">
-            <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-semibold">
-              {dimensions}
-            </span>
-            <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-              {slotLabel}
-            </h3>
-          </div>
-          <p className="text-xs text-[#8E8B82] dark:text-[#A8A59D]">
-            {aspectDesc} &bull; Targeted for <span className="font-medium text-[#1F1E1D] dark:text-[#F5F2EB]">{domainName}</span>
-          </p>
-        </div>
-
-        {/* Status Toggle & Metrics */}
-        <div className="flex items-center gap-3">
-          {existingAd && (
-            <div className="hidden md:flex items-center gap-1.5 font-mono text-[11px] text-[#686660] dark:text-[#A8A59D]">
-              <span className="px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Impressions">
-                👁️ {impressions.toLocaleString()}
+    <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6 flex flex-col justify-between">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2.5">
+              <span className="font-mono text-xs px-3 py-1 rounded-full bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-bold">
+                {dimensions}
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Clicks">
-                🖱️ {clicks.toLocaleString()}
-              </span>
-              <span className="px-2 py-0.5 rounded-md bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-semibold" title="Click-Through Rate">
-                📈 {ctr}% CTR
-              </span>
+              <h3 className="font-serif text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                {slotLabel}
+              </h3>
             </div>
-          )}
-
-          <button
-            type="button"
-            onClick={() => setIsActive(!isActive)}
-            className={`inline-flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
-              isActive
-                ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
-                : "bg-stone-500/10 border border-stone-500/30 text-stone-500"
-            }`}
-          >
-            <span className={`w-2 h-2 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-stone-400"}`} />
-            <span>{isActive ? "Active (Serving Live)" : "Paused"}</span>
-          </button>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Ad Format Selector */}
-        <div className="space-y-2">
-          <div className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] flex items-center justify-between">
-            <span>Ad Format / Implementation</span>
-            <div className="flex items-center gap-2 normal-case font-sans">
-              <span className="text-[11px] text-[#8E8B82]">Quick Presets:</span>
-              <button
-                type="button"
-                onClick={() => handleApplyPreset("banner_sample")}
-                className="text-[11px] text-[#C96442] hover:underline"
-              >
-                Sample Banner
-              </button>
-              <span className="text-[#8E8B82]">&bull;</span>
-              <button
-                type="button"
-                onClick={() => handleApplyPreset("adsense_sample")}
-                className="text-[11px] text-[#C96442] hover:underline"
-              >
-                Sample AdSense Tag
-              </button>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setAdType("banner")}
-              className={`p-3 rounded-2xl border text-left flex items-center space-x-3 transition-all ${
-                adType === "banner"
-                  ? "border-[#C96442] bg-[#C96442]/5 text-[#1F1E1D] dark:text-[#F5F2EB]"
-                  : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442]/40"
-              }`}
-            >
-              <ImageIcon className={`w-4 h-4 ${adType === "banner" ? "text-[#C96442]" : "text-[#8E8B82]"}`} />
-              <div>
-                <p className="text-xs font-semibold">Image &amp; Link Banner</p>
-                <p className="text-[10px] text-[#8E8B82]">Upload or link brand creative with direct click-through</p>
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setAdType("custom_html")}
-              className={`p-3 rounded-2xl border text-left flex items-center space-x-3 transition-all ${
-                adType === "custom_html"
-                  ? "border-[#C96442] bg-[#C96442]/5 text-[#1F1E1D] dark:text-[#F5F2EB]"
-                  : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442]/40"
-              }`}
-            >
-              <Code2 className={`w-4 h-4 ${adType === "custom_html" ? "text-[#C96442]" : "text-[#8E8B82]"}`} />
-              <div>
-                <p className="text-xs font-semibold">Google AdSense / Custom HTML</p>
-                <p className="text-[10px] text-[#8E8B82]">Paste raw AdSense tags, affiliate scripts or iframes</p>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* Format Specific Fields */}
-        {adType === "banner" ? (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                  Sponsor / Brand Label
-                </label>
-                <input
-                  type="text"
-                  value={sponsor}
-                  onChange={(e) => setSponsor(e.target.value)}
-                  placeholder="e.g. Anthropic, Google Cloud, Stripe"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                  Headline / Title (Overlay or Text Card)
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Build Autonomous Agents Faster"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                  Image Creative URL
-                </label>
-                <input
-                  type="url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://... (or leave blank for editorial gradient card)"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                  Target Destination URL (Outbound)
-                </label>
-                <input
-                  type="url"
-                  value={linkUrl}
-                  onChange={(e) => setLinkUrl(e.target.value)}
-                  placeholder="https://partner.com/?utm_source=newsflow"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
-                />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-              Custom HTML / Google AdSense / Script Embed
-            </label>
-            <textarea
-              rows={5}
-              value={htmlCode}
-              onChange={(e) => setHtmlCode(e.target.value)}
-              placeholder={`<!-- Paste Google AdSense <ins> or iframe snippet here -->\n<ins class="adsbygoogle"\n     style="display:block"\n     data-ad-client="ca-pub-..."\n     data-ad-slot="..."\n     data-ad-format="auto"></ins>`}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] font-mono text-xs text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
-            />
-            <p className="text-[11px] text-[#8E8B82] mt-1">
-              Supports Google AdSense tags, dynamic affiliate banners, or custom HTML/CSS embeds.
+            <p className="text-sm text-[#8E8B82] dark:text-[#A8A59D]">
+              {aspectDesc} &bull; Targeted for <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">{domainName}</span>
             </p>
           </div>
-        )}
 
-        {/* Live Visual Reader Preview */}
-        <div className="pt-2 border-t border-[#EBE8DF] dark:border-[#33322E]">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5 text-[#C96442]" />
-              <span>Live Reader Preview ({dimensions})</span>
-            </span>
+          {/* Status Toggle & Metrics */}
+          <div className="flex items-center gap-3">
+            {existingAd && (
+              <div className="hidden sm:flex items-center gap-1.5 font-mono text-xs text-[#686660] dark:text-[#A8A59D]">
+                <span className="px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Impressions">
+                  👁️ {impressions.toLocaleString()}
+                </span>
+                <span className="px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Clicks">
+                  🖱️ {clicks.toLocaleString()}
+                </span>
+                <span className="px-2.5 py-1 rounded-md bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-semibold" title="Click-Through Rate">
+                  📈 {ctr}% CTR
+                </span>
+              </div>
+            )}
+
             <button
               type="button"
-              onClick={() => setShowPreview(!showPreview)}
-              className="text-xs text-[#C96442] hover:underline"
+              onClick={() => setIsActive(!isActive)}
+              className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
+                isActive
+                  ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                  : "bg-stone-500/10 border border-stone-500/30 text-stone-500"
+              }`}
             >
-              {showPreview ? "Hide Preview" : "Show Preview"}
+              <span className={`w-2 h-2 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-stone-400"}`} />
+              <span>{isActive ? "Active (Serving Live)" : "Paused"}</span>
             </button>
           </div>
+        </div>
 
-          {showPreview && (
-            <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#FAF7F0]/60 dark:bg-[#181816]/70 border border-[#EBE8DF] dark:border-[#33322E]">
-              {slot === "top_300x250" ? (
-                /* Top 300x250 Preview */
-                <div className="w-[300px] h-[250px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
-                  {adType === "custom_html" && htmlCode ? (
-                    <div
-                      className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
-                      dangerouslySetInnerHTML={{ __html: htmlCode }}
-                    />
-                  ) : (
-                    <div className="relative w-full h-full block overflow-hidden">
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={title || "Advertisement Preview"}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-5 flex flex-col justify-between">
-                          <div className="space-y-1">
-                            <span className="text-[10px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
-                              {sponsor || "Sponsored"}
-                            </span>
-                            <h4 className="font-serif text-base font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-tight">
-                              {title || "Featured Sponsor Headline"}
-                            </h4>
-                          </div>
-                          <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
-                            Learn more →
-                          </span>
-                        </div>
-                      )}
-
-                      <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
-                        {sponsor || "Sponsored"}
-                      </div>
-
-                      {imageUrl && title && (
-                        <div className="absolute bottom-0 inset-x-0 p-3 bg-linear-to-t from-black/85 via-black/40 to-transparent text-white">
-                          <p className="font-serif text-xs font-semibold line-clamp-1">{title}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+        <form id={`form-${domain}-${slot}`} onSubmit={handleSubmit} className="space-y-6">
+          {/* Ad Format Selector */}
+          <div className="space-y-2">
+            <div className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] font-semibold flex items-center justify-between">
+              <span>Ad Format / Implementation</span>
+              <div className="flex items-center gap-2 normal-case font-sans">
+                <span className="text-xs text-[#8E8B82]">Quick Presets:</span>
+                <button
+                  type="button"
+                  onClick={() => handleApplyPreset("banner_sample")}
+                  className="text-xs font-medium text-[#C96442] hover:underline"
+                >
+                  Sample Banner
+                </button>
+                <span className="text-[#8E8B82]">&bull;</span>
+                <button
+                  type="button"
+                  onClick={() => handleApplyPreset("adsense_sample")}
+                  className="text-xs font-medium text-[#C96442] hover:underline"
+                >
+                  Sample AdSense Tag
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setAdType("banner")}
+                className={`p-3.5 rounded-2xl border text-left flex items-center space-x-3.5 transition-all ${
+                  adType === "banner"
+                    ? "border-[#C96442] bg-[#C96442]/5 text-[#1F1E1D] dark:text-[#F5F2EB] ring-1 ring-[#C96442]/30"
+                    : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442]/40"
+                }`}
+              >
+                <ImageIcon className={`w-5 h-5 shrink-0 ${adType === "banner" ? "text-[#C96442]" : "text-[#8E8B82]"}`} />
+                <div>
+                  <p className="text-sm font-semibold">Image &amp; Link Banner</p>
+                  <p className="text-xs text-[#8E8B82]">Custom creative with direct click attribution</p>
                 </div>
-              ) : (
-                /* Bottom 300x600 Preview */
-                <div className="w-[300px] h-[450px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
-                  {adType === "custom_html" && htmlCode ? (
-                    <div
-                      className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
-                      dangerouslySetInnerHTML={{ __html: htmlCode }}
-                    />
-                  ) : (
-                    <div className="relative w-full h-full block overflow-hidden">
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={title || "Advertisement Preview"}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-6 flex flex-col justify-between">
-                          <div className="space-y-2">
-                            <span className="text-[11px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
-                              {sponsor || "Featured Partner"}
-                            </span>
-                            <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-snug">
-                              {title || "High-Impact Technology Partner"}
-                            </h3>
-                          </div>
-                          <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
-                            Explore partner →
-                          </span>
-                        </div>
-                      )}
+              </button>
 
-                      <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
-                        {sponsor || "Sponsored"}
-                      </div>
-
-                      {imageUrl && title && (
-                        <div className="absolute bottom-0 inset-x-0 p-4 bg-linear-to-t from-black/85 via-black/50 to-transparent text-white">
-                          <p className="font-serif text-sm font-semibold line-clamp-2">{title}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+              <button
+                type="button"
+                onClick={() => setAdType("custom_html")}
+                className={`p-3.5 rounded-2xl border text-left flex items-center space-x-3.5 transition-all ${
+                  adType === "custom_html"
+                    ? "border-[#C96442] bg-[#C96442]/5 text-[#1F1E1D] dark:text-[#F5F2EB] ring-1 ring-[#C96442]/30"
+                    : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442]/40"
+                }`}
+              >
+                <Code2 className={`w-5 h-5 shrink-0 ${adType === "custom_html" ? "text-[#C96442]" : "text-[#8E8B82]"}`} />
+                <div>
+                  <p className="text-sm font-semibold">Google AdSense / Custom HTML</p>
+                  <p className="text-xs text-[#8E8B82]">Raw AdSense script tags or responsive iframe</p>
                 </div>
-              )}
-              <span className="text-[11px] font-mono text-[#8E8B82] mt-3">
-                Live {dimensions} reader display render
-              </span>
+              </button>
+            </div>
+          </div>
+
+          {/* Format Specific Fields */}
+          {adType === "banner" ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Sponsor / Brand Label
+                  </label>
+                  <input
+                    type="text"
+                    value={sponsor}
+                    onChange={(e) => setSponsor(e.target.value)}
+                    placeholder="e.g. Anthropic, Google Cloud, Stripe"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Headline / Title (Overlay or Text Card)
+                  </label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Build Autonomous Agents Faster"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Image Creative URL
+                  </label>
+                  <input
+                    type="url"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    placeholder="https://... (or leave blank for editorial gradient card)"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Target Destination URL (Outbound)
+                  </label>
+                  <input
+                    type="url"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    placeholder="https://partner.com/?utm_source=newsflow"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                Custom HTML / Google AdSense / Script Embed
+              </label>
+              <textarea
+                rows={5}
+                value={htmlCode}
+                onChange={(e) => setHtmlCode(e.target.value)}
+                placeholder={`<!-- Paste Google AdSense <ins> or iframe snippet here -->\n<ins class="adsbygoogle"\n     style="display:block"\n     data-ad-client="ca-pub-..."\n     data-ad-slot="..."\n     data-ad-format="auto"></ins>`}
+                className="w-full px-4 py-3 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] font-mono text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+              />
+              <p className="text-xs text-[#8E8B82] mt-1.5">
+                Supports Google AdSense tags, dynamic affiliate banners, or custom HTML/CSS embeds.
+              </p>
             </div>
           )}
-        </div>
 
-        {/* Submit Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-[#EBE8DF] dark:border-[#33322E]">
-          <span className="text-xs text-[#8E8B82]">
-            Updates take effect immediately on <code className="text-[#C96442] font-mono">{domain}</code> pages.
-          </span>
-          <button
-            type="submit"
-            disabled={isSaving}
-            className="px-5 py-2.5 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-xs font-medium transition-colors shadow-xs flex items-center gap-2 disabled:opacity-50"
-          >
-            {isSaving ? (
-              <>
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Saving Slot...</span>
-              </>
-            ) : (
-              <>
-                <Check className="w-3.5 h-3.5" />
-                <span>Save {dimensions} Slot Configuration</span>
-              </>
+          {/* Live Visual Reader Preview */}
+          <div className="pt-2 border-t border-[#EBE8DF] dark:border-[#33322E]">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] flex items-center gap-1.5">
+                <Eye className="w-3.5 h-3.5 text-[#C96442]" />
+                <span>Live Reader Preview ({dimensions})</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowPreview(!showPreview)}
+                className="text-xs font-medium text-[#C96442] hover:underline"
+              >
+                {showPreview ? "Hide Preview" : "Show Preview"}
+              </button>
+            </div>
+
+            {showPreview && (
+              <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#FAF7F0]/60 dark:bg-[#181816]/70 border border-[#EBE8DF] dark:border-[#33322E]">
+                {slot === "top_300x250" ? (
+                  /* Top 300x250 Preview */
+                  <div className="w-[300px] h-[250px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
+                    {adType === "custom_html" && htmlCode ? (
+                      <div
+                        className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
+                        dangerouslySetInnerHTML={{ __html: htmlCode }}
+                      />
+                    ) : (
+                      <div className="relative w-full h-full block overflow-hidden">
+                        {imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={title || "Advertisement Preview"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-5 flex flex-col justify-between">
+                            <div className="space-y-1">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
+                                {sponsor || "Sponsored"}
+                              </span>
+                              <h4 className="font-serif text-base font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-tight">
+                                {title || "Featured Sponsor Headline"}
+                              </h4>
+                            </div>
+                            <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
+                              Learn more →
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
+                          {sponsor || "Sponsored"}
+                        </div>
+
+                        {imageUrl && title && (
+                          <div className="absolute bottom-0 inset-x-0 p-3 bg-linear-to-t from-black/85 via-black/40 to-transparent text-white">
+                            <p className="font-serif text-xs font-semibold line-clamp-1">{title}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Bottom 300x600 Preview */
+                  <div className="w-[300px] h-[450px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
+                    {adType === "custom_html" && htmlCode ? (
+                      <div
+                        className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
+                        dangerouslySetInnerHTML={{ __html: htmlCode }}
+                      />
+                    ) : (
+                      <div className="relative w-full h-full block overflow-hidden">
+                        {imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={title || "Advertisement Preview"}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-6 flex flex-col justify-between">
+                            <div className="space-y-2">
+                              <span className="text-[11px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
+                                {sponsor || "Featured Partner"}
+                              </span>
+                              <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-snug">
+                                {title || "High-Impact Technology Partner"}
+                              </h3>
+                            </div>
+                            <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
+                              Explore partner →
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
+                          {sponsor || "Sponsored"}
+                        </div>
+
+                        {imageUrl && title && (
+                          <div className="absolute bottom-0 inset-x-0 p-4 bg-linear-to-t from-black/85 via-black/50 to-transparent text-white">
+                            <p className="font-serif text-sm font-semibold line-clamp-2">{title}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+                <span className="text-xs font-mono text-[#8E8B82] mt-3">
+                  Live {dimensions} reader display render
+                </span>
+              </div>
             )}
-          </button>
-        </div>
-      </form>
+          </div>
+
+          {/* Submit Actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] gap-3">
+            <span className="text-xs text-[#8E8B82]">
+              Updates take effect immediately on <code className="text-[#C96442] font-mono font-medium">{domain}</code> pages.
+            </span>
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="px-5 py-2.5 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-medium transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {isSaving ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Saving Slot...</span>
+                </>
+              ) : (
+                <>
+                  <Check className="w-4 h-4" />
+                  <span>Save {dimensions} Slot</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
@@ -2053,174 +2056,322 @@ export function AdminDashboardClient({
 
       {/* TAB 2: MANUAL ARTICLE DISPATCH */}
       {activeTab === "create" && (
-        <div className="max-w-3xl mx-auto p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-sm space-y-6">
-          <div className="space-y-1">
-            <h2 className="font-serif text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-              Manual Article Ingestion
-            </h2>
-            <p className="text-xs text-[#686660] dark:text-[#A8A59D]">
-              Directly author or paste a piece without going through the Python pipeline.
-            </p>
-          </div>
+        <div className="w-full">
+          <form onSubmit={handleCreateArticle} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Main Writing Canvas (8 cols) */}
+            <div className="lg:col-span-8 space-y-6">
+              <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#C96442]" />
+                    <h2 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                      Editorial Article Canvas
+                    </h2>
+                  </div>
+                  <div className="flex items-center space-x-3 text-xs font-mono text-[#8E8B82]">
+                    <span>{newBody ? newBody.trim().split(/\s+/).filter(Boolean).length : 0} words</span>
+                    <span>&bull;</span>
+                    <span>~{Math.max(1, Math.ceil((newBody ? newBody.trim().split(/\s+/).filter(Boolean).length : 0) / 200))} min read</span>
+                  </div>
+                </div>
 
-          <form onSubmit={handleCreateArticle} className="space-y-5">
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D]">
-                  Headline *
-                </label>
-                <button
-                  type="button"
-                  onClick={() => handleOpenAiAssist("title", "create", newTitle, newCategory)}
-                  className="inline-flex items-center gap-1 text-xs font-mono font-medium text-[#C96442] hover:underline"
-                >
-                  <Sparkles className="w-3 h-3" />
-                  <span>✨ AI Headline Copilot</span>
-                </button>
+                <div className="space-y-5">
+                  {/* Headline */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                        Headline *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAiAssist("title", "create", newTitle, newCategory)}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>✨ AI Headline Copilot</span>
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      placeholder="e.g. DeepSeek-V3 Open Model Weights Cause Shockwaves Across Industry..."
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-base sm:text-lg font-serif font-bold text-[#1F1E1D] dark:text-[#F5F2EB] placeholder:font-sans placeholder:font-normal placeholder:text-sm placeholder:text-[#8E8B82] focus:outline-none focus:border-[#C96442] shadow-2xs"
+                    />
+                  </div>
+
+                  {/* Executive Summary */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                        Executive 1-Line Summary *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenAiAssist("summary", "create", newSummary || newTitle, newCategory)}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>✨ AI Hook Assist</span>
+                      </button>
+                    </div>
+                    <textarea
+                      value={newSummary}
+                      onChange={(e) => setNewSummary(e.target.value)}
+                      placeholder="High-signal concise analytical overview that captures reader attention immediately..."
+                      rows={2}
+                      required
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] leading-relaxed focus:outline-none focus:border-[#C96442]"
+                    />
+                  </div>
+
+                  {/* Markdown Body */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                        Article Body (Markdown Supported) *
+                      </label>
+                      <div className="hidden sm:flex items-center gap-2 text-[11px] font-mono text-[#8E8B82]">
+                        <span className="px-1.5 py-0.5 rounded bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">## Heading</span>
+                        <span className="px-1.5 py-0.5 rounded bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">**bold**</span>
+                        <span className="px-1.5 py-0.5 rounded bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">&gt; quote</span>
+                        <span className="px-1.5 py-0.5 rounded bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">```code```</span>
+                      </div>
+                    </div>
+                    <textarea
+                      value={newBody}
+                      onChange={(e) => setNewBody(e.target.value)}
+                      placeholder="## Section 1: The Core Breakthrough&#10;&#10;In-depth technical analysis and context here...&#10;&#10;## Market Implications&#10;&#10;Strategic impact on founders, builders and enterprise..."
+                      rows={14}
+                      required
+                      className="w-full p-4 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] font-mono leading-relaxed focus:outline-none focus:border-[#C96442]"
+                    />
+                  </div>
+                </div>
               </div>
-              <input
-                type="text"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="e.g. DeepSeek-V3 Open Model Weights Cause Shockwaves..."
-                required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
-              />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D]">
-                  Executive 1-Line Summary *
-                </label>
+            {/* Publishing & Metadata Sidebar (4 cols) */}
+            <div className="lg:col-span-4 space-y-6">
+              {/* Card 1: Publish Desk */}
+              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Publishing Desk
+                  </h3>
+                  <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                    Live Dispatch
+                  </span>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => handleOpenAiAssist("summary", "create", newSummary || newTitle, newCategory)}
-                  className="inline-flex items-center gap-1 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 px-6 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
-                  <Sparkles className="w-3 h-3" />
-                  <span>✨ AI Hook Assist</span>
+                  <Send className="w-4 h-4" />
+                  <span>{loading ? "Publishing Story..." : "Publish Article Immediately"}</span>
                 </button>
-              </div>
-              <textarea
-                value={newSummary}
-                onChange={(e) => setNewSummary(e.target.value)}
-                placeholder="High-signal concise summary..."
-                rows={2}
-                required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
-              />
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                  Category
+                <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] cursor-pointer hover:border-[#C96442]/40 transition-colors">
+                  <input
+                    type="checkbox"
+                    id="isFeatured"
+                    checked={newFeatured}
+                    onChange={(e) => setNewFeatured(e.target.checked)}
+                    className="w-4 h-4 mt-0.5 rounded text-[#C96442] accent-[#C96442]"
+                  />
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] block">
+                      Pin as Featured Story
+                    </span>
+                    <span className="text-[11px] text-[#8E8B82] block leading-tight">
+                      Display prominently in homepage hero spotlight
+                    </span>
+                  </div>
                 </label>
-                <select
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
-                >
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D]">
-                    Cover Image URL
+              {/* Card 2: Editorial Desk / Domain */}
+              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Editorial Domain Desk
+                  </h3>
+                  <Tag className="w-4 h-4 text-[#C96442]" />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Assigned Domain Desk
                   </label>
+                  <select
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm font-medium text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
+                  >
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.name}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Card 3: Cover Image Creative */}
+              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Cover Media
+                  </h3>
                   <button
                     type="button"
                     onClick={() => handleOpenImagePicker("create")}
-                    className="inline-flex items-center gap-1 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
                   >
-                    <Camera className="w-3 h-3" />
+                    <Camera className="w-3.5 h-3.5" />
                     <span>🔍 Browse Photos</span>
                   </button>
                 </div>
-                <input
-                  type="url"
-                  value={newCover}
-                  onChange={(e) => setNewCover(e.target.value)}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
-                />
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Cover Image URL
+                  </label>
+                  <input
+                    type="url"
+                    value={newCover}
+                    onChange={(e) => setNewCover(e.target.value)}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
+                  />
+                </div>
+
+                {/* Live Preview Box */}
+                {newCover ? (
+                  <div className="relative aspect-video rounded-xl overflow-hidden border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] shadow-2xs">
+                    <img
+                      src={newCover}
+                      alt="Cover Preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = "none";
+                      }}
+                    />
+                    <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">
+                      Live Cover Preview
+                    </div>
+                  </div>
+                ) : (
+                  <div className="aspect-video rounded-xl border border-dashed border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/50 dark:bg-[#1C1C19]/50 flex flex-col items-center justify-center p-4 text-center">
+                    <Camera className="w-6 h-6 text-[#8E8B82] mb-1.5" />
+                    <span className="text-xs text-[#8E8B82]">No cover image set</span>
+                    <span className="text-[10px] text-[#8E8B82]/80 mt-0.5">Click &apos;Browse Photos&apos; or paste URL</span>
+                  </div>
+                )}
               </div>
             </div>
-
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                Article Body (Markdown Supported) *
-              </label>
-              <textarea
-                value={newBody}
-                onChange={(e) => setNewBody(e.target.value)}
-                placeholder="## Section Heading&#10;&#10;Full analytical breakdown here..."
-                rows={10}
-                required
-                className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] font-mono focus:outline-none focus:border-[#C96442]"
-              />
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="isFeatured"
-                checked={newFeatured}
-                onChange={(e) => setNewFeatured(e.target.checked)}
-                className="w-4 h-4 rounded text-[#C96442]"
-              />
-              <label htmlFor="isFeatured" className="text-xs text-[#1F1E1D] dark:text-[#F5F2EB]">
-                Set as Featured Story on Homepage
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="py-3 px-6 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-xs font-medium transition-colors disabled:opacity-50"
-            >
-              {loading ? "Publishing..." : "Publish Article Immediately"}
-            </button>
           </form>
         </div>
       )}
 
       {/* TAB 3: PIPELINE INGESTION API & KEYS */}
       {activeTab === "api" && (
-        <div className="max-w-3xl mx-auto space-y-6">
-          <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                NewsFlow Agent Ingestion Key
-              </h3>
-              <button
-                onClick={copyApiKey}
-                className="inline-flex items-center space-x-1.5 text-xs text-[#C96442] hover:underline"
-              >
-                {copiedKey ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedKey ? "Copied Key" : "Copy Key"}</span>
-              </button>
-            </div>
-            <div className="p-3 rounded-xl bg-[#FAF7F0] dark:bg-[#1C1C19] border border-[#EBE8DF] dark:border-[#33322E] font-mono text-xs text-[#1F1E1D] dark:text-[#F5F2EB] select-all">
-              {apiKey}
-            </div>
-            <p className="text-xs text-[#686660] dark:text-[#A8A59D]">
-              Pass this key in the <code className="text-[#C96442]">x-api-key</code> header or as Bearer token when dispatching from your Python pipeline.
-            </p>
-          </div>
+        <div className="w-full space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left Column (5 cols): Key, Endpoints, Manual Trigger */}
+            <div className="lg:col-span-5 space-y-6">
+              {/* Ingestion Key Card */}
+              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                      <KeyRound className="w-4 h-4" />
+                    </div>
+                    <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                      Agent Ingestion Key
+                    </h3>
+                  </div>
+                  <button
+                    onClick={copyApiKey}
+                    className="inline-flex items-center space-x-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                  >
+                    {copiedKey ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedKey ? "Copied" : "Copy Key"}</span>
+                  </button>
+                </div>
+                
+                <div className="p-4 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] font-mono text-sm text-[#1F1E1D] dark:text-[#F5F2EB] select-all break-all shadow-2xs">
+                  {apiKey}
+                </div>
 
-          <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-4">
-            <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-              Python Integration Snippet
-            </h3>
-            <pre className="p-4 rounded-xl bg-[#1C1C19] text-[#F5F2EB] text-xs font-mono overflow-x-auto leading-relaxed">
+                <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                  Pass this secret token in the <code className="text-[#C96442] font-semibold">x-api-key</code> HTTP header or as Bearer token when dispatching stories from autonomous Python crawlers.
+                </p>
+              </div>
+
+              {/* Endpoints & Trigger Card */}
+              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Ingest Cycle Controller
+                  </h3>
+                  <div className="flex items-center space-x-2">
+                    <span className={`w-2.5 h-2.5 rounded-full ${pipelineRunning ? "bg-amber-500 animate-ping" : "bg-emerald-500"}`} />
+                    <span className="text-xs font-mono text-[#8E8B82]">{pipelineRunning ? "Active" : "Idle"}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-1">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">
+                      Article Ingest Endpoint
+                    </span>
+                    <div className="font-mono text-xs text-[#1F1E1D] dark:text-[#F5F2EB] flex items-center justify-between">
+                      <code>POST /api/articles</code>
+                      <span className="text-emerald-600 font-semibold">Protected</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-1">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">
+                      Pipeline Trigger Webhook
+                    </span>
+                    <div className="font-mono text-xs text-[#1F1E1D] dark:text-[#F5F2EB] flex items-center justify-between">
+                      <code>POST /api/pipeline/trigger</code>
+                      <span className="text-emerald-600 font-semibold">Protected</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleTriggerPipeline}
+                  disabled={pipelineRunning}
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                >
+                  <Zap className={`w-4 h-4 ${pipelineRunning ? "animate-spin text-amber-200" : ""}`} />
+                  <span>{pipelineRunning ? "Ingestion in Progress..." : "Run Immediate Ingestion Cycle ⚡"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Right Column (7 cols): Integration Snippets */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <div className="flex items-center space-x-2.5">
+                    <Code2 className="w-5 h-5 text-[#C96442]" />
+                    <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                      Python Ingestion Client Snippet
+                    </h3>
+                  </div>
+                  <span className="text-xs font-mono text-[#8E8B82]">python-requests</span>
+                </div>
+
+                <pre className="p-5 rounded-2xl bg-[#181816] text-[#F5F2EB] text-xs sm:text-sm font-mono overflow-x-auto leading-relaxed border border-[#33322E]">
 {`import requests
 
 url = "http://localhost:3000/api/articles"
@@ -2233,7 +2384,7 @@ payload = {
     "summary": "Breakthrough in topological error correction enables sustained coherence.",
     "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",
     "category": "AI & Robotics",
-    "cover_image_url": "https://images.unsplash.com/...",
+    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
     "source_url": "https://nature.com/articles/...",
     "rank_score": 94,
     "tags": ["Quantum", "Hardware", "DeepTech"],
@@ -2242,41 +2393,55 @@ payload = {
 
 response = requests.post(url, json=payload, headers=headers)
 print(response.json())`}
-            </pre>
+                </pre>
+
+                {/* cURL Snippet */}
+                <div className="pt-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                      Quick Terminal cURL Probe
+                    </span>
+                  </div>
+                  <pre className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
+{`curl -X POST http://localhost:3000/api/pipeline/trigger -H "x-api-key: ${apiKey}"`}
+                  </pre>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {/* TAB 4: TYPESAFE JEV AI (SYSTEM 1 DECISION ENGINE) */}
       {activeTab === "jev" && (
-        <div className="max-w-3xl mx-auto space-y-8">
+        <div className="w-full space-y-8">
           {/* Header Banner & Status */}
-          <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
+              <div className="space-y-1.5">
+                <div className="flex items-center space-x-2.5">
                   <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
                     <Zap className="w-4 h-4" />
                   </div>
-                  <h2 className="font-serif text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                     TypeSafe Jev AI — System 1 Decision Engine
                   </h2>
                 </div>
-                <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                <p className="text-sm text-[#686660] dark:text-[#A8A59D] leading-relaxed max-w-4xl">
                   Sub-150ms parallel evaluation for incoming raw news. Evaluates breakthrough significance, 
                   automatically maps to our 6 domains, scores journalistic impact, and filters promotional noise before generative synthesis.
                 </p>
               </div>
 
-              <div>
+              <div className="shrink-0">
                 {jevHasKey ? (
-                  <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-400 text-xs font-mono font-medium">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>System 1 Active & Armed</span>
+                  <div className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-400 text-xs font-mono font-medium">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>System 1 Active &amp; Armed</span>
                   </div>
                 ) : (
-                  <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-400 text-xs font-mono font-medium">
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                  <div className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-400 text-xs font-mono font-medium">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
                     <span>Setup Required</span>
                   </div>
                 )}
@@ -2284,10 +2449,10 @@ print(response.json())`}
             </div>
 
             {jevHasKey && (
-              <div className="pt-3 border-t border-[#EBE8DF] dark:border-[#33322E] flex flex-wrap items-center gap-4 text-xs font-mono text-[#686660] dark:text-[#A8A59D]">
+              <div className="pt-3 border-t border-[#EBE8DF] dark:border-[#33322E] flex flex-wrap items-center gap-5 text-xs font-mono text-[#686660] dark:text-[#A8A59D]">
                 <div>
                   <span className="text-[#8E8B82]">Active Key:</span>{" "}
-                  <code className="px-1.5 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB]">
+                  <code className="px-2 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] border border-[#EBE8DF] dark:border-[#33322E]">
                     {jevMaskedKey || "Configured"}
                   </code>
                 </div>
@@ -2301,285 +2466,341 @@ print(response.json())`}
                 </div>
                 <div>
                   <span className="text-[#8E8B82]">Synced:</span>{" "}
-                  <span className="text-emerald-600">Web & 24/7 Pipeline</span>
+                  <span className="text-emerald-600 font-semibold">Web &amp; 24/7 Pipeline</span>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Configuration Form Card */}
-          <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-              <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                API Key & Triage Settings
-              </h3>
-              <span className="text-xs font-mono text-[#8E8B82]">console.typesafe.ai</span>
-            </div>
-
-            <form onSubmit={handleSaveJevKey} className="space-y-5">
-              {/* API Key Input */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D] tracking-wider">
-                    TypeSafe Jev API Key
-                  </label>
-                  {jevHasKey && (
-                    <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
-                      ✓ Current Key Saved
-                    </span>
-                  )}
-                </div>
-                <div className="relative">
-                  <input
-                    type={showJevKey ? "text" : "password"}
-                    value={jevKeyInput}
-                    onChange={(e) => setJevKeyInput(e.target.value)}
-                    placeholder={jevMaskedKey || "Enter your TypeSafe API key (e.g. ts_live_...)"}
-                    className="w-full pl-3.5 pr-20 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] font-mono text-xs text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowJevKey(!showJevKey)}
-                    className="absolute right-2.5 top-2.5 text-xs text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+          {/* 2-Column Grid: Settings & Playground */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Column 1: Configuration Form Card */}
+            <div className="space-y-6">
+              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    API Key &amp; Triage Settings
+                  </h3>
+                  <a
+                    href="https://console.typesafe.ai"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-mono text-[#C96442] hover:underline flex items-center gap-1"
                   >
-                    {showJevKey ? "Hide" : "Show"}
-                  </button>
+                    <span>console.typesafe.ai</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
-                <p className="text-[11px] text-[#8E8B82]">
-                  Saving writes securely to SQLite <code className="text-[#C96442]">SystemSetting</code> and synchronizes to both Web and 24/7 Pipeline environment files.
-                </p>
+
+                <form onSubmit={handleSaveJevKey} className="space-y-5">
+                  {/* API Key Input */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-mono uppercase font-semibold text-[#686660] dark:text-[#A8A59D] tracking-wider">
+                        TypeSafe Jev API Key
+                      </label>
+                      {jevHasKey && (
+                        <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-medium">
+                          ✓ Current Key Saved
+                        </span>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showJevKey ? "text" : "password"}
+                        value={jevKeyInput}
+                        onChange={(e) => setJevKeyInput(e.target.value)}
+                        placeholder={jevMaskedKey || "Enter your TypeSafe API key (e.g. ts_live_...)"}
+                        className="w-full pl-4 pr-20 py-3 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] font-mono text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowJevKey(!showJevKey)}
+                        className="absolute right-3 top-3 text-xs text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB] font-medium"
+                      >
+                        {showJevKey ? "Hide" : "Show"}
+                      </button>
+                    </div>
+                    <p className="text-xs text-[#8E8B82] leading-relaxed">
+                      Saving writes securely to SQLite <code className="text-[#C96442] font-semibold">SystemSetting</code> and synchronizes across Web and 24/7 background ingest routines.
+                    </p>
+                  </div>
+
+                  {/* Thresholds Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-mono uppercase font-semibold text-[#686660] dark:text-[#A8A59D]">
+                          Min Impact
+                        </label>
+                        <span className="font-mono text-sm font-bold text-[#C96442]">
+                          {jevMinImpact} / 10
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="5.0"
+                        max="9.0"
+                        step="0.5"
+                        value={jevMinImpact}
+                        onChange={(e) => setJevMinImpact(parseFloat(e.target.value))}
+                        className="w-full accent-[#C96442] cursor-pointer"
+                      />
+                      <p className="text-[11px] text-[#8E8B82] leading-tight">
+                        Stories scored below this are discarded before expensive LLM synthesis.
+                      </p>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-mono uppercase font-semibold text-[#686660] dark:text-[#A8A59D]">
+                          Auto-Feature
+                        </label>
+                        <span className="font-mono text-sm font-bold text-[#C96442]">
+                          ≥ {jevAutoFeature} / 10
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min="7.5"
+                        max="9.5"
+                        step="0.5"
+                        value={jevAutoFeature}
+                        onChange={(e) => setJevAutoFeature(parseFloat(e.target.value))}
+                        className="w-full accent-[#C96442] cursor-pointer"
+                      />
+                      <p className="text-[11px] text-[#8E8B82] leading-tight">
+                        High-impact breaking news automatically pins as Featured Story in homepage spotlight.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
+                    <button
+                      type="submit"
+                      disabled={jevSaving}
+                      className="px-5 py-3 rounded-xl bg-[#C96442] hover:bg-[#b05334] text-white text-sm font-medium transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>{jevSaving ? "Saving..." : "Save Settings"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleTestJev}
+                      disabled={jevTesting || (!jevKeyInput && !jevHasKey)}
+                      className="px-5 py-3 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#252422] text-[#1F1E1D] dark:text-[#F5F2EB] text-sm font-medium hover:border-[#C96442] hover:text-[#C96442] transition-colors flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer"
+                    >
+                      <Activity className="w-4 h-4 text-emerald-500" />
+                      <span>{jevTesting ? "Testing Latency..." : "Test Connection &amp; Latency ⚡"}</span>
+                    </button>
+                  </div>
+                </form>
               </div>
 
-              {/* Thresholds Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D]">
-                      Min Impact Threshold
-                    </label>
-                    <span className="font-mono text-xs font-bold text-[#C96442]">
-                      {jevMinImpact} / 10
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="5.0"
-                    max="9.0"
-                    step="0.5"
-                    value={jevMinImpact}
-                    onChange={(e) => setJevMinImpact(parseFloat(e.target.value))}
-                    className="w-full accent-[#C96442]"
-                  />
-                  <p className="text-[10px] text-[#8E8B82]">
-                    Stories scored below this by Jev are discarded before expensive LLM synthesis.
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D]">
-                      Auto-Feature Threshold
-                    </label>
-                    <span className="font-mono text-xs font-bold text-[#C96442]">
-                      ≥ {jevAutoFeature} / 10
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="7.5"
-                    max="9.5"
-                    step="0.5"
-                    value={jevAutoFeature}
-                    onChange={(e) => setJevAutoFeature(parseFloat(e.target.value))}
-                    className="w-full accent-[#C96442]"
-                  />
-                  <p className="text-[10px] text-[#8E8B82]">
-                    High-impact breaking news automatically pins as Featured Story in homepage spotlight.
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-3">
-                <button
-                  type="submit"
-                  disabled={jevSaving}
-                  className="px-5 py-2.5 rounded-xl bg-[#C96442] hover:bg-[#b05334] text-white text-xs font-medium transition-colors shadow-xs flex items-center gap-2 disabled:opacity-50"
+              {/* Test Result Diagnostic Card */}
+              {jevTestResult && (
+                <div
+                  className={`p-6 rounded-3xl border transition-all ${
+                    jevTestResult.success
+                      ? "border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-950/20"
+                      : "border-red-500/30 bg-red-500/5 dark:bg-red-950/20"
+                  }`}
                 >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>{jevSaving ? "Saving..." : "Save Jev API Key & Settings"}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleTestJev}
-                  disabled={jevTesting || (!jevKeyInput && !jevHasKey)}
-                  className="px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#252422] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-medium hover:border-[#C96442] hover:text-[#C96442] transition-colors flex items-center gap-2 disabled:opacity-40"
-                >
-                  <Activity className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>{jevTesting ? "Testing Latency..." : "Test Connection & Latency ⚡"}</span>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Test Result Diagnostic Card */}
-          {jevTestResult && (
-            <div
-              className={`p-6 rounded-3xl border transition-all ${
-                jevTestResult.success
-                  ? "border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-950/20"
-                  : "border-red-500/30 bg-red-500/5 dark:bg-red-950/20"
-              }`}
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-inherit">
-                <div className="flex items-center space-x-2">
-                  <span
-                    className={`w-2.5 h-2.5 rounded-full ${
-                      jevTestResult.success ? "bg-emerald-500" : "bg-red-500"
-                    }`}
-                  />
-                  <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    {jevTestResult.success ? "TypeSafe Jev Engine: Operational" : "Connection Diagnostic Failed"}
-                  </h4>
-                </div>
-                {jevTestResult.latency_ms && (
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-white dark:bg-[#20201D] border border-inherit text-[#C96442]">
-                    ⚡ {jevTestResult.latency_ms} ms Latency
-                  </span>
-                )}
-              </div>
-
-              <div className="mt-4 space-y-3 text-xs">
-                <p className="text-[#1F1E1D] dark:text-[#F5F2EB] font-medium">
-                  {jevTestResult.message || jevTestResult.error}
-                </p>
-
-                {jevTestResult.decision && (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
-                    <div className="p-2.5 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
-                      <span className="text-[10px] font-mono text-[#8E8B82] uppercase">Domain</span>
-                      <p className="font-mono font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        {jevTestResult.decision.domain}
-                      </p>
+                  <div className="flex items-center justify-between pb-3 border-b border-inherit">
+                    <div className="flex items-center space-x-2">
+                      <span
+                        className={`w-2.5 h-2.5 rounded-full ${
+                          jevTestResult.success ? "bg-emerald-500" : "bg-red-500"
+                        }`}
+                      />
+                      <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        {jevTestResult.success ? "TypeSafe Jev Engine: Operational" : "Connection Diagnostic Failed"}
+                      </h4>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
-                      <span className="text-[10px] font-mono text-[#8E8B82] uppercase">Impact Score</span>
-                      <p className="font-mono font-semibold text-[#C96442]">
-                        {jevTestResult.decision.impact_score} / 10
-                      </p>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
-                      <span className="text-[10px] font-mono text-[#8E8B82] uppercase">Signal</span>
-                      <p className="font-mono font-semibold text-emerald-600">
-                        {jevTestResult.decision.is_signal ? "High Signal" : "Low Signal"}
-                      </p>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
-                      <span className="text-[10px] font-mono text-[#8E8B82] uppercase">Confidence</span>
-                      <p className="font-mono font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        {Math.round((jevTestResult.decision.confidence || 0.95) * 100)}%
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Interactive Sandbox Playground */}
-          <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-              <div>
-                <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                  Interactive Jev Triage Sandbox
-                </h3>
-                <p className="text-xs text-[#8E8B82]">
-                  Paste any breaking news headline and summary to test instant System 1 evaluation.
-                </p>
-              </div>
-              <span className="text-xs font-mono text-[#C96442]">~100ms Decision</span>
-            </div>
-
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D] mb-1">
-                  Test Headline
-                </label>
-                <input
-                  type="text"
-                  value={sandboxTitle}
-                  onChange={(e) => setSandboxTitle(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs text-[#1F1E1D] dark:text-[#F5F2EB]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase text-[#686660] dark:text-[#A8A59D] mb-1">
-                  Test Excerpt / Summary
-                </label>
-                <textarea
-                  rows={2}
-                  value={sandboxSummary}
-                  onChange={(e) => setSandboxSummary(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs text-[#1F1E1D] dark:text-[#F5F2EB]"
-                />
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={handleRunSandbox}
-                  disabled={sandboxRunning || !sandboxTitle.trim()}
-                  className="px-4 py-2 rounded-xl bg-[#1F1E1D] dark:bg-[#F5F2EB] text-white dark:text-[#1F1E1D] text-xs font-medium hover:bg-[#C96442] dark:hover:bg-[#C96442] dark:hover:text-white transition-colors flex items-center gap-2 disabled:opacity-40"
-                >
-                  <Play className="w-3.5 h-3.5" />
-                  <span>{sandboxRunning ? "Evaluating in ~100ms..." : "Run Instant Jev Decision"}</span>
-                </button>
-              </div>
-
-              {sandboxResult && (
-                <div className="mt-4 p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                      ✓ Verdict: {sandboxResult.triage.recommendation}
-                    </span>
-                    <span className="text-[#C96442] font-bold">
-                      ⚡ {sandboxResult.latency_ms} ms
-                    </span>
+                    {jevTestResult.latency_ms && (
+                      <span className="font-mono text-xs font-bold px-2.5 py-1 rounded-md bg-white dark:bg-[#20201D] border border-inherit text-[#C96442]">
+                        ⚡ {jevTestResult.latency_ms} ms Latency
+                      </span>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
-                    <div className="p-2 rounded-lg bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
-                      <span className="text-[10px] text-[#8E8B82] block">Classified Domain</span>
-                      <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        {sandboxResult.triage.domain}
-                      </span>
-                    </div>
+                  <div className="mt-4 space-y-3 text-sm">
+                    <p className="text-[#1F1E1D] dark:text-[#F5F2EB] font-medium">
+                      {jevTestResult.message || jevTestResult.error}
+                    </p>
 
-                    <div className="p-2 rounded-lg bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
-                      <span className="text-[10px] text-[#8E8B82] block">Impact Score</span>
-                      <span className="font-semibold text-[#C96442]">
-                        {sandboxResult.triage.impact_score} / 10
-                      </span>
-                    </div>
-
-                    <div className="p-2 rounded-lg bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
-                      <span className="text-[10px] text-[#8E8B82] block">Rank Score</span>
-                      <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        {sandboxResult.triage.rank_score} / 100
-                      </span>
-                    </div>
-
-                    <div className="p-2 rounded-lg bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
-                      <span className="text-[10px] text-[#8E8B82] block">Confidence</span>
-                      <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        {Math.round((sandboxResult.triage.confidence || 0.95) * 100)}%
-                      </span>
-                    </div>
+                    {jevTestResult.decision && (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                        <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
+                          <span className="text-[10px] font-mono text-[#8E8B82] uppercase block">Domain</span>
+                          <p className="font-mono font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] text-sm mt-0.5">
+                            {jevTestResult.decision.domain}
+                          </p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
+                          <span className="text-[10px] font-mono text-[#8E8B82] uppercase block">Impact Score</span>
+                          <p className="font-mono font-semibold text-[#C96442] text-sm mt-0.5">
+                            {jevTestResult.decision.impact_score} / 10
+                          </p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
+                          <span className="text-[10px] font-mono text-[#8E8B82] uppercase block">Signal</span>
+                          <p className="font-mono font-semibold text-emerald-600 text-sm mt-0.5">
+                            {jevTestResult.decision.is_signal ? "High Signal" : "Low Signal"}
+                          </p>
+                        </div>
+                        <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-inherit">
+                          <span className="text-[10px] font-mono text-[#8E8B82] uppercase block">Confidence</span>
+                          <p className="font-mono font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] text-sm mt-0.5">
+                            {Math.round((jevTestResult.decision.confidence || 0.95) * 100)}%
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Column 2: Interactive Sandbox Playground Card */}
+            <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Interactive Jev Triage Sandbox
+                  </h3>
+                  <p className="text-xs text-[#8E8B82] mt-0.5">
+                    Paste any breaking news headline and summary to test instant System 1 evaluation.
+                  </p>
+                </div>
+                <span className="text-xs font-mono font-semibold text-[#C96442] px-2.5 py-1 rounded-full bg-[#C96442]/10 border border-[#C96442]/20">
+                  ~100ms Decision
+                </span>
+              </div>
+
+              {/* Quick Presets */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                  Quick Test Presets
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSandboxTitle("DeepSeek-V3 Open Weights Shock Enterprise AI Markets");
+                      setSandboxSummary("DeepSeek has released 671B open parameter mixture-of-experts model matching closed frontier reasoning at fraction of training cost.");
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442] hover:text-[#C96442] transition-colors"
+                  >
+                    🤖 DeepSeek-V3
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSandboxTitle("Revolutionary Web3 Memecoin DAO Launches Staking Pool");
+                      setSandboxSummary("Brand new dog token promises 10,000% APY and revolutionary decentralized liquidity farming on Solana.");
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442] hover:text-[#C96442] transition-colors"
+                  >
+                    🪙 Crypto PR Noise
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSandboxTitle("Physicists Cross Fault-Tolerant Quantum Coherence Threshold");
+                      setSandboxSummary("Topological surface code suppresses physical qubit errors across 100 logical cycles for the first time.");
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono text-[#686660] dark:text-[#A8A59D] hover:border-[#C96442] hover:text-[#C96442] transition-colors"
+                  >
+                    ⚛️ Quantum Chip
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Test Headline
+                  </label>
+                  <input
+                    type="text"
+                    value={sandboxTitle}
+                    onChange={(e) => setSandboxTitle(e.target.value)}
+                    placeholder="Enter test breaking news headline..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
+                    Test Excerpt / Summary
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={sandboxSummary}
+                    onChange={(e) => setSandboxSummary(e.target.value)}
+                    placeholder="Enter short article summary or lead paragraph..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-hidden focus:border-[#C96442]"
+                  />
+                </div>
+
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={handleRunSandbox}
+                    disabled={sandboxRunning || !sandboxTitle.trim()}
+                    className="w-full py-3 rounded-xl bg-[#1F1E1D] dark:bg-[#F5F2EB] text-white dark:text-[#1F1E1D] text-sm font-medium hover:bg-[#C96442] dark:hover:bg-[#C96442] dark:hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer shadow-xs"
+                  >
+                    <Play className="w-4 h-4" />
+                    <span>{sandboxRunning ? "Evaluating in ~100ms..." : "Run Instant Jev Decision"}</span>
+                  </button>
+                </div>
+
+                {sandboxResult && (
+                  <div className="mt-4 p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-4">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 text-sm">
+                        <Check className="w-4 h-4" /> Verdict: {sandboxResult.triage.recommendation}
+                      </span>
+                      <span className="text-[#C96442] font-bold text-sm">
+                        ⚡ {sandboxResult.latency_ms} ms
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs font-mono">
+                      <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
+                        <span className="text-[10px] text-[#8E8B82] block">Domain</span>
+                        <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] text-sm block mt-0.5">
+                          {sandboxResult.triage.domain}
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
+                        <span className="text-[10px] text-[#8E8B82] block">Impact</span>
+                        <span className="font-semibold text-[#C96442] text-sm block mt-0.5">
+                          {sandboxResult.triage.impact_score} / 10
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
+                        <span className="text-[10px] text-[#8E8B82] block">Rank Score</span>
+                        <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] text-sm block mt-0.5">
+                          {sandboxResult.triage.rank_score} / 100
+                        </span>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-white dark:bg-[#20201D] border border-[#EBE8DF] dark:border-[#33322E]">
+                        <span className="text-[10px] font-mono text-[#8E8B82] block">Confidence</span>
+                        <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] text-sm block mt-0.5">
+                          {Math.round((sandboxResult.triage.confidence || 0.95) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -2587,41 +2808,41 @@ print(response.json())`}
 
       {/* TAB 5: MONETIZATION & DOMAIN ADS */}
       {activeTab === "ads" && (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="w-full space-y-8">
           {/* Header Banner */}
-          <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
+              <div className="space-y-1.5">
+                <div className="flex items-center space-x-2.5">
                   <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
                     <Megaphone className="w-4 h-4" />
                   </div>
-                  <h2 className="font-serif text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                     Right-Sidebar Monetization &amp; Domain Ad Inventory
                   </h2>
                 </div>
-                <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                <p className="text-sm text-[#686660] dark:text-[#A8A59D] leading-relaxed max-w-4xl">
                   Configure independent high-impact advertisements (300×250 &amp; 300×600) tailored to each editorial domain desk, or define global fallbacks.
                   Choose between high-converting image creatives with click tracking or direct Google AdSense / affiliate script tags.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="p-3 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-20">
-                  <span className="text-[10px] font-mono uppercase text-[#8E8B82] block">Active Ads</span>
-                  <span className="font-mono text-base font-bold text-emerald-600 dark:text-emerald-400">
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="p-3.5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-24 shadow-2xs">
+                  <span className="text-[11px] font-mono uppercase text-[#8E8B82] block font-semibold">Active Ads</span>
+                  <span className="font-mono text-lg font-bold text-emerald-600 dark:text-emerald-400">
                     {ads.filter((a) => a.is_active).length}
                   </span>
                 </div>
-                <div className="p-3 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-24">
-                  <span className="text-[10px] font-mono uppercase text-[#8E8B82] block">Delivered Views</span>
-                  <span className="font-mono text-base font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                <div className="p-3.5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-28 shadow-2xs">
+                  <span className="text-[11px] font-mono uppercase text-[#8E8B82] block font-semibold">Delivered Views</span>
+                  <span className="font-mono text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                     {ads.reduce((sum, a) => sum + (a.impressions || 0), 0).toLocaleString()}
                   </span>
                 </div>
-                <div className="p-3 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-20">
-                  <span className="text-[10px] font-mono uppercase text-[#8E8B82] block">Total Clicks</span>
-                  <span className="font-mono text-base font-bold text-[#C96442]">
+                <div className="p-3.5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-24 shadow-2xs">
+                  <span className="text-[11px] font-mono uppercase text-[#8E8B82] block font-semibold">Total Clicks</span>
+                  <span className="font-mono text-lg font-bold text-[#C96442]">
                     {ads.reduce((sum, a) => sum + (a.clicks || 0), 0).toLocaleString()}
                   </span>
                 </div>
@@ -2630,18 +2851,18 @@ print(response.json())`}
 
             {/* Quick Rules & Fallback Note */}
             <div className="pt-3 border-t border-[#EBE8DF] dark:border-[#33322E] flex flex-wrap items-center justify-between text-xs text-[#8E8B82] gap-2">
-              <span className="flex items-center gap-1.5 font-mono text-[11px]">
-                <Globe className="w-3.5 h-3.5 text-[#C96442]" />
+              <span className="flex items-center gap-1.5 font-mono text-xs">
+                <Globe className="w-4 h-4 text-[#C96442]" />
                 Fallback Logic: When a domain desk has no active ad, the system seamlessly serves the Global ad.
               </span>
-              <span className="font-mono text-[11px] text-[#686660] dark:text-[#A8A59D]">
+              <span className="font-mono text-xs text-[#686660] dark:text-[#A8A59D]">
                 Format standard: IAB 300×250 IMU &amp; 300×600 Half Page
               </span>
             </div>
           </div>
 
           {/* Domain Desk Selector Pills */}
-          <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] font-semibold">
                 Select Editorial Desk / Domain
@@ -2660,7 +2881,7 @@ print(response.json())`}
                   <button
                     type="button"
                     onClick={() => setSelectedAdDomain("global")}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${
                       isSelected
                         ? "bg-[#C96442] text-white shadow-xs"
                         : "border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442]/50"
@@ -2692,7 +2913,7 @@ print(response.json())`}
                     key={c.id}
                     type="button"
                     onClick={() => setSelectedAdDomain(c.slug)}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
+                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${
                       isSelected
                         ? "bg-[#C96442] text-white shadow-xs"
                         : "border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442]/50"
@@ -2709,7 +2930,7 @@ print(response.json())`}
             </div>
           </div>
 
-          {/* Slots Configuration for Selected Domain */}
+          {/* Slots Configuration for Selected Domain: 2-Column Side-by-Side Grid */}
           {(() => {
             const currentDomainName =
               selectedAdDomain === "global"
@@ -2724,7 +2945,7 @@ print(response.json())`}
             );
 
             return (
-              <div className="space-y-8">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
                 {/* 1. TOP SLOT (300x250) */}
                 <DomainAdSlotCard
                   domain={selectedAdDomain}
