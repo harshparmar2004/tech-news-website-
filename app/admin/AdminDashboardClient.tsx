@@ -1157,7 +1157,7 @@ export function AdminDashboardClient({
   const recentArticles = articles.slice(0, 5);
 
   return (
-    <div className="min-h-screen flex bg-[#FAF7F0] dark:bg-[#151514] text-[#1F1E1D] dark:text-[#F5F2EB]">
+    <div className="admin-dashboard-container min-h-screen flex bg-[#FAF7F0] dark:bg-[#151514] text-[#1F1E1D] dark:text-[#F5F2EB]">
       {/* Toast Notification */}
       {msg && (
         <div
