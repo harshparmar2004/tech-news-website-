@@ -111,7 +111,7 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full text-[#8E8B82] hover:text-[#1F1E1D]"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
             >
               <X className="w-4 h-4" />
             </button>

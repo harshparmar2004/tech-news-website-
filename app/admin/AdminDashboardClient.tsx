@@ -1249,7 +1249,7 @@ export function AdminDashboardClient({
           className={`pb-3 border-b-2 transition-colors ${
             activeTab === "articles"
               ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D]"
+              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
           }`}
         >
           Articles Vault ({articles.length})
@@ -1260,7 +1260,7 @@ export function AdminDashboardClient({
           className={`pb-3 border-b-2 transition-colors ${
             activeTab === "create"
               ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D]"
+              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
           }`}
         >
           Manual Article Dispatch
@@ -1271,7 +1271,7 @@ export function AdminDashboardClient({
           className={`pb-3 border-b-2 transition-colors ${
             activeTab === "api"
               ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D]"
+              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
           }`}
         >
           Pipeline Ingestion API & Keys
@@ -1282,7 +1282,7 @@ export function AdminDashboardClient({
           className={`pb-3 border-b-2 transition-colors flex items-center gap-1.5 ${
             activeTab === "jev"
               ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D]"
+              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
           }`}
         >
           <Zap className="w-4 h-4 text-[#C96442]" />
@@ -1301,7 +1301,7 @@ export function AdminDashboardClient({
           className={`pb-3 border-b-2 transition-colors flex items-center gap-1.5 ${
             activeTab === "ads"
               ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D]"
+              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
           }`}
         >
           <Megaphone className="w-4 h-4 text-[#C96442]" />
@@ -1331,7 +1331,7 @@ export function AdminDashboardClient({
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-2.5 text-xs text-[#8E8B82] hover:text-[#1F1E1D]"
+                  className="absolute right-2.5 top-2.5 text-xs text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
                 >
                   ✕
                 </button>
@@ -1583,7 +1583,7 @@ export function AdminDashboardClient({
                       <td className="py-3 px-4 text-right space-x-2">
                         <button
                           onClick={() => setEditingArticle(art)}
-                          className="p-1.5 rounded-md hover:bg-[#EBE8DF] dark:hover:bg-[#33322E] text-[#686660] hover:text-[#1F1E1D] transition-colors"
+                          className="p-1.5 rounded-md hover:bg-[#EBE8DF] dark:hover:bg-[#33322E] text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442] transition-colors"
                           title="Edit Article"
                         >
                           <Edit className="w-3.5 h-3.5" />
@@ -2369,7 +2369,7 @@ print(response.json())`}
               </h3>
               <button
                 onClick={() => setEditingArticle(null)}
-                className="p-1 rounded-lg text-[#8E8B82] hover:text-[#1F1E1D]"
+                className="p-1 rounded-lg text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
               >
                 ✕
               </button>
