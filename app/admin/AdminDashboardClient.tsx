@@ -3276,71 +3276,156 @@ console.log("Ingestion Response:", data);`
       {/* TAB 5: MONETIZATION & DOMAIN ADS */}
       {activeTab === "ads" && (
         <div className="w-full space-y-8">
-          {/* Header Banner */}
-          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1.5">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
-                    <Megaphone className="w-4 h-4" />
+          {/* Header Banner & Executive Performance Metrics */}
+          {(() => {
+            const totalActiveAds = ads.filter((a) => a.is_active).length;
+            const totalImpressions = ads.reduce((sum, a) => sum + (a.impressions || 0), 0);
+            const totalClicks = ads.reduce((sum, a) => sum + (a.clicks || 0), 0);
+            const avgCtr = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : "0.00";
+
+            return (
+              <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+                {/* Top Row: Title, Badge & Network Status */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <span className="px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider font-semibold bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 inline-flex items-center gap-1.5">
+                        <Megaphone className="w-3.5 h-3.5" />
+                        Monetization Engine
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Live Inventory Serving
+                      </span>
+                    </div>
+                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] tracking-tight">
+                      Right-Sidebar Monetization &amp; Domain Ad Inventory
+                    </h2>
+                    <p className="text-sm text-[#686660] dark:text-[#A8A59D] leading-relaxed max-w-4xl">
+                      Configure independent high-impact advertisements (300×250 &amp; 300×600) tailored to each editorial domain desk, or define global fallbacks.
+                      Choose between high-converting image creatives with click tracking or direct Google AdSense / affiliate script tags.
+                    </p>
                   </div>
-                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    Right-Sidebar Monetization &amp; Domain Ad Inventory
-                  </h2>
+
+                  <div className="hidden lg:flex flex-col items-end gap-1.5 shrink-0 text-right">
+                    <span className="text-[11px] font-mono text-[#8E8B82] uppercase tracking-wider">Inventory Spec</span>
+                    <span className="font-mono text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB]">
+                      IAB 300×250 &amp; 300×600
+                    </span>
+                  </div>
                 </div>
-                <p className="text-sm text-[#686660] dark:text-[#A8A59D] leading-relaxed max-w-4xl">
-                  Configure independent high-impact advertisements (300×250 &amp; 300×600) tailored to each editorial domain desk, or define global fallbacks.
-                  Choose between high-converting image creatives with click tracking or direct Google AdSense / affiliate script tags.
-                </p>
+
+                {/* 4-Card Executive KPI Metrics */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {/* Card 1: Active Ads */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Active Inventory</span>
+                      <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                        <Layers className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
+                        {totalActiveAds}
+                      </span>
+                      <span className="text-xs text-[#8E8B82] font-mono">running</span>
+                    </div>
+                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Across 7 editorial desks</span>
+                  </div>
+
+                  {/* Card 2: Delivered Views */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Delivered Views</span>
+                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                        <Eye className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl sm:text-3xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        {totalImpressions.toLocaleString()}
+                      </span>
+                      <span className="text-xs text-[#8E8B82] font-mono">impr</span>
+                    </div>
+                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Total served impressions</span>
+                  </div>
+
+                  {/* Card 3: Total Clicks */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Total Clicks</span>
+                      <div className="w-7 h-7 rounded-lg bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                        <MousePointerClick className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl sm:text-3xl font-bold text-[#C96442]">
+                        {totalClicks.toLocaleString()}
+                      </span>
+                      <span className="text-xs text-[#8E8B82] font-mono">clicks</span>
+                    </div>
+                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Direct link engagements</span>
+                  </div>
+
+                  {/* Card 4: CTR */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Average CTR</span>
+                      <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                        <TrendingUp className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-mono text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-400">
+                        {avgCtr}%
+                      </span>
+                      <span className="text-xs text-[#8E8B82] font-mono">rate</span>
+                    </div>
+                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Click-through conversion</span>
+                  </div>
+                </div>
+
+                {/* Footer Logic Bar */}
+                <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#8E8B82] gap-3">
+                  <span className="flex items-center gap-2 font-mono">
+                    <Globe className="w-4 h-4 text-[#C96442] shrink-0" />
+                    <span><strong className="text-[#1F1E1D] dark:text-[#F5F2EB] font-semibold">Seamless Fallback:</strong> If a domain desk has no active creative, readers automatically see the Global ad inventory.</span>
+                  </span>
+                  <span className="flex items-center gap-1.5 font-mono text-[#686660] dark:text-[#A8A59D] shrink-0">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Dual Engine: Custom HTML / Script Tags + Direct Image Banners</span>
+                  </span>
+                </div>
               </div>
+            );
+          })()}
 
-              <div className="flex items-center gap-3 shrink-0">
-                <div className="p-3.5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-24 shadow-2xs">
-                  <span className="text-[11px] font-mono uppercase text-[#8E8B82] block font-semibold">Active Ads</span>
-                  <span className="font-mono text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                    {ads.filter((a) => a.is_active).length}
-                  </span>
-                </div>
-                <div className="p-3.5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-28 shadow-2xs">
-                  <span className="text-[11px] font-mono uppercase text-[#8E8B82] block font-semibold">Delivered Views</span>
-                  <span className="font-mono text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    {ads.reduce((sum, a) => sum + (a.impressions || 0), 0).toLocaleString()}
-                  </span>
-                </div>
-                <div className="p-3.5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-center min-w-24 shadow-2xs">
-                  <span className="text-[11px] font-mono uppercase text-[#8E8B82] block font-semibold">Total Clicks</span>
-                  <span className="font-mono text-lg font-bold text-[#C96442]">
-                    {ads.reduce((sum, a) => sum + (a.clicks || 0), 0).toLocaleString()}
-                  </span>
-                </div>
+          {/* Domain Desk Selector Grid */}
+          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-2 h-2 rounded-full bg-[#C96442]" />
+                <span className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] font-bold">
+                  Select Editorial Desk / Domain
+                </span>
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-[#8E8B82]">
+                  {categories.length + 1} Channels
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-mono">
+                <span className="text-[#8E8B82]">Configuring:</span>
+                <span className="px-2.5 py-0.5 rounded-lg bg-[#C96442]/10 border border-[#C96442]/20 text-[#C96442] font-bold">
+                  {selectedAdDomain === "global"
+                    ? "Global (Default Fallback)"
+                    : categories.find((c) => c.slug === selectedAdDomain)?.name || selectedAdDomain}
+                </span>
               </div>
             </div>
 
-            {/* Quick Rules & Fallback Note */}
-            <div className="pt-3 border-t border-[#EBE8DF] dark:border-[#33322E] flex flex-wrap items-center justify-between text-xs text-[#8E8B82] gap-2">
-              <span className="flex items-center gap-1.5 font-mono text-xs">
-                <Globe className="w-4 h-4 text-[#C96442]" />
-                Fallback Logic: When a domain desk has no active ad, the system seamlessly serves the Global ad.
-              </span>
-              <span className="font-mono text-xs text-[#686660] dark:text-[#A8A59D]">
-                Format standard: IAB 300×250 IMU &amp; 300×600 Half Page
-              </span>
-            </div>
-          </div>
-
-          {/* Domain Desk Selector Pills */}
-          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] font-semibold">
-                Select Editorial Desk / Domain
-              </span>
-              <span className="text-xs font-mono text-[#8E8B82]">
-                Active Desk: <code className="text-[#C96442] font-semibold">{selectedAdDomain}</code>
-              </span>
-            </div>
-
-            <div className="flex flex-wrap gap-2.5">
-              {/* Global Pill */}
+            {/* Structured 7-Column Executive Desk Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+              {/* 1. Global Desk Card */}
               {(() => {
                 const globalActiveCount = ads.filter((a) => a.domain === "global" && a.is_active).length;
                 const isSelected = selectedAdDomain === "global";
@@ -3348,29 +3433,49 @@ console.log("Ingestion Response:", data);`
                   <button
                     type="button"
                     onClick={() => setSelectedAdDomain("global")}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${
+                    className={`p-3.5 rounded-2xl text-left transition-all flex flex-col justify-between gap-2.5 cursor-pointer border ${
                       isSelected
-                        ? "bg-[#C96442] text-white shadow-xs"
-                        : "border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442]/50"
+                        ? "bg-[#C96442] border-[#C96442] text-white shadow-md ring-2 ring-[#C96442] ring-offset-2 ring-offset-white dark:ring-offset-[#181816]"
+                        : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:bg-white dark:hover:bg-[#20201D] hover:border-[#C96442]/40 text-[#1F1E1D] dark:text-[#F5F2EB]"
                     }`}
                   >
-                    <span>🌐</span>
-                    <span>Global (Default Fallback)</span>
-                    {globalActiveCount > 0 && (
-                      <span className={`w-2 h-2 rounded-full ${isSelected ? "bg-white" : "bg-emerald-500"}`} />
-                    )}
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-xl">🌐</span>
+                      <span
+                        className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full font-semibold ${
+                          isSelected
+                            ? "bg-white text-[#C96442]"
+                            : globalActiveCount > 0
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                            : "bg-stone-500/10 text-stone-500 border border-stone-500/20"
+                        }`}
+                      >
+                        {globalActiveCount > 0 ? `${globalActiveCount} Active` : "Inactive"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className={`text-xs sm:text-sm font-bold block truncate ${isSelected ? "text-white" : "text-[#1F1E1D] dark:text-[#F5F2EB]"}`}>
+                        Global Base
+                      </span>
+                      <span className={`text-[10px] font-mono block mt-0.5 truncate ${isSelected ? "text-white/80" : "text-[#8E8B82]"}`}>
+                        Default Fallback
+                      </span>
+                    </div>
                   </button>
                 );
               })()}
 
-              {/* Category Pills */}
+              {/* 2-7. Category Desk Cards */}
               {categories.map((c) => {
+                const s = c.slug.toLowerCase();
                 let emoji = "📰";
-                if (c.slug.includes("ai")) emoji = "🤖";
-                else if (c.slug.includes("startup") || c.slug.includes("vc")) emoji = "🚀";
-                else if (c.slug.includes("gadget") || c.slug.includes("hardware")) emoji = "📱";
-                else if (c.slug.includes("cyber") || c.slug.includes("security")) emoji = "🛡️";
-                else if (c.slug.includes("policy") || c.slug.includes("tech")) emoji = "🏛️";
+                if (s.includes("ai") || s.includes("robot")) emoji = "🤖";
+                else if (s.includes("startup") || s.includes("vc") || s.includes("venture")) emoji = "🚀";
+                else if (s.includes("gadget") || s.includes("hardware") || s.includes("device")) emoji = "📱";
+                else if (s.includes("cyber") || s.includes("security")) emoji = "🛡️";
+                else if (s.includes("policy") || s.includes("gov") || s.includes("law")) emoji = "🏛️";
+                else if (s.includes("tech") || s.includes("innovat")) emoji = "💻";
 
                 const domainActiveCount = ads.filter((a) => a.domain === c.slug && a.is_active).length;
                 const isSelected = selectedAdDomain === c.slug;
@@ -3380,17 +3485,35 @@ console.log("Ingestion Response:", data);`
                     key={c.id}
                     type="button"
                     onClick={() => setSelectedAdDomain(c.slug)}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${
+                    className={`p-3.5 rounded-2xl text-left transition-all flex flex-col justify-between gap-2.5 cursor-pointer border ${
                       isSelected
-                        ? "bg-[#C96442] text-white shadow-xs"
-                        : "border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442]/50"
+                        ? "bg-[#C96442] border-[#C96442] text-white shadow-md ring-2 ring-[#C96442] ring-offset-2 ring-offset-white dark:ring-offset-[#181816]"
+                        : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:bg-white dark:hover:bg-[#20201D] hover:border-[#C96442]/40 text-[#1F1E1D] dark:text-[#F5F2EB]"
                     }`}
                   >
-                    <span>{emoji}</span>
-                    <span>{c.name}</span>
-                    {domainActiveCount > 0 && (
-                      <span className={`w-2 h-2 rounded-full ${isSelected ? "bg-white" : "bg-emerald-500"}`} />
-                    )}
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-xl">{emoji}</span>
+                      <span
+                        className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full font-semibold ${
+                          isSelected
+                            ? "bg-white text-[#C96442]"
+                            : domainActiveCount > 0
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                            : "bg-[#EBE8DF]/50 dark:bg-[#33322E]/50 text-[#8E8B82]"
+                        }`}
+                      >
+                        {domainActiveCount > 0 ? `${domainActiveCount} Active` : "Fallback"}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className={`text-xs sm:text-sm font-bold block truncate ${isSelected ? "text-white" : "text-[#1F1E1D] dark:text-[#F5F2EB]"}`}>
+                        {c.name}
+                      </span>
+                      <span className={`text-[10px] font-mono block mt-0.5 truncate ${isSelected ? "text-white/80" : "text-[#8E8B82]"}`}>
+                        /{c.slug}
+                      </span>
+                    </div>
                   </button>
                 );
               })}
