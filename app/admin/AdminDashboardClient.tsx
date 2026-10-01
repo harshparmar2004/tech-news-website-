@@ -224,56 +224,57 @@ function DomainAdSlotCard({
   };
 
   return (
-    <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6 flex flex-col justify-between">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2.5">
-              <span className="font-mono text-xs px-3 py-1 rounded-full bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-bold">
-                {dimensions}
-              </span>
-              <h3 className="font-serif text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                {slotLabel}
-              </h3>
-            </div>
-            <p className="text-sm text-[#8E8B82] dark:text-[#A8A59D]">
-              {aspectDesc} &bull; Targeted for <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">{domainName}</span>
-            </p>
+    <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2.5">
+            <span className="font-mono text-xs px-3 py-1 rounded-full bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-bold">
+              {dimensions}
+            </span>
+            <h3 className="font-serif text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+              {slotLabel}
+            </h3>
           </div>
-
-          {/* Status Toggle & Metrics */}
-          <div className="flex items-center gap-3">
-            {existingAd && (
-              <div className="hidden sm:flex items-center gap-1.5 font-mono text-xs text-[#686660] dark:text-[#A8A59D]">
-                <span className="px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Impressions">
-                  👁️ {impressions.toLocaleString()}
-                </span>
-                <span className="px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Clicks">
-                  🖱️ {clicks.toLocaleString()}
-                </span>
-                <span className="px-2.5 py-1 rounded-md bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-semibold" title="Click-Through Rate">
-                  📈 {ctr}% CTR
-                </span>
-              </div>
-            )}
-
-            <button
-              type="button"
-              onClick={() => setIsActive(!isActive)}
-              className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
-                isActive
-                  ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
-                  : "bg-stone-500/10 border border-stone-500/30 text-stone-500"
-              }`}
-            >
-              <span className={`w-2 h-2 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-stone-400"}`} />
-              <span>{isActive ? "Active (Serving Live)" : "Paused"}</span>
-            </button>
-          </div>
+          <p className="text-sm text-[#8E8B82] dark:text-[#A8A59D]">
+            {aspectDesc} &bull; Targeted for <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">{domainName}</span>
+          </p>
         </div>
 
-        <form id={`form-${domain}-${slot}`} onSubmit={handleSubmit} className="space-y-6">
+        {/* Status Toggle & Metrics */}
+        <div className="flex items-center gap-3">
+          {existingAd && (
+            <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-[#686660] dark:text-[#A8A59D]">
+              <span className="px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Impressions">
+                👁️ {impressions.toLocaleString()} views
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]" title="Total Clicks">
+                🖱️ {clicks.toLocaleString()} clicks
+              </span>
+              <span className="px-2.5 py-1 rounded-md bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-bold" title="Click-Through Rate">
+                📈 {ctr}% CTR
+              </span>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setIsActive(!isActive)}
+            className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
+              isActive
+                ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                : "bg-stone-500/10 border border-stone-500/30 text-stone-500"
+            }`}
+          >
+            <span className={`w-2 h-2 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-stone-400"}`} />
+            <span>{isActive ? "Active (Serving Live)" : "Paused"}</span>
+          </button>
+        </div>
+      </div>
+
+      <form id={`form-${domain}-${slot}`} onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Form Section (7 cols) */}
+        <div className="lg:col-span-7 space-y-6">
           {/* Ad Format Selector */}
           <div className="space-y-2">
             <div className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] font-semibold flex items-center justify-between">
@@ -409,120 +410,6 @@ function DomainAdSlotCard({
             </div>
           )}
 
-          {/* Live Visual Reader Preview */}
-          <div className="pt-2 border-t border-[#EBE8DF] dark:border-[#33322E]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] flex items-center gap-1.5">
-                <Eye className="w-3.5 h-3.5 text-[#C96442]" />
-                <span>Live Reader Preview ({dimensions})</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => setShowPreview(!showPreview)}
-                className="text-xs font-medium text-[#C96442] hover:underline"
-              >
-                {showPreview ? "Hide Preview" : "Show Preview"}
-              </button>
-            </div>
-
-            {showPreview && (
-              <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#FAF7F0]/60 dark:bg-[#181816]/70 border border-[#EBE8DF] dark:border-[#33322E]">
-                {slot === "top_300x250" ? (
-                  /* Top 300x250 Preview */
-                  <div className="w-[300px] h-[250px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
-                    {adType === "custom_html" && htmlCode ? (
-                      <div
-                        className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
-                        dangerouslySetInnerHTML={{ __html: htmlCode }}
-                      />
-                    ) : (
-                      <div className="relative w-full h-full block overflow-hidden">
-                        {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt={title || "Advertisement Preview"}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-5 flex flex-col justify-between">
-                            <div className="space-y-1">
-                              <span className="text-[10px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
-                                {sponsor || "Sponsored"}
-                              </span>
-                              <h4 className="font-serif text-base font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-tight">
-                                {title || "Featured Sponsor Headline"}
-                              </h4>
-                            </div>
-                            <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
-                              Learn more →
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
-                          {sponsor || "Sponsored"}
-                        </div>
-
-                        {imageUrl && title && (
-                          <div className="absolute bottom-0 inset-x-0 p-3 bg-linear-to-t from-black/85 via-black/40 to-transparent text-white">
-                            <p className="font-serif text-xs font-semibold line-clamp-1">{title}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  /* Bottom 300x600 Preview */
-                  <div className="w-[300px] h-[450px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
-                    {adType === "custom_html" && htmlCode ? (
-                      <div
-                        className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
-                        dangerouslySetInnerHTML={{ __html: htmlCode }}
-                      />
-                    ) : (
-                      <div className="relative w-full h-full block overflow-hidden">
-                        {imageUrl ? (
-                          <img
-                            src={imageUrl}
-                            alt={title || "Advertisement Preview"}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-6 flex flex-col justify-between">
-                            <div className="space-y-2">
-                              <span className="text-[11px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
-                                {sponsor || "Featured Partner"}
-                              </span>
-                              <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-snug">
-                                {title || "High-Impact Technology Partner"}
-                              </h3>
-                            </div>
-                            <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
-                              Explore partner →
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
-                          {sponsor || "Sponsored"}
-                        </div>
-
-                        {imageUrl && title && (
-                          <div className="absolute bottom-0 inset-x-0 p-4 bg-linear-to-t from-black/85 via-black/50 to-transparent text-white">
-                            <p className="font-serif text-sm font-semibold line-clamp-2">{title}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-                <span className="text-xs font-mono text-[#8E8B82] mt-3">
-                  Live {dimensions} reader display render
-                </span>
-              </div>
-            )}
-          </div>
-
           {/* Submit Actions */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] gap-3">
             <span className="text-xs text-[#8E8B82]">
@@ -531,7 +418,7 @@ function DomainAdSlotCard({
             <button
               type="submit"
               disabled={isSaving}
-              className="px-5 py-2.5 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-medium transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-50"
+              className="px-6 py-3 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {isSaving ? (
                 <>
@@ -546,8 +433,125 @@ function DomainAdSlotCard({
               )}
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+
+        {/* Right Preview Section (5 cols) */}
+        <div className="lg:col-span-5 flex flex-col items-center justify-start space-y-3">
+          <div className="w-full flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#33322E]">
+            <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] flex items-center gap-1.5">
+              <Eye className="w-3.5 h-3.5 text-[#C96442]" />
+              <span>Live Reader Preview ({dimensions})</span>
+            </span>
+            {linkUrl && (
+              <a
+                href={linkUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-mono text-[#C96442] hover:underline flex items-center gap-1"
+                title="Test outbound destination URL"
+              >
+                <span>Test Link</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+          </div>
+
+          <div className="w-full flex flex-col items-center justify-center p-6 rounded-2xl bg-[#FAF7F0]/60 dark:bg-[#181816]/70 border border-[#EBE8DF] dark:border-[#33322E]">
+            {slot === "top_300x250" ? (
+              /* Top 300x250 Preview */
+              <div className="w-[300px] h-[250px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
+                {adType === "custom_html" && htmlCode ? (
+                  <div
+                    className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
+                    dangerouslySetInnerHTML={{ __html: htmlCode }}
+                  />
+                ) : (
+                  <div className="relative w-full h-full block overflow-hidden">
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={title || "Advertisement Preview"}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-5 flex flex-col justify-between">
+                        <div className="space-y-1">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
+                            {sponsor || "Sponsored"}
+                          </span>
+                          <h4 className="font-serif text-base font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-tight">
+                            {title || "Featured Sponsor Headline"}
+                          </h4>
+                        </div>
+                        <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
+                          Learn more →
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
+                      {sponsor || "Sponsored"}
+                    </div>
+
+                    {imageUrl && title && (
+                      <div className="absolute bottom-0 inset-x-0 p-3 bg-linear-to-t from-black/85 via-black/40 to-transparent text-white">
+                        <p className="font-serif text-xs font-semibold line-clamp-1">{title}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Bottom 300x600 Preview */
+              <div className="w-[300px] h-[500px] shrink-0 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#1C1C19] overflow-hidden flex flex-col relative group shadow-sm">
+                {adType === "custom_html" && htmlCode ? (
+                  <div
+                    className="w-full h-full flex flex-col justify-center items-center overflow-hidden p-2"
+                    dangerouslySetInnerHTML={{ __html: htmlCode }}
+                  />
+                ) : (
+                  <div className="relative w-full h-full block overflow-hidden">
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={title || "Advertisement Preview"}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-linear-to-br from-[#FAF7F0] to-[#EBE8DF] dark:from-[#20201D] dark:to-[#181816] p-6 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <span className="text-[11px] font-mono uppercase tracking-wider text-[#C96442] font-semibold">
+                            {sponsor || "Featured Partner"}
+                          </span>
+                          <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB] leading-snug">
+                            {title || "High-Impact Technology Partner"}
+                          </h3>
+                        </div>
+                        <span className="inline-flex items-center text-xs font-medium text-[#C96442]">
+                          Explore partner →
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white/90">
+                      {sponsor || "Sponsored"}
+                    </div>
+
+                    {imageUrl && title && (
+                      <div className="absolute bottom-0 inset-x-0 p-4 bg-linear-to-t from-black/85 via-black/50 to-transparent text-white">
+                        <p className="font-serif text-sm font-semibold line-clamp-2">{title}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            <span className="text-xs font-mono text-[#8E8B82] mt-3">
+              Live {dimensions} reader display render
+            </span>
+          </div>
+        </div>
+      </form>
     </div>
   );
 }
@@ -2154,62 +2158,61 @@ export function AdminDashboardClient({
 
             {/* Publishing & Metadata Sidebar (4 cols) */}
             <div className="lg:col-span-4 space-y-6">
-              {/* Card 1: Publish Desk */}
-              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
-                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    Publishing Desk
-                  </h3>
-                  <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
-                    Live Dispatch
-                  </span>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full py-3.5 px-6 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>{loading ? "Publishing Story..." : "Publish Article Immediately"}</span>
-                </button>
-
-                <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] cursor-pointer hover:border-[#C96442]/40 transition-colors">
-                  <input
-                    type="checkbox"
-                    id="isFeatured"
-                    checked={newFeatured}
-                    onChange={(e) => setNewFeatured(e.target.checked)}
-                    className="w-4 h-4 mt-0.5 rounded text-[#C96442] accent-[#C96442]"
-                  />
-                  <div className="space-y-0.5">
-                    <span className="text-xs font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] block">
-                      Pin as Featured Story
-                    </span>
-                    <span className="text-[11px] text-[#8E8B82] block leading-tight">
-                      Display prominently in homepage hero spotlight
+              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+                {/* 1. Header & Live Dispatch Action */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                    <div className="flex items-center space-x-2">
+                      <Send className="w-4 h-4 text-[#C96442]" />
+                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        Publishing Desk
+                      </h3>
+                    </div>
+                    <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                      Ready to Dispatch
                     </span>
                   </div>
-                </label>
-              </div>
 
-              {/* Card 2: Editorial Desk / Domain */}
-              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    Editorial Domain Desk
-                  </h3>
-                  <Tag className="w-4 h-4 text-[#C96442]" />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3.5 px-6 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>{loading ? "Publishing Story..." : "Publish Article Immediately"}</span>
+                  </button>
+
+                  <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] cursor-pointer hover:border-[#C96442]/40 transition-colors">
+                    <input
+                      type="checkbox"
+                      id="isFeatured"
+                      checked={newFeatured}
+                      onChange={(e) => setNewFeatured(e.target.checked)}
+                      className="w-4 h-4 mt-0.5 rounded text-[#C96442] accent-[#C96442]"
+                    />
+                    <div className="space-y-0.5">
+                      <span className="text-xs font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] block">
+                        Pin as Featured Story
+                      </span>
+                      <span className="text-[11px] text-[#8E8B82] block leading-tight">
+                        Display prominently in homepage hero spotlight
+                      </span>
+                    </div>
+                  </label>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                    Assigned Domain Desk
-                  </label>
+                {/* 2. Editorial Domain Desk */}
+                <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                      Editorial Domain Desk
+                    </label>
+                    <Tag className="w-3.5 h-3.5 text-[#C96442]" />
+                  </div>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm font-medium text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-medium text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
                   >
                     {categories.map((c) => (
                       <option key={c.id} value={c.name}>
@@ -2218,59 +2221,54 @@ export function AdminDashboardClient({
                     ))}
                   </select>
                 </div>
-              </div>
 
-              {/* Card 3: Cover Image Creative */}
-              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    Cover Media
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => handleOpenImagePicker("create")}
-                    className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
-                  >
-                    <Camera className="w-3.5 h-3.5" />
-                    <span>🔍 Browse Photos</span>
-                  </button>
-                </div>
+                {/* 3. Cover Media */}
+                <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                      Cover Media
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenImagePicker("create")}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline cursor-pointer"
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>🔍 Browse Photos</span>
+                    </button>
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] mb-1.5">
-                    Cover Image URL
-                  </label>
                   <input
                     type="url"
                     value={newCover}
                     onChange={(e) => setNewCover(e.target.value)}
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
                   />
-                </div>
 
-                {/* Live Preview Box */}
-                {newCover ? (
-                  <div className="relative aspect-video rounded-xl overflow-hidden border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] shadow-2xs">
-                    <img
-                      src={newCover}
-                      alt="Cover Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLElement).style.display = "none";
-                      }}
-                    />
-                    <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">
-                      Live Cover Preview
+                  {/* Live Thumbnail Box */}
+                  {newCover ? (
+                    <div className="relative aspect-video rounded-xl overflow-hidden border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] shadow-2xs">
+                      <img
+                        src={newCover}
+                        alt="Cover Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = "none";
+                        }}
+                      />
+                      <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">
+                        Live Cover Preview
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="aspect-video rounded-xl border border-dashed border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/50 dark:bg-[#1C1C19]/50 flex flex-col items-center justify-center p-4 text-center">
-                    <Camera className="w-6 h-6 text-[#8E8B82] mb-1.5" />
-                    <span className="text-xs text-[#8E8B82]">No cover image set</span>
-                    <span className="text-[10px] text-[#8E8B82]/80 mt-0.5">Click &apos;Browse Photos&apos; or paste URL</span>
-                  </div>
-                )}
+                  ) : (
+                    <div className="aspect-video rounded-xl border border-dashed border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/50 dark:bg-[#181816]/50 flex flex-col items-center justify-center p-4 text-center">
+                      <Camera className="w-6 h-6 text-[#8E8B82] mb-1.5" />
+                      <span className="text-xs text-[#8E8B82]">No cover image set</span>
+                      <span className="text-[10px] text-[#8E8B82]/80 mt-0.5">Click &apos;Browse Photos&apos; or paste URL</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </form>
@@ -2280,29 +2278,34 @@ export function AdminDashboardClient({
       {/* TAB 3: PIPELINE INGESTION API & KEYS */}
       {activeTab === "api" && (
         <div className="w-full space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            {/* Left Column (5 cols): Key, Endpoints, Manual Trigger */}
-            <div className="lg:col-span-5 space-y-6">
-              {/* Ingestion Key Card */}
-              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
-                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+          {/* Top Full-Width Hero Card: Key & Ingest Controls */}
+          <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              {/* Left Side: Agent Ingestion Key (7 cols) */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2.5">
                     <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
                       <KeyRound className="w-4 h-4" />
                     </div>
-                    <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                      Agent Ingestion Key
-                    </h3>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        NewsFlow Agent Ingestion Key
+                      </h3>
+                      <p className="text-xs text-[#8E8B82]">
+                        Bearer authentication token for autonomous background crawlers
+                      </p>
+                    </div>
                   </div>
                   <button
                     onClick={copyApiKey}
-                    className="inline-flex items-center space-x-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs font-mono font-medium text-[#C96442] hover:border-[#C96442]/50 transition-colors cursor-pointer"
                   >
-                    {copiedKey ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedKey ? "Copied" : "Copy Key"}</span>
+                    {copiedKey ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedKey ? "Copied Key" : "Copy Token"}</span>
                   </button>
                 </div>
-                
+
                 <div className="p-4 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] font-mono text-sm text-[#1F1E1D] dark:text-[#F5F2EB] select-all break-all shadow-2xs">
                   {apiKey}
                 </div>
@@ -2312,66 +2315,101 @@ export function AdminDashboardClient({
                 </p>
               </div>
 
-              {/* Endpoints & Trigger Card */}
-              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
-                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+              {/* Right Side: Immediate Pipeline Controller (5 cols) */}
+              <div className="lg:col-span-5 p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-4">
+                <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
                     Ingest Cycle Controller
-                  </h3>
+                  </span>
                   <div className="flex items-center space-x-2">
                     <span className={`w-2.5 h-2.5 rounded-full ${pipelineRunning ? "bg-amber-500 animate-ping" : "bg-emerald-500"}`} />
-                    <span className="text-xs font-mono text-[#8E8B82]">{pipelineRunning ? "Active" : "Idle"}</span>
+                    <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                      {pipelineRunning ? "Ingesting..." : "Armed & Ready"}
+                    </span>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-1">
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">
-                      Article Ingest Endpoint
-                    </span>
-                    <div className="font-mono text-xs text-[#1F1E1D] dark:text-[#F5F2EB] flex items-center justify-between">
-                      <code>POST /api/articles</code>
-                      <span className="text-emerald-600 font-semibold">Protected</span>
-                    </div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-1">
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">
-                      Pipeline Trigger Webhook
-                    </span>
-                    <div className="font-mono text-xs text-[#1F1E1D] dark:text-[#F5F2EB] flex items-center justify-between">
-                      <code>POST /api/pipeline/trigger</code>
-                      <span className="text-emerald-600 font-semibold">Protected</span>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-xs text-[#8E8B82] leading-relaxed">
+                  Trigger an immediate autonomous ingestion pass across active RSS feeds and HackerNews APIs.
+                </p>
 
                 <button
                   type="button"
                   onClick={handleTriggerPipeline}
                   disabled={pipelineRunning}
-                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                  className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   <Zap className={`w-4 h-4 ${pipelineRunning ? "animate-spin text-amber-200" : ""}`} />
-                  <span>{pipelineRunning ? "Ingestion in Progress..." : "Run Immediate Ingestion Cycle ⚡"}</span>
+                  <span>{pipelineRunning ? "Ingestion in Progress..." : "Run Ingestion Cycle Immediately ⚡"}</span>
                 </button>
               </div>
             </div>
+          </div>
 
-            {/* Right Column (7 cols): Integration Snippets */}
-            <div className="lg:col-span-7 space-y-6">
-              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                  <div className="flex items-center space-x-2.5">
-                    <Code2 className="w-5 h-5 text-[#C96442]" />
-                    <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                      Python Ingestion Client Snippet
-                    </h3>
+          {/* Bottom Symmetrical 2-Column Section: Schema & Python Snippet */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Left Column: API Specification & cURL */}
+            <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                    <Database className="w-4 h-4" />
                   </div>
-                  <span className="text-xs font-mono text-[#8E8B82]">python-requests</span>
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    API Protocol &amp; Endpoints
+                  </h3>
+                </div>
+                <span className="text-xs font-mono text-emerald-600 font-semibold">REST JSON</span>
+              </div>
+
+              {/* Endpoints List */}
+              <div className="space-y-2.5">
+                <div className="p-3 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-[#8E8B82] block font-semibold">Article Ingest</span>
+                    <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">POST /api/articles</code>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
+                    Protected
+                  </span>
                 </div>
 
-                <pre className="p-5 rounded-2xl bg-[#181816] text-[#F5F2EB] text-xs sm:text-sm font-mono overflow-x-auto leading-relaxed border border-[#33322E]">
+                <div className="p-3 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-[#8E8B82] block font-semibold">Trigger Webhook</span>
+                    <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">POST /api/pipeline/trigger</code>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
+                    Protected
+                  </span>
+                </div>
+              </div>
+
+              {/* cURL Probe */}
+              <div className="space-y-2 pt-2 border-t border-[#EBE8DF] dark:border-[#33322E]">
+                <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] block">
+                  Terminal cURL Test Probe
+                </span>
+                <pre className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
+{`curl -X POST http://localhost:3000/api/pipeline/trigger \\
+  -H "x-api-key: ${apiKey}"`}
+                </pre>
+              </div>
+            </div>
+
+            {/* Right Column: Python Ingestion Code */}
+            <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                <div className="flex items-center space-x-2.5">
+                  <Code2 className="w-5 h-5 text-[#C96442]" />
+                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Python Client Integration
+                  </h3>
+                </div>
+                <span className="text-xs font-mono text-[#8E8B82]">crawler.py</span>
+              </div>
+
+              <pre className="p-4 rounded-2xl bg-[#181816] text-[#F5F2EB] text-xs font-mono overflow-x-auto leading-relaxed border border-[#33322E]">
 {`import requests
 
 url = "http://localhost:3000/api/articles"
@@ -2380,7 +2418,7 @@ headers = {
     "Content-Type": "application/json"
 }
 payload = {
-    "title": "Quantum Supremacy Milestone Reached in Fault-Tolerant Qubits",
+    "title": "Quantum Supremacy Milestone Reached",
     "summary": "Breakthrough in topological error correction enables sustained coherence.",
     "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",
     "category": "AI & Robotics",
@@ -2393,20 +2431,7 @@ payload = {
 
 response = requests.post(url, json=payload, headers=headers)
 print(response.json())`}
-                </pre>
-
-                {/* cURL Snippet */}
-                <div className="pt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
-                      Quick Terminal cURL Probe
-                    </span>
-                  </div>
-                  <pre className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
-{`curl -X POST http://localhost:3000/api/pipeline/trigger -H "x-api-key: ${apiKey}"`}
-                  </pre>
-                </div>
-              </div>
+              </pre>
             </div>
           </div>
         </div>
@@ -2945,7 +2970,7 @@ print(response.json())`}
             );
 
             return (
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+              <div className="space-y-8">
                 {/* 1. TOP SLOT (300x250) */}
                 <DomainAdSlotCard
                   domain={selectedAdDomain}
