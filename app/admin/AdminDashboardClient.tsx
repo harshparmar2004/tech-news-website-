@@ -3,6 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
+  LayoutDashboard,
+  Menu,
+  X,
+  Sun,
+  Moon,
+  Database,
+  ShieldCheck,
+  ArrowUpRight,
+  TrendingUp,
   Sparkles,
   FileText,
   Eye,
@@ -43,6 +52,7 @@ import {
   Square,
   Camera,
 } from "lucide-react";
+import { useTheme } from "@/components/ThemeContext";
 import { formatArticleDate } from "@/lib/utils";
 
 interface ArticleItem {
@@ -548,8 +558,10 @@ export function AdminDashboardClient({
   initialAds = [],
 }: Props) {
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
   const [articles, setArticles] = useState<ArticleItem[]>(initialArticles);
-  const [activeTab, setActiveTab] = useState<"articles" | "create" | "api" | "jev" | "ads">("articles");
+  const [activeTab, setActiveTab] = useState<"overview" | "articles" | "create" | "api" | "jev" | "ads">("overview");
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<ArticleItem | null>(null);
   const [copiedKey, setCopiedKey] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -1122,8 +1134,17 @@ export function AdminDashboardClient({
     startIndex + PAGE_SIZE
   );
 
+  // Category breakdown for Overview
+  const categoryStats = categories.map((cat) => ({
+    ...cat,
+    count: articles.filter(
+      (a) => a.category?.id === cat.id || a.category?.slug === cat.slug
+    ).length,
+  }));
+  const recentArticles = articles.slice(0, 5);
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="min-h-screen flex bg-[#FAF7F0] dark:bg-[#151514] text-[#1F1E1D] dark:text-[#F5F2EB]">
       {/* Toast Notification */}
       {msg && (
         <div
@@ -1137,182 +1158,548 @@ export function AdminDashboardClient({
         </div>
       )}
 
-      {/* Top Cockpit Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#EBE8DF] dark:border-[#33322E] gap-4">
-        <div>
-          <div className="flex items-center space-x-2">
-            <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-semibold">
-              Live Override Layer
-            </span>
-            <span className="text-xs text-[#8E8B82] dark:text-[#A8A59D]">
-              NewsFlow Agent Hub
-            </span>
+      {/* Mobile Drawer Overlay */}
+      {mobileSidebarOpen && (
+        <div
+          onClick={() => setMobileSidebarOpen(false)}
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-xs md:hidden"
+        />
+      )}
+
+      {/* LEFT SIDEBAR */}
+      <aside
+        className={`fixed md:sticky top-0 left-0 z-40 h-screen w-64 lg:w-72 bg-[#F7F4EC] dark:bg-[#1A1917] border-r border-[#EBE8DF] dark:border-[#282724] flex flex-col justify-between transition-transform duration-200 ease-in-out shrink-0 ${
+          mobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
+        {/* Sidebar Header */}
+        <div className="p-5 border-b border-[#EBE8DF] dark:border-[#282724]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2.5">
+              <span className="font-serif text-2xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
+                NewsFlow
+              </span>
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25 font-semibold">
+                Admin
+              </span>
+            </div>
+            <button
+              onClick={() => setMobileSidebarOpen(false)}
+              className="md:hidden p-1.5 rounded-lg text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <h1 className="font-serif text-3xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB] mt-1">
-            Editorial Cockpit
-          </h1>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={handleTriggerPipeline}
-            disabled={pipelineRunning}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
-            title="Execute immediate autonomous news ingest cycle"
-          >
-            <Zap className={`w-3.5 h-3.5 ${pipelineRunning ? "animate-spin text-amber-200" : ""}`} />
-            <span>{pipelineRunning ? "Ingesting Stories..." : "⚡ Run Ingest Pipeline"}</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("create")}
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-xs font-medium transition-colors shadow-xs"
-          >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Manual Dispatch</span>
-          </button>
-          <button
-            onClick={handleLogout}
-            className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] text-xs text-[#686660] dark:text-[#A8A59D] hover:text-red-600 transition-colors"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Metric Cards Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F]">
-          <span className="text-xs font-mono text-[#8E8B82] uppercase tracking-wider">
-            Total Articles
-          </span>
-          <p className="font-serif text-2xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-1">
-            {articles.length}
+          <p className="text-[11px] font-mono text-[#8E8B82] mt-1">
+            Editorial Cockpit &amp; Pipeline Hub
           </p>
-          <span className="text-[11px] text-[#C96442] font-mono">
-            {publishedCount} live / {draftCount} drafts
-          </span>
         </div>
 
-        <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F]">
-          <span className="text-xs font-mono text-[#8E8B82] uppercase tracking-wider">
-            Reader Views
-          </span>
-          <p className="font-serif text-2xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-1">
-            {totalViews.toLocaleString()}
-          </p>
-          <span className="text-[11px] text-emerald-600 font-mono">
-            Organic Traffic
-          </span>
-        </div>
+        {/* Sidebar Navigation Links */}
+        <nav className="flex-1 p-3.5 space-y-1.5 overflow-y-auto">
+          {/* Overview */}
+          <button
+            onClick={() => {
+              setActiveTab("overview");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              activeTab === "overview"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Overview</span>
+            </div>
+          </button>
 
-        <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F]">
-          <span className="text-xs font-mono text-[#8E8B82] uppercase tracking-wider">
-            Subscribers
-          </span>
-          <p className="font-serif text-2xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-1">
-            {subscriberCount}
-          </p>
-          <span className="text-[11px] text-[#8E8B82] font-mono">
-            Daily Signal list
-          </span>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F]">
-          <span className="text-xs font-mono text-[#8E8B82] uppercase tracking-wider">
-            Agent Status
-          </span>
-          <div className="flex items-center space-x-1.5 mt-2">
+          {/* Articles Vault */}
+          <button
+            onClick={() => {
+              setActiveTab("articles");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              activeTab === "articles"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <Database className="w-4 h-4" />
+              <span>Articles Vault</span>
+            </div>
             <span
-              className={`w-2.5 h-2.5 rounded-full ${
-                pipelineRunning ? "bg-amber-500 animate-ping" : "bg-emerald-500 animate-pulse"
+              className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                activeTab === "articles"
+                  ? "bg-white/20 text-white"
+                  : "bg-[#EBE8DF] dark:bg-[#252422] text-[#686660] dark:text-[#A8A59D]"
               }`}
-            />
-            <span className={`text-sm font-semibold ${pipelineRunning ? "text-amber-600" : "text-emerald-600 dark:text-emerald-400"}`}>
-              {pipelineRunning ? "Ingesting Live..." : "Autonomous Ready"}
+            >
+              {articles.length}
             </span>
+          </button>
+
+          {/* Manual Dispatch */}
+          <button
+            onClick={() => {
+              setActiveTab("create");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              activeTab === "create"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <PlusCircle className="w-4 h-4" />
+              <span>Manual Dispatch</span>
+            </div>
+          </button>
+
+          {/* TypeSafe Jev AI */}
+          <button
+            onClick={() => {
+              setActiveTab("jev");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              activeTab === "jev"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <Zap className="w-4 h-4" />
+              <span>TypeSafe Jev AI</span>
+            </div>
+            {jevHasKey ? (
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System 1 Armed" />
+            ) : (
+              <span className={`text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-full ${
+                activeTab === "jev" ? "bg-white/20 text-white" : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
+              }`}>
+                Setup
+              </span>
+            )}
+          </button>
+
+          {/* Monetization & Ads */}
+          <button
+            onClick={() => {
+              setActiveTab("ads");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              activeTab === "ads"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <Megaphone className="w-4 h-4" />
+              <span>Monetization &amp; Ads</span>
+            </div>
+            <span
+              className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+                activeTab === "ads"
+                  ? "bg-white/20 text-white"
+                  : "bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20"
+              }`}
+            >
+              {ads.filter((a) => a.is_active).length}
+            </span>
+          </button>
+
+          {/* Pipeline Ingestion API & Keys */}
+          <button
+            onClick={() => {
+              setActiveTab("api");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+              activeTab === "api"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <KeyRound className="w-4 h-4" />
+              <span>Pipeline &amp; API Keys</span>
+            </div>
+          </button>
+        </nav>
+
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-[#EBE8DF] dark:border-[#282724] space-y-2">
+          {/* Health & Live Site */}
+          <div className="flex items-center justify-between px-1 py-1 text-xs font-mono text-[#8E8B82]">
+            <a
+              href="/api/health"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center space-x-1.5 hover:text-emerald-500 transition-colors"
+              title="Health Status"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Health: OK</span>
+            </a>
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center space-x-1 hover:text-[#C96442] transition-colors"
+              title="View Public Site"
+            >
+              <span>Live Site</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </div>
-          <span className="text-[11px] text-[#8E8B82] font-mono truncate block" title={pipelineMessage || undefined}>
-            {pipelineRunning
-              ? "Executing pipeline cycle"
-              : pipelineLastRun
-              ? `Last: ${new Date(pipelineLastRun).toLocaleTimeString()}`
-              : "50+ sources armed"}
-          </span>
+
+          <div className="pt-2 border-t border-[#EBE8DF] dark:border-[#282724] flex items-center justify-between">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl border border-[#EBE8DF] dark:border-[#282724] hover:bg-[#EBE8DF]/50 dark:hover:bg-[#252422] text-[#686660] dark:text-[#A8A59D] transition-colors"
+              title="Toggle Theme"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#1F1E1D]" />}
+            </button>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-[#EBE8DF] dark:border-[#282724] text-xs text-[#686660] dark:text-[#A8A59D] hover:text-red-600 hover:border-red-300 dark:hover:border-red-900 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </aside>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b border-[#EBE8DF] dark:border-[#33322E] space-x-6 text-sm font-medium">
-        <button
-          onClick={() => setActiveTab("articles")}
-          className={`pb-3 border-b-2 transition-colors ${
-            activeTab === "articles"
-              ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
-          }`}
-        >
-          Articles Vault ({articles.length})
-        </button>
+      {/* RIGHT MAIN CONTENT AREA */}
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen overflow-y-auto">
+        {/* Top Header Bar */}
+        <header className="sticky top-0 z-30 bg-[#FAF7F0]/95 dark:bg-[#151514]/95 backdrop-blur-md border-b border-[#EBE8DF] dark:border-[#282724] px-4 sm:px-6 lg:px-8 py-3.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => setMobileSidebarOpen(true)}
+                className="md:hidden p-2 rounded-xl border border-[#EBE8DF] dark:border-[#282724] text-[#686660] dark:text-[#A8A59D]"
+              >
+                <Menu className="w-4 h-4" />
+              </button>
+              <div>
+                <h1 className="font-serif text-lg sm:text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                  {activeTab === "overview" && "Dashboard Overview"}
+                  {activeTab === "articles" && "Articles Vault"}
+                  {activeTab === "create" && "Manual Article Dispatch"}
+                  {activeTab === "jev" && "TypeSafe Jev AI (System 1)"}
+                  {activeTab === "ads" && "Monetization & Domain Ads"}
+                  {activeTab === "api" && "Pipeline Ingestion & API Keys"}
+                </h1>
+                <p className="text-[11px] font-mono text-[#8E8B82] hidden sm:block">
+                  {activeTab === "overview" && "System health, real-time KPI metrics & quick editorial controls"}
+                  {activeTab === "articles" && `Managing ${articles.length} news stories across all domains`}
+                  {activeTab === "create" && "Draft and publish custom articles with AI and image support"}
+                  {activeTab === "jev" && "Ultra-low-latency breaking news triage & evaluation engine"}
+                  {activeTab === "ads" && "High-impact domain desk ad inventory and click metrics"}
+                  {activeTab === "api" && "Autonomous agent ingestion tokens and integration endpoints"}
+                </p>
+              </div>
+            </div>
 
-        <button
-          onClick={() => setActiveTab("create")}
-          className={`pb-3 border-b-2 transition-colors ${
-            activeTab === "create"
-              ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
-          }`}
-        >
-          Manual Article Dispatch
-        </button>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleTriggerPipeline}
+                disabled={pipelineRunning}
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors shadow-xs disabled:opacity-50"
+                title="Execute immediate autonomous news ingest cycle"
+              >
+                <Zap className={`w-3.5 h-3.5 ${pipelineRunning ? "animate-spin text-amber-200" : ""}`} />
+                <span className="hidden sm:inline">{pipelineRunning ? "Ingesting Stories..." : "⚡ Run Ingest Pipeline"}</span>
+                <span className="sm:hidden">{pipelineRunning ? "Ingesting..." : "⚡ Ingest"}</span>
+              </button>
 
-        <button
-          onClick={() => setActiveTab("api")}
-          className={`pb-3 border-b-2 transition-colors ${
-            activeTab === "api"
-              ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
-          }`}
-        >
-          Pipeline Ingestion API & Keys
-        </button>
+              {activeTab !== "create" && (
+                <button
+                  onClick={() => setActiveTab("create")}
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-xs font-medium transition-colors shadow-xs"
+                >
+                  <PlusCircle className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">New Article</span>
+                  <span className="sm:hidden">New</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </header>
 
-        <button
-          onClick={() => setActiveTab("jev")}
-          className={`pb-3 border-b-2 transition-colors flex items-center gap-1.5 ${
-            activeTab === "jev"
-              ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
-          }`}
-        >
-          <Zap className="w-4 h-4 text-[#C96442]" />
-          <span>TypeSafe Jev AI (System 1)</span>
-          {jevHasKey ? (
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-0.5" title="System 1 Armed" />
-          ) : (
-            <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 border border-amber-500/20">
-              Setup
-            </span>
+        {/* Content Body */}
+        <main className="p-4 sm:p-6 lg:p-8 space-y-8 flex-1">
+          {/* TAB 0: OVERVIEW */}
+          {activeTab === "overview" && (
+            <div className="space-y-8">
+              {/* Top KPI Metric Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                  <div className="flex items-center justify-between text-[#8E8B82]">
+                    <span className="text-xs font-mono uppercase tracking-wider">Total Articles</span>
+                    <Database className="w-4 h-4 text-[#C96442]" />
+                  </div>
+                  <p className="font-serif text-3xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-2">
+                    {articles.length}
+                  </p>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-xs font-mono">
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">{publishedCount} published</span>
+                    <span className="text-[#8E8B82]">{draftCount} drafts</span>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                  <div className="flex items-center justify-between text-[#8E8B82]">
+                    <span className="text-xs font-mono uppercase tracking-wider">Reader Views</span>
+                    <TrendingUp className="w-4 h-4 text-emerald-500" />
+                  </div>
+                  <p className="font-serif text-3xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-2">
+                    {totalViews.toLocaleString()}
+                  </p>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-xs font-mono">
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">Organic Traffic</span>
+                    <span className="text-[#8E8B82]">All Desks</span>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                  <div className="flex items-center justify-between text-[#8E8B82]">
+                    <span className="text-xs font-mono uppercase tracking-wider">Subscribers</span>
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <p className="font-serif text-3xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-2">
+                    {subscriberCount}
+                  </p>
+                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-xs font-mono">
+                    <span className="text-[#1F1E1D] dark:text-[#F5F2EB] font-medium">Daily Signal List</span>
+                    <span className="text-[#8E8B82]">Active</span>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs">
+                  <div className="flex items-center justify-between text-[#8E8B82]">
+                    <span className="text-xs font-mono uppercase tracking-wider">Agent Status</span>
+                    <Activity className="w-4 h-4 text-emerald-500" />
+                  </div>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <span
+                      className={`w-3 h-3 rounded-full ${
+                        pipelineRunning ? "bg-amber-500 animate-ping" : "bg-emerald-500 animate-pulse"
+                      }`}
+                    />
+                    <p className={`font-serif text-xl font-bold ${pipelineRunning ? "text-amber-600" : "text-emerald-600 dark:text-emerald-400"}`}>
+                      {pipelineRunning ? "Ingesting Live..." : "Autonomous Ready"}
+                    </p>
+                  </div>
+                  <div className="mt-2 pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-xs font-mono text-[#8E8B82] truncate">
+                    {pipelineRunning
+                      ? "Executing cycle"
+                      : pipelineLastRun
+                      ? `Last: ${new Date(pipelineLastRun).toLocaleTimeString()}`
+                      : "50+ sources armed"}
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions Shortcuts */}
+              <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+                <h2 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                  Quick Editorial Actions
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  <button
+                    onClick={() => setActiveTab("create")}
+                    className="group p-4 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:border-[#C96442] text-left transition-all"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-[#C96442]/10 text-[#C96442] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
+                      <PlusCircle className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] group-hover:text-[#C96442] transition-colors">
+                      Manual Dispatch
+                    </h3>
+                    <p className="text-xs text-[#8E8B82] mt-1">
+                      Draft and publish breaking stories with AI assistance and Unsplash photos.
+                    </p>
+                  </button>
+
+                  <button
+                    onClick={handleTriggerPipeline}
+                    disabled={pipelineRunning}
+                    className="group p-4 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:border-emerald-500 text-left transition-all disabled:opacity-50"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
+                      <Zap className={`w-5 h-5 ${pipelineRunning ? "animate-spin text-amber-500" : ""}`} />
+                    </div>
+                    <h3 className="text-sm font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] group-hover:text-emerald-600 transition-colors">
+                      {pipelineRunning ? "Ingesting Live..." : "Run Ingest Pipeline"}
+                    </h3>
+                    <p className="text-xs text-[#8E8B82] mt-1">
+                      Trigger an immediate autonomous sweep across 50+ technology wire sources.
+                    </p>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab("ads")}
+                    className="group p-4 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:border-[#C96442] text-left transition-all"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-[#C96442]/10 text-[#C96442] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
+                      <Megaphone className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] group-hover:text-[#C96442] transition-colors">
+                      Monetization &amp; Ads
+                    </h3>
+                    <p className="text-xs text-[#8E8B82] mt-1">
+                      Manage right-sidebar banner inventory ({ads.filter((a) => a.is_active).length} active) across domains.
+                    </p>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab("jev")}
+                    className="group p-4 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:border-amber-500 text-left transition-all"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
+                      <Sliders className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] group-hover:text-amber-600 transition-colors">
+                      TypeSafe Jev AI
+                    </h3>
+                    <p className="text-xs text-[#8E8B82] mt-1">
+                      Adjust System 1 triage thresholds and test breaking headlines in real time.
+                    </p>
+                  </button>
+                </div>
+              </div>
+
+              {/* Domain Breakdown & Recent Stories Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left 2 Cols: Recent Articles Dispatched */}
+                <div className="lg:col-span-2 p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        Recent Stories Dispatched
+                      </h3>
+                      <p className="text-xs text-[#8E8B82]">
+                        Latest intelligence articles synthesized by the system
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setActiveTab("articles")}
+                      className="inline-flex items-center space-x-1 text-xs font-mono text-[#C96442] hover:underline"
+                    >
+                      <span>View all {articles.length}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {recentArticles.map((art) => (
+                      <div
+                        key={art.id}
+                        className="p-3.5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/60 dark:bg-[#181816]/60 flex items-center justify-between gap-3 hover:border-[#C96442] transition-colors"
+                      >
+                        <div className="min-w-0 flex-1 space-y-1">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-[#EBE8DF] dark:bg-[#252422] text-[#686660] dark:text-[#A8A59D]">
+                              {art.category?.name || "Tech"}
+                            </span>
+                            <span
+                              className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-full ${
+                                art.status === "published"
+                                  ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                                  : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
+                              }`}
+                            >
+                              {art.status}
+                            </span>
+                            <span className="text-[11px] font-mono text-[#8E8B82]">
+                              {formatArticleDate(art.published_at)}
+                            </span>
+                          </div>
+                          <h4 className="text-xs sm:text-sm font-serif font-bold text-[#1F1E1D] dark:text-[#F5F2EB] truncate">
+                            {art.title}
+                          </h4>
+                        </div>
+
+                        <div className="flex items-center space-x-2 shrink-0">
+                          <span className="text-xs font-mono text-[#8E8B82] hidden sm:inline">
+                            {art.views_count} views
+                          </span>
+                          <button
+                            onClick={() => setEditingArticle(art)}
+                            className="p-1.5 rounded-lg border border-[#EBE8DF] dark:border-[#33322E] hover:border-[#C96442] hover:text-[#C96442] text-[#686660] dark:text-[#A8A59D] transition-colors"
+                            title="Edit Article"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right 1 Col: Category / Domain Inventory Breakdown */}
+                <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+                  <div className="pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                    <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                      Domain Desk Volume
+                    </h3>
+                    <p className="text-xs text-[#8E8B82]">
+                      Coverage balance across reporting verticals
+                    </p>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {categoryStats.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          setCategoryFilter(cat.slug);
+                          setActiveTab("articles");
+                        }}
+                        className="w-full flex items-center justify-between p-3 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:border-[#C96442] transition-colors text-left group"
+                      >
+                        <span className="text-xs font-medium text-[#1F1E1D] dark:text-[#F5F2EB] group-hover:text-[#C96442] transition-colors">
+                          {cat.name}
+                        </span>
+                        <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-[#EBE8DF] dark:bg-[#252422] text-[#686660] dark:text-[#A8A59D]">
+                          {cat.count} stories
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Monetization Status Summary Pill */}
+                  <div className="mt-4 pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-mono text-[#8E8B82] uppercase text-[10px]">Active Ad Slots</span>
+                      <span className="font-mono font-bold text-emerald-600">{ads.filter((a) => a.is_active).length} Running</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-mono text-[#8E8B82] uppercase text-[10px]">Total Delivered Impressions</span>
+                      <span className="font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        {ads.reduce((sum, a) => sum + (a.impressions || 0), 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
-        </button>
 
-        <button
-          onClick={() => setActiveTab("ads")}
-          className={`pb-3 border-b-2 transition-colors flex items-center gap-1.5 ${
-            activeTab === "ads"
-              ? "border-[#C96442] text-[#C96442]"
-              : "border-transparent text-[#686660] dark:text-[#A8A59D] hover:text-[#C96442] dark:hover:text-[#C96442]"
-          }`}
-        >
-          <Megaphone className="w-4 h-4 text-[#C96442]" />
-          <span>Monetization & Ads</span>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20">
-            {ads.filter((a) => a.is_active).length} Active
-          </span>
-        </button>
-      </div>
-
-      {/* TAB 1: ARTICLES VAULT */}
+          {/* TAB 1: ARTICLES VAULT */}
       {activeTab === "articles" && (
         <div className="space-y-4">
           {/* Admin Usable Tool: Instant Filter & Search Bar */}
@@ -2358,6 +2745,8 @@ print(response.json())`}
           })()}
         </div>
       )}
+        </main>
+      </div>
 
       {/* EDIT ARTICLE MODAL */}
       {editingArticle && (

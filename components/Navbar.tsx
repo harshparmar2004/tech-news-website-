@@ -36,6 +36,11 @@ export function Navbar() {
   const isAdminRoute = pathname?.startsWith("/admin");
   const isLoginPage = pathname === "/admin/login";
 
+  // Hide global navbar on admin dashboard to allow full-viewport left sidebar dashboard layout
+  if (pathname === "/admin") {
+    return null;
+  }
+
   const handleAdminLogout = async () => {
     try {
       await fetch("/api/admin/logout", { method: "POST" });
