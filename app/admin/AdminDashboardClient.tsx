@@ -579,9 +579,11 @@ export function AdminDashboardClient({
   const [selectedAdDomain, setSelectedAdDomain] = useState<string>("global");
   const [savingSlot, setSavingSlot] = useState<string | null>(null);
 
-  // API Ingestion Snippet State
+  // API Ingestion Snippet & Probe State
   const [apiSnippetLang, setApiSnippetLang] = useState<"python" | "curl" | "node">("python");
   const [copiedSnippet, setCopiedSnippet] = useState(false);
+  const [selectedEndpointProbe, setSelectedEndpointProbe] = useState<"trigger" | "articles" | "categories">("trigger");
+  const [copiedCurl, setCopiedCurl] = useState(false);
 
   // TypeSafe Jev API State
   const [jevKeyInput, setJevKeyInput] = useState("");
@@ -2424,147 +2426,289 @@ export function AdminDashboardClient({
           {/* 2. MIDDLE FULL-WIDTH CARD: API Protocol & Endpoints */}
           <div className="w-full p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
             {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                <div className="w-10 h-10 rounded-2xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
                   <Database className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-serif text-lg sm:text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                     API Protocol &amp; Endpoints
                   </h3>
-                  <p className="text-xs text-[#8E8B82]">
-                    Direct HTTP REST interfaces for crawler dispatch, pipeline automation, and taxonomy resolution
+                  <p className="text-xs text-[#8E8B82] mt-0.5">
+                    Production HTTP REST specifications for crawler ingestion, autonomous triggers, and domain taxonomies
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] border border-[#EBE8DF] dark:border-[#33322E]">
-                  Base: <code className="text-[#C96442] font-semibold">http://localhost:3000</code>
-                </span>
-                <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
+              <div className="flex items-center gap-2.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText("http://localhost:3000");
+                    showToast("Base URL copied to clipboard!");
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono hover:border-[#C96442]/40 transition-colors cursor-pointer"
+                  title="Click to copy base URL"
+                >
+                  <span className="text-[#8E8B82]">Base:</span>
+                  <code className="text-[#C96442] font-semibold">http://localhost:3000</code>
+                  <Copy className="w-3 h-3 text-[#8E8B82]" />
+                </button>
+                <span className="text-xs font-mono px-2.5 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
                   REST JSON
                 </span>
               </div>
             </div>
 
-            {/* Endpoints 3-Column Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Endpoint 1: Article Ingestion */}
-              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-3 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-[#C96442]/10 text-[#C96442] font-bold">
-                      POST
-                    </span>
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
-                      Protected
-                    </span>
-                  </div>
-                  <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] block">
-                    /api/articles
-                  </code>
-                  <p className="text-xs text-[#8E8B82] leading-relaxed">
-                    Primary dispatch ingestion endpoint. Ingests structured stories directly into the SQLite vault.
-                  </p>
-                </div>
-                <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-[11px] font-mono text-[#8E8B82]">
-                  Body: <span className="text-[#1F1E1D] dark:text-[#F5F2EB]">title, summary, body, category, tags...</span>
-                </div>
+            {/* Endpoints Directory Table */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] px-1">
+                <span>API Route Directory</span>
+                <span>Select to inspect in terminal probe</span>
               </div>
 
-              {/* Endpoint 2: Trigger Pipeline */}
-              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-3 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-[#C96442]/10 text-[#C96442] font-bold">
+              <div className="rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/40 dark:bg-[#181816]/40 divide-y divide-[#EBE8DF] dark:divide-[#33322E] overflow-hidden">
+                {/* Endpoint Row 1: /api/articles */}
+                <div
+                  onClick={() => setSelectedEndpointProbe("articles")}
+                  className={`p-4 sm:p-4.5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all cursor-pointer ${
+                    selectedEndpointProbe === "articles"
+                      ? "bg-[#C96442]/5 dark:bg-[#C96442]/10 ring-1 ring-inset ring-[#C96442]/40"
+                      : "hover:bg-[#FAF7F0] dark:hover:bg-[#181816]"
+                  }`}
+                >
+                  <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                    <span className="px-2.5 py-1 rounded-lg bg-[#C96442] text-white font-mono font-bold text-xs shrink-0 shadow-2xs">
                       POST
                     </span>
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
-                      Protected
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                          /api/articles
+                        </code>
+                        <span className="text-[11px] font-sans font-medium text-[#8E8B82] hidden sm:inline">
+                          &bull; Dispatch &amp; Ingest Story
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                        Ingests a structured breaking story into the SQLite vault with rank scoring and tag indexing.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0 self-end md:self-auto">
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#20201D] text-[#8E8B82] border border-[#EBE8DF] dark:border-[#33322E] hidden lg:inline">
+                      Body: JSON
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 text-xs font-mono font-semibold">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>Protected</span>
+                    </span>
+                    <span className={`text-xs font-mono font-medium ${selectedEndpointProbe === "articles" ? "text-[#C96442]" : "text-[#8E8B82]"}`}>
+                      {selectedEndpointProbe === "articles" ? "● Active Probe" : "Inspect →"}
                     </span>
                   </div>
-                  <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] block">
-                    /api/pipeline/trigger
-                  </code>
-                  <p className="text-xs text-[#8E8B82] leading-relaxed">
-                    Webhook trigger that launches an immediate crawl sweep across 50+ technology RSS feeds.
-                  </p>
                 </div>
-                <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-[11px] font-mono text-[#8E8B82]">
-                  Headers: <span className="text-[#C96442]">x-api-key: your_key</span>
-                </div>
-              </div>
 
-              {/* Endpoint 3: Taxonomy Desks */}
-              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-3 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-stone-500/10 text-stone-600 dark:text-stone-300 font-bold">
+                {/* Endpoint Row 2: /api/pipeline/trigger */}
+                <div
+                  onClick={() => setSelectedEndpointProbe("trigger")}
+                  className={`p-4 sm:p-4.5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all cursor-pointer ${
+                    selectedEndpointProbe === "trigger"
+                      ? "bg-[#C96442]/5 dark:bg-[#C96442]/10 ring-1 ring-inset ring-[#C96442]/40"
+                      : "hover:bg-[#FAF7F0] dark:hover:bg-[#181816]"
+                  }`}
+                >
+                  <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                    <span className="px-2.5 py-1 rounded-lg bg-[#C96442] text-white font-mono font-bold text-xs shrink-0 shadow-2xs">
+                      POST
+                    </span>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                          /api/pipeline/trigger
+                        </code>
+                        <span className="text-[11px] font-sans font-medium text-[#8E8B82] hidden sm:inline">
+                          &bull; Autonomous Crawler Cycle
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                        Webhook trigger launching an immediate parallel sweep across RSS wires, HackerNews, and arXiv.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0 self-end md:self-auto">
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#20201D] text-[#8E8B82] border border-[#EBE8DF] dark:border-[#33322E] hidden lg:inline">
+                      Webhook Token
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 text-xs font-mono font-semibold">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>Protected</span>
+                    </span>
+                    <span className={`text-xs font-mono font-medium ${selectedEndpointProbe === "trigger" ? "text-[#C96442]" : "text-[#8E8B82]"}`}>
+                      {selectedEndpointProbe === "trigger" ? "● Active Probe" : "Inspect →"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Endpoint Row 3: /api/categories */}
+                <div
+                  onClick={() => setSelectedEndpointProbe("categories")}
+                  className={`p-4 sm:p-4.5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all cursor-pointer ${
+                    selectedEndpointProbe === "categories"
+                      ? "bg-[#C96442]/5 dark:bg-[#C96442]/10 ring-1 ring-inset ring-[#C96442]/40"
+                      : "hover:bg-[#FAF7F0] dark:hover:bg-[#181816]"
+                  }`}
+                >
+                  <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+                    <span className="px-2.5 py-1 rounded-lg bg-stone-600 text-white font-mono font-bold text-xs shrink-0 shadow-2xs">
                       GET
                     </span>
-                    <span className="px-2 py-0.5 rounded-md bg-stone-500/10 text-stone-600 dark:text-stone-400 border border-stone-500/20 text-[11px] font-mono font-semibold">
-                      Public
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                          /api/categories
+                        </code>
+                        <span className="text-[11px] font-sans font-medium text-[#8E8B82] hidden sm:inline">
+                          &bull; Domain Desks Taxonomy
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                        Fetches active editorial domain verticals (AI &amp; Robotics, Cloud, Crypto, Security, DeepTech, Science).
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 shrink-0 self-end md:self-auto">
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#20201D] text-[#8E8B82] border border-[#EBE8DF] dark:border-[#33322E] hidden lg:inline">
+                      Read Only
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-500/10 text-stone-600 dark:text-stone-400 border border-stone-500/20 text-xs font-mono font-semibold">
+                      <Globe className="w-3.5 h-3.5" />
+                      <span>Public</span>
+                    </span>
+                    <span className={`text-xs font-mono font-medium ${selectedEndpointProbe === "categories" ? "text-[#C96442]" : "text-[#8E8B82]"}`}>
+                      {selectedEndpointProbe === "categories" ? "● Active Probe" : "Inspect →"}
                     </span>
                   </div>
-                  <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] block">
-                    /api/categories
-                  </code>
-                  <p className="text-xs text-[#8E8B82] leading-relaxed">
-                    Fetches all available editorial domain desk names, slugs, and ID mappings for classification.
-                  </p>
-                </div>
-                <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-[11px] font-mono text-[#8E8B82]">
-                  Returns: <span className="text-emerald-600">AI, Cloud, Crypto, Security, DeepTech...</span>
                 </div>
               </div>
             </div>
 
-            {/* Auth Specification & Terminal Probe Split */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4 border-t border-[#EBE8DF] dark:border-[#33322E]">
-              {/* Auth Header Details (5 cols) */}
-              <div className="lg:col-span-5 p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-2 text-xs font-mono">
-                <div className="flex items-center justify-between">
-                  <span className="text-[#8E8B82] uppercase text-[10px] font-semibold tracking-wider">
-                    Authentication Protocol
-                  </span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">x-api-key Header</span>
-                </div>
-                <p className="text-[11px] text-[#686660] dark:text-[#A8A59D] leading-relaxed">
-                  Include your secret key in either the <code className="text-[#C96442] font-bold">x-api-key</code> header or as an <code className="text-[#C96442] font-bold">Authorization: Bearer &lt;key&gt;</code> token.
-                </p>
-                <div className="flex items-center gap-3 pt-1 text-[11px] text-[#8E8B82]">
-                  <span>200: Success</span>
-                  <span>&bull;</span>
-                  <span>401: Unauthorized</span>
-                  <span>&bull;</span>
-                  <span>400: Bad Schema</span>
-                </div>
-              </div>
+            {/* Interactive Terminal Probe & Header Console */}
+            <div className="pt-2 space-y-3">
+              <div className="p-5 rounded-2xl bg-[#141412] border border-[#2E2D29] space-y-4 shadow-inner text-[#F5F2EB]">
+                {/* Console Top Toolbar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#2E2D29] gap-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-3 h-3 rounded-full bg-[#EF4444]/80" />
+                      <span className="w-3 h-3 rounded-full bg-[#F59E0B]/80" />
+                      <span className="w-3 h-3 rounded-full bg-[#10B981]/80" />
+                    </div>
+                    <span className="text-xs font-mono text-[#8E8B82] font-semibold">
+                      Terminal Ingestion Probe — {selectedEndpointProbe === "trigger" ? "POST /api/pipeline/trigger" : selectedEndpointProbe === "articles" ? "POST /api/articles" : "GET /api/categories"}
+                    </span>
+                  </div>
 
-              {/* cURL Terminal Probe (7 cols) */}
-              <div className="lg:col-span-7 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
-                    Terminal cURL Quick Probe
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`curl -X POST http://localhost:3000/api/pipeline/trigger -H "x-api-key: ${apiKey}"`);
-                      showToast("cURL command copied to clipboard!");
-                    }}
-                    className="text-xs font-mono text-[#C96442] hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <Copy className="w-3 h-3" />
-                    <span>Copy cURL Command</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Endpoint Selector Tabs */}
+                    <div className="flex items-center p-0.5 rounded-lg bg-[#20201D] border border-[#33322E] text-xs font-mono">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedEndpointProbe("trigger")}
+                        className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                          selectedEndpointProbe === "trigger"
+                            ? "bg-[#C96442] text-white font-semibold"
+                            : "text-[#8E8B82] hover:text-[#F5F2EB]"
+                        }`}
+                      >
+                        trigger
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedEndpointProbe("articles")}
+                        className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                          selectedEndpointProbe === "articles"
+                            ? "bg-[#C96442] text-white font-semibold"
+                            : "text-[#8E8B82] hover:text-[#F5F2EB]"
+                        }`}
+                      >
+                        articles
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedEndpointProbe("categories")}
+                        className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                          selectedEndpointProbe === "categories"
+                            ? "bg-[#C96442] text-white font-semibold"
+                            : "text-[#8E8B82] hover:text-[#F5F2EB]"
+                        }`}
+                      >
+                        categories
+                      </button>
+                    </div>
+
+                    {/* Copy Button */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cmd = selectedEndpointProbe === "trigger"
+                          ? `curl -X POST http://localhost:3000/api/pipeline/trigger \\\n  -H "x-api-key: ${apiKey}"`
+                          : selectedEndpointProbe === "articles"
+                          ? `curl -X POST http://localhost:3000/api/articles \\\n  -H "x-api-key: ${apiKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "title": "Quantum Supremacy Milestone",\n    "summary": "Coherence threshold achieved",\n    "category": "AI & Robotics"\n  }'`
+                          : `curl -X GET http://localhost:3000/api/categories`;
+                        navigator.clipboard.writeText(cmd);
+                        setCopiedCurl(true);
+                        setTimeout(() => setCopiedCurl(false), 2000);
+                        showToast("cURL probe copied to clipboard!");
+                      }}
+                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-mono transition-colors cursor-pointer"
+                    >
+                      {copiedCurl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedCurl ? "Copied" : "Copy cURL"}</span>
+                    </button>
+                  </div>
                 </div>
-                <pre className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
-{`curl -X POST http://localhost:3000/api/pipeline/trigger \\
-  -H "x-api-key: ${apiKey}"`}
+
+                {/* Terminal Code Display */}
+                <pre className="text-xs font-mono overflow-x-auto leading-relaxed text-[#F5F2EB] select-all">
+                  {selectedEndpointProbe === "trigger" && (
+`curl -X POST http://localhost:3000/api/pipeline/trigger \\
+  -H "x-api-key: ${apiKey}"`
+                  )}
+                  {selectedEndpointProbe === "articles" && (
+`curl -X POST http://localhost:3000/api/articles \\
+  -H "x-api-key: ${apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "title": "Quantum Supremacy Milestone Reached",
+    "summary": "Breakthrough in topological error correction enables sustained coherence.",
+    "category": "AI & Robotics"
+  }'`
+                  )}
+                  {selectedEndpointProbe === "categories" && (
+`curl -X GET http://localhost:3000/api/categories`
+                  )}
                 </pre>
+
+                {/* Console Specification Footer */}
+                <div className="pt-3 border-t border-[#2E2D29] flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono text-[#8E8B82]">
+                  <div className="flex items-center gap-3">
+                    <span>Auth: <code className="text-[#C96442]">x-api-key</code> or <code className="text-[#C96442]">Bearer &lt;token&gt;</code></span>
+                    <span>&bull;</span>
+                    <span>Content-Type: <code className="text-emerald-400">application/json</code></span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-emerald-400">200 OK</span>
+                    <span>&bull;</span>
+                    <span className="text-amber-400">401 Unauthorized</span>
+                    <span>&bull;</span>
+                    <span className="text-red-400">400 Bad Schema</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
