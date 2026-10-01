@@ -2349,7 +2349,7 @@ export function AdminDashboardClient({
       {/* TAB 3: PIPELINE INGESTION API & KEYS */}
       {activeTab === "api" && (
         <div className="w-full space-y-8">
-          {/* Top Full-Width Hero Card: Key & Ingest Controls */}
+          {/* 1. TOP FULL-WIDTH HERO CARD: Key & Ingest Controls */}
           <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
               {/* Left Side: Agent Ingestion Key (7 cols) */}
@@ -2421,88 +2421,132 @@ export function AdminDashboardClient({
             </div>
           </div>
 
-          {/* Bottom Symmetrical 2-Column Section: Schema & Python Snippet */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-            {/* Left Column: API Specification & cURL */}
-            <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                  <div className="flex items-center space-x-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
-                      <Database className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        API Protocol &amp; Endpoints
-                      </h3>
-                      <p className="text-xs text-[#8E8B82]">
-                        Direct HTTP interfaces for crawler dispatch
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
-                    REST JSON
-                  </span>
+          {/* 2. MIDDLE FULL-WIDTH CARD: API Protocol & Endpoints */}
+          <div className="w-full p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                  <Database className="w-5 h-5" />
                 </div>
+                <div>
+                  <h3 className="font-serif text-lg sm:text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    API Protocol &amp; Endpoints
+                  </h3>
+                  <p className="text-xs text-[#8E8B82]">
+                    Direct HTTP REST interfaces for crawler dispatch, pipeline automation, and taxonomy resolution
+                  </p>
+                </div>
+              </div>
 
-                {/* Endpoints List */}
-                <div className="space-y-2.5">
-                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[10px] font-mono uppercase text-[#8E8B82] font-semibold">Article Ingest</span>
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#C96442]/10 text-[#C96442] font-semibold">POST</span>
-                      </div>
-                      <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-0.5 block">/api/articles</code>
-                    </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] border border-[#EBE8DF] dark:border-[#33322E]">
+                  Base: <code className="text-[#C96442] font-semibold">http://localhost:3000</code>
+                </span>
+                <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
+                  REST JSON
+                </span>
+              </div>
+            </div>
+
+            {/* Endpoints 3-Column Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Endpoint 1: Article Ingestion */}
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-3 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-[#C96442]/10 text-[#C96442] font-bold">
+                      POST
+                    </span>
                     <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
                       Protected
                     </span>
                   </div>
+                  <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] block">
+                    /api/articles
+                  </code>
+                  <p className="text-xs text-[#8E8B82] leading-relaxed">
+                    Primary dispatch ingestion endpoint. Ingests structured stories directly into the SQLite vault.
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-[11px] font-mono text-[#8E8B82]">
+                  Body: <span className="text-[#1F1E1D] dark:text-[#F5F2EB]">title, summary, body, category, tags...</span>
+                </div>
+              </div>
 
-                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[10px] font-mono uppercase text-[#8E8B82] font-semibold">Trigger Webhook</span>
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#C96442]/10 text-[#C96442] font-semibold">POST</span>
-                      </div>
-                      <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-0.5 block">/api/pipeline/trigger</code>
-                    </div>
+              {/* Endpoint 2: Trigger Pipeline */}
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-3 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-[#C96442]/10 text-[#C96442] font-bold">
+                      POST
+                    </span>
                     <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
                       Protected
                     </span>
                   </div>
+                  <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] block">
+                    /api/pipeline/trigger
+                  </code>
+                  <p className="text-xs text-[#8E8B82] leading-relaxed">
+                    Webhook trigger that launches an immediate crawl sweep across 50+ technology RSS feeds.
+                  </p>
+                </div>
+                <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-[11px] font-mono text-[#8E8B82]">
+                  Headers: <span className="text-[#C96442]">x-api-key: your_key</span>
+                </div>
+              </div>
 
-                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[10px] font-mono uppercase text-[#8E8B82] font-semibold">Taxonomy Desks</span>
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-stone-500/10 text-stone-600 dark:text-stone-300 font-semibold">GET</span>
-                      </div>
-                      <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-0.5 block">/api/categories</code>
-                    </div>
+              {/* Endpoint 3: Taxonomy Desks */}
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-3 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono px-2 py-0.5 rounded-md bg-stone-500/10 text-stone-600 dark:text-stone-300 font-bold">
+                      GET
+                    </span>
                     <span className="px-2 py-0.5 rounded-md bg-stone-500/10 text-stone-600 dark:text-stone-400 border border-stone-500/20 text-[11px] font-mono font-semibold">
                       Public
                     </span>
                   </div>
+                  <code className="text-sm font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] block">
+                    /api/categories
+                  </code>
+                  <p className="text-xs text-[#8E8B82] leading-relaxed">
+                    Fetches all available editorial domain desk names, slugs, and ID mappings for classification.
+                  </p>
                 </div>
+                <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-[11px] font-mono text-[#8E8B82]">
+                  Returns: <span className="text-emerald-600">AI, Cloud, Crypto, Security, DeepTech...</span>
+                </div>
+              </div>
+            </div>
 
-                {/* Authentication Spec */}
-                <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-1 text-xs font-mono">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[#8E8B82] uppercase text-[10px] font-semibold">Required Auth Header</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold">x-api-key</span>
-                  </div>
-                  <div className="text-[11px] text-[#686660] dark:text-[#A8A59D] truncate">
-                    Format: <code className="text-[#C96442] font-bold">x-api-key: {apiKey ? `${apiKey.substring(0, 10)}...` : "your_token"}</code>
-                  </div>
+            {/* Auth Specification & Terminal Probe Split */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4 border-t border-[#EBE8DF] dark:border-[#33322E]">
+              {/* Auth Header Details (5 cols) */}
+              <div className="lg:col-span-5 p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-2 text-xs font-mono">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#8E8B82] uppercase text-[10px] font-semibold tracking-wider">
+                    Authentication Protocol
+                  </span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">x-api-key Header</span>
+                </div>
+                <p className="text-[11px] text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                  Include your secret key in either the <code className="text-[#C96442] font-bold">x-api-key</code> header or as an <code className="text-[#C96442] font-bold">Authorization: Bearer &lt;key&gt;</code> token.
+                </p>
+                <div className="flex items-center gap-3 pt-1 text-[11px] text-[#8E8B82]">
+                  <span>200: Success</span>
+                  <span>&bull;</span>
+                  <span>401: Unauthorized</span>
+                  <span>&bull;</span>
+                  <span>400: Bad Schema</span>
                 </div>
               </div>
 
-              {/* cURL Probe */}
-              <div className="space-y-2 pt-3 border-t border-[#EBE8DF] dark:border-[#33322E]">
+              {/* cURL Terminal Probe (7 cols) */}
+              <div className="lg:col-span-7 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] block">
+                  <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
                     Terminal cURL Quick Probe
                   </span>
                   <button
@@ -2514,74 +2558,99 @@ export function AdminDashboardClient({
                     className="text-xs font-mono text-[#C96442] hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <Copy className="w-3 h-3" />
-                    <span>Copy cURL</span>
+                    <span>Copy cURL Command</span>
                   </button>
                 </div>
-                <pre className="p-3 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
+                <pre className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
 {`curl -X POST http://localhost:3000/api/pipeline/trigger \\
   -H "x-api-key: ${apiKey}"`}
                 </pre>
               </div>
             </div>
+          </div>
 
-            {/* Right Column: Multi-Language Ingestion Code */}
-            <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
-              <div className="space-y-4 flex-1 flex flex-col">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E] gap-2">
-                  <div className="flex items-center space-x-2.5">
-                    <Code2 className="w-5 h-5 text-[#C96442]" />
-                    <div>
-                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        Client Integration SDK
-                      </h3>
-                      <p className="text-xs text-[#8E8B82]">
-                        Production dispatch code for your crawlers
-                      </p>
-                    </div>
-                  </div>
+          {/* 3. BOTTOM FULL-WIDTH CARD: Client Integration SDK Studio */}
+          <div className="w-full p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+            {/* Header & Language Tabs */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E] gap-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                  <Code2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg sm:text-xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Client Integration SDK
+                  </h3>
+                  <p className="text-xs text-[#8E8B82]">
+                    Production dispatch code for autonomous agents, background crawlers, and scrapers
+                  </p>
+                </div>
+              </div>
 
-                  {/* Language Switcher Tabs */}
-                  <div className="flex items-center space-x-1 p-1 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
-                    <button
-                      type="button"
-                      onClick={() => setApiSnippetLang("python")}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
-                        apiSnippetLang === "python"
-                          ? "bg-[#C96442] text-white shadow-2xs"
-                          : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
-                      }`}
-                    >
-                      Python
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setApiSnippetLang("curl")}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
-                        apiSnippetLang === "curl"
-                          ? "bg-[#C96442] text-white shadow-2xs"
-                          : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
-                      }`}
-                    >
-                      cURL
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setApiSnippetLang("node")}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
-                        apiSnippetLang === "node"
-                          ? "bg-[#C96442] text-white shadow-2xs"
-                          : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
-                      }`}
-                    >
-                      Node.js
-                    </button>
-                  </div>
+              <div className="flex items-center gap-3">
+                {/* Language Switcher Tabs */}
+                <div className="flex items-center space-x-1 p-1 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                  <button
+                    type="button"
+                    onClick={() => setApiSnippetLang("python")}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                      apiSnippetLang === "python"
+                        ? "bg-[#C96442] text-white shadow-2xs"
+                        : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+                    }`}
+                  >
+                    Python (requests)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setApiSnippetLang("curl")}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                      apiSnippetLang === "curl"
+                        ? "bg-[#C96442] text-white shadow-2xs"
+                        : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+                    }`}
+                  >
+                    cURL (Bash)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setApiSnippetLang("node")}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                      apiSnippetLang === "node"
+                        ? "bg-[#C96442] text-white shadow-2xs"
+                        : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+                    }`}
+                  >
+                    Node.js (TypeScript)
+                  </button>
                 </div>
 
-                {/* Code Container */}
-                <div className="relative flex-1 flex flex-col">
-                  <pre className="flex-1 p-4 rounded-2xl bg-[#181816] text-[#F5F2EB] text-xs font-mono overflow-auto max-h-[380px] leading-relaxed border border-[#33322E]">
-                    {apiSnippetLang === "python" && (
+                {/* Copy Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const snippet = apiSnippetLang === "python"
+                      ? `import requests\n\nurl = "http://localhost:3000/api/articles"\nheaders = {\n    "x-api-key": "${apiKey}",\n    "Content-Type": "application/json"\n}\npayload = {\n    "title": "Quantum Supremacy Milestone Reached",\n    "summary": "Breakthrough in topological error correction enables sustained coherence.",\n    "body": "## The Coherence Threshold\\n\\nResearchers have crossed the fault-tolerant threshold...",\n    "category": "AI & Robotics",\n    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    "source_url": "https://nature.com/articles/quantum-supremacy-milestone",\n    "rank_score": 94,\n    "tags": ["Quantum", "Hardware", "DeepTech"],\n    "status": "published"\n}\n\nresponse = requests.post(url, json=payload, headers=headers)\nprint("Ingestion Status:", response.status_code)\nprint("Response JSON:", response.json())`
+                      : apiSnippetLang === "curl"
+                      ? `curl -X POST http://localhost:3000/api/articles \\\n  -H "x-api-key: ${apiKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "title": "Quantum Supremacy Milestone Reached",\n    "summary": "Breakthrough in topological error correction enables sustained coherence.",\n    "body": "## The Coherence Threshold\\n\\nResearchers have crossed the fault-tolerant threshold...",\n    "category": "AI & Robotics",\n    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    "source_url": "https://nature.com/articles/quantum-supremacy-milestone",\n    "rank_score": 94,\n    "tags": ["Quantum", "Hardware", "DeepTech"],\n    "status": "published"\n  }'`
+                      : `const response = await fetch("http://localhost:3000/api/articles", {\n  method: "POST",\n  headers: {\n    "x-api-key": "${apiKey}",\n    "Content-Type": "application/json",\n  },\n  body: JSON.stringify({\n    title: "Quantum Supremacy Milestone Reached",\n    summary: "Breakthrough in topological error correction enables sustained coherence.",\n    body: "## The Coherence Threshold\\n\\nResearchers have crossed the fault-tolerant threshold...",\n    category: "AI & Robotics",\n    cover_image_url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    source_url: "https://nature.com/articles/quantum-supremacy-milestone",\n    rank_score": 94,\n    tags: ["Quantum", "Hardware", "DeepTech"],\n    status: "published",\n  }),\n});\nconst data = await response.json();\nconsole.log("Ingestion Response:", data);`;
+                    navigator.clipboard.writeText(snippet);
+                    setCopiedSnippet(true);
+                    setTimeout(() => setCopiedSnippet(false), 2000);
+                    showToast("SDK snippet copied to clipboard!");
+                  }}
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono font-medium text-[#C96442] hover:border-[#C96442]/50 transition-colors cursor-pointer shrink-0"
+                >
+                  {copiedSnippet ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedSnippet ? "Copied Snippet" : "Copy Code"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Code Studio Box */}
+            <div className="relative">
+              <pre className="p-5 rounded-2xl bg-[#181816] text-[#F5F2EB] text-xs font-mono overflow-x-auto leading-relaxed border border-[#33322E] shadow-inner">
+                {apiSnippetLang === "python" && (
 `import requests
 
 url = "http://localhost:3000/api/articles"
@@ -2592,35 +2661,36 @@ headers = {
 payload = {
     "title": "Quantum Supremacy Milestone Reached",
     "summary": "Breakthrough in topological error correction enables sustained coherence.",
-    "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",
+    "body": "## The Coherence Threshold\\n\\nResearchers have crossed the fault-tolerant threshold...",
     "category": "AI & Robotics",
     "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
-    "source_url": "https://nature.com/articles/...",
+    "source_url": "https://nature.com/articles/quantum-supremacy-milestone",
     "rank_score": 94,
     "tags": ["Quantum", "Hardware", "DeepTech"],
     "status": "published"
 }
 
 response = requests.post(url, json=payload, headers=headers)
-print(response.json())`
-                    )}
-                    {apiSnippetLang === "curl" && (
+print("Ingestion Status:", response.status_code)
+print("Response JSON:", response.json())`
+                )}
+                {apiSnippetLang === "curl" && (
 `curl -X POST http://localhost:3000/api/articles \\
   -H "x-api-key: ${apiKey}" \\
   -H "Content-Type: application/json" \\
   -d '{
     "title": "Quantum Supremacy Milestone Reached",
     "summary": "Breakthrough in topological error correction enables sustained coherence.",
-    "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",
+    "body": "## The Coherence Threshold\\n\\nResearchers have crossed the fault-tolerant threshold...",
     "category": "AI & Robotics",
     "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
-    "source_url": "https://nature.com/articles/...",
+    "source_url": "https://nature.com/articles/quantum-supremacy-milestone",
     "rank_score": 94,
     "tags": ["Quantum", "Hardware", "DeepTech"],
     "status": "published"
   }'`
-                    )}
-                    {apiSnippetLang === "node" && (
+                )}
+                {apiSnippetLang === "node" && (
 `// Node.js (v18+) or TypeScript Ingestion Client
 const response = await fetch("http://localhost:3000/api/articles", {
   method: "POST",
@@ -2631,10 +2701,10 @@ const response = await fetch("http://localhost:3000/api/articles", {
   body: JSON.stringify({
     title: "Quantum Supremacy Milestone Reached",
     summary: "Breakthrough in topological error correction enables sustained coherence.",
-    body: "## The Coherence Threshold\\n\\nResearchers have crossed...",
+    body: "## The Coherence Threshold\\n\\nResearchers have crossed the fault-tolerant threshold...",
     category: "AI & Robotics",
     cover_image_url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
-    source_url: "https://nature.com/articles/...",
+    source_url: "https://nature.com/articles/quantum-supremacy-milestone",
     rank_score": 94,
     tags: ["Quantum", "Hardware", "DeepTech"],
     status: "published",
@@ -2642,33 +2712,21 @@ const response = await fetch("http://localhost:3000/api/articles", {
 });
 
 const data = await response.json();
-console.log(data);`
-                    )}
-                  </pre>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const snippet = apiSnippetLang === "python"
-                        ? `import requests\n\nurl = "http://localhost:3000/api/articles"\nheaders = {\n    "x-api-key": "${apiKey}",\n    "Content-Type": "application/json"\n}\npayload = {\n    "title": "Quantum Supremacy Milestone Reached",\n    "summary": "Breakthrough in topological error correction enables sustained coherence.",\n    "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",\n    "category": "AI & Robotics",\n    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    "source_url": "https://nature.com/articles/...",\n    "rank_score": 94,\n    "tags": ["Quantum", "Hardware", "DeepTech"],\n    "status": "published"\n}\n\nresponse = requests.post(url, json=payload, headers=headers)\nprint(response.json())`
-                        : apiSnippetLang === "curl"
-                        ? `curl -X POST http://localhost:3000/api/articles \\\n  -H "x-api-key: ${apiKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "title": "Quantum Supremacy Milestone Reached",\n    "summary": "Breakthrough in topological error correction enables sustained coherence.",\n    "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",\n    "category": "AI & Robotics",\n    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    "source_url": "https://nature.com/articles/...",\n    "rank_score": 94,\n    "tags": ["Quantum", "Hardware", "DeepTech"],\n    "status": "published"\n  }'`
-                        : `const response = await fetch("http://localhost:3000/api/articles", {\n  method: "POST",\n  headers: {\n    "x-api-key": "${apiKey}",\n    "Content-Type": "application/json",\n  },\n  body: JSON.stringify({\n    title: "Quantum Supremacy Milestone Reached",\n    summary: "Breakthrough in topological error correction enables sustained coherence.",\n    body: "## The Coherence Threshold\\n\\nResearchers have crossed...",\n    category: "AI & Robotics",\n    cover_image_url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    source_url: "https://nature.com/articles/...",\n    rank_score": 94,\n    tags: ["Quantum", "Hardware", "DeepTech"],\n    status: "published",\n  }),\n});\nconst data = await response.json();\nconsole.log(data);`;
-                      navigator.clipboard.writeText(snippet);
-                      setCopiedSnippet(true);
-                      setTimeout(() => setCopiedSnippet(false), 2000);
-                      showToast("SDK snippet copied to clipboard!");
-                    }}
-                    className="absolute top-3 right-3 inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs font-mono backdrop-blur-xs transition-colors cursor-pointer"
-                  >
-                    {copiedSnippet ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedSnippet ? "Copied" : "Copy"}</span>
-                  </button>
-                </div>
-              </div>
+console.log("Ingestion Response:", data);`
+                )}
+              </pre>
+            </div>
 
-              <div className="pt-2 text-[11px] font-mono text-[#8E8B82] flex items-center justify-between border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60">
-                <span>Format: application/json</span>
-                <span>Tested: Python 3.10+, Node 18+, cURL</span>
+            {/* Studio Footer Metadata */}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60 text-xs font-mono text-[#8E8B82]">
+              <div className="flex items-center gap-4">
+                <span>Runtime: <span className="text-[#1F1E1D] dark:text-[#F5F2EB]">Python 3.10+ &bull; Node 18+ &bull; cURL</span></span>
+                <span>&bull;</span>
+                <span>Format: <span className="text-emerald-600 font-semibold">application/json</span></span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Auto-deduplicated via unique <code className="text-[#C96442]">source_url</code></span>
               </div>
             </div>
           </div>
