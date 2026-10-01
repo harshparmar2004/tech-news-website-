@@ -3275,8 +3275,8 @@ console.log("Ingestion Response:", data);`
 
       {/* TAB 5: MONETIZATION & DOMAIN ADS */}
       {activeTab === "ads" && (
-        <div className="w-full space-y-8">
-          {/* Header Banner & Executive Performance Metrics */}
+        <div className="w-full space-y-5">
+          {/* Header Banner & Executive Performance Metrics (Compact & Short) */}
           {(() => {
             const totalActiveAds = ads.filter((a) => a.is_active).length;
             const totalImpressions = ads.reduce((sum, a) => sum + (a.impressions || 0), 0);
@@ -3284,117 +3284,91 @@ console.log("Ingestion Response:", data);`
             const avgCtr = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : "0.00";
 
             return (
-              <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
-                {/* Top Row: Title, Badge & Network Status */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider font-semibold bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 inline-flex items-center gap-1.5">
+              <div className="p-4 sm:p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-3.5">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+                  {/* Left: Concise Title, Badges & Subtitle */}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <div className="w-6 h-6 rounded-lg bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442] shrink-0">
                         <Megaphone className="w-3.5 h-3.5" />
-                        Monetization Engine
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Live Inventory Serving
+                      </div>
+                      <h2 className="font-serif text-base sm:text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        Right-Sidebar Monetization &amp; Domain Ad Inventory
+                      </h2>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live
                       </span>
                     </div>
-                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB] tracking-tight">
-                      Right-Sidebar Monetization &amp; Domain Ad Inventory
-                    </h2>
-                    <p className="text-sm text-[#686660] dark:text-[#A8A59D] leading-relaxed max-w-4xl">
-                      Configure independent high-impact advertisements (300×250 &amp; 300×600) tailored to each editorial domain desk, or define global fallbacks.
-                      Choose between high-converting image creatives with click tracking or direct Google AdSense / affiliate script tags.
+                    <p className="text-xs text-[#686660] dark:text-[#A8A59D] max-w-2xl leading-relaxed">
+                      Custom 300×250 &amp; 300×600 ad inventory across 7 editorial desks with automatic Global fallback. Supports direct image banners &amp; script tags.
                     </p>
                   </div>
 
-                  <div className="hidden lg:flex flex-col items-end gap-1.5 shrink-0 text-right">
-                    <span className="text-[11px] font-mono text-[#8E8B82] uppercase tracking-wider">Inventory Spec</span>
-                    <span className="font-mono text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB]">
-                      IAB 300×250 &amp; 300×600
-                    </span>
+                  {/* Right: 4 Compact Revenue Metric Pills in a single crisp row */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
+                    {/* 1. Active Ads */}
+                    <div className="px-3 py-1.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center gap-2.5 min-w-[110px]">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                        <Layers className="w-3 h-3" />
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-mono uppercase text-[#8E8B82] block leading-none font-semibold">Active</span>
+                        <span className="font-mono text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 block mt-0.5">
+                          {totalActiveAds} / 7
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 2. Delivered Views */}
+                    <div className="px-3 py-1.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center gap-2.5 min-w-[110px]">
+                      <div className="w-6 h-6 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                        <Eye className="w-3 h-3" />
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-mono uppercase text-[#8E8B82] block leading-none font-semibold">Views</span>
+                        <span className="font-mono text-xs sm:text-sm font-bold text-[#1F1E1D] dark:text-[#F5F2EB] block mt-0.5">
+                          {totalImpressions.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 3. Clicks */}
+                    <div className="px-3 py-1.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center gap-2.5 min-w-[110px]">
+                      <div className="w-6 h-6 rounded-lg bg-[#C96442]/10 text-[#C96442] flex items-center justify-center shrink-0">
+                        <MousePointerClick className="w-3 h-3" />
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-mono uppercase text-[#8E8B82] block leading-none font-semibold">Clicks</span>
+                        <span className="font-mono text-xs sm:text-sm font-bold text-[#C96442] block mt-0.5">
+                          {totalClicks.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 4. CTR */}
+                    <div className="px-3 py-1.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center gap-2.5 min-w-[110px]">
+                      <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                        <TrendingUp className="w-3 h-3" />
+                      </div>
+                      <div>
+                        <span className="text-[9px] font-mono uppercase text-[#8E8B82] block leading-none font-semibold">Avg CTR</span>
+                        <span className="font-mono text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 block mt-0.5">
+                          {avgCtr}%
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* 4-Card Executive KPI Metrics */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                  {/* Card 1: Active Ads */}
-                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Active Inventory</span>
-                      <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                        <Layers className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-mono text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-                        {totalActiveAds}
-                      </span>
-                      <span className="text-xs text-[#8E8B82] font-mono">running</span>
-                    </div>
-                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Across 7 editorial desks</span>
-                  </div>
-
-                  {/* Card 2: Delivered Views */}
-                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Delivered Views</span>
-                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                        <Eye className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-mono text-2xl sm:text-3xl font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        {totalImpressions.toLocaleString()}
-                      </span>
-                      <span className="text-xs text-[#8E8B82] font-mono">impr</span>
-                    </div>
-                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Total served impressions</span>
-                  </div>
-
-                  {/* Card 3: Total Clicks */}
-                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Total Clicks</span>
-                      <div className="w-7 h-7 rounded-lg bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
-                        <MousePointerClick className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-mono text-2xl sm:text-3xl font-bold text-[#C96442]">
-                        {totalClicks.toLocaleString()}
-                      </span>
-                      <span className="text-xs text-[#8E8B82] font-mono">clicks</span>
-                    </div>
-                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Direct link engagements</span>
-                  </div>
-
-                  {/* Card 4: CTR */}
-                  <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] relative overflow-hidden group hover:border-[#C96442]/30 transition-all shadow-2xs">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-[11px] font-mono uppercase tracking-wider text-[#8E8B82] font-semibold">Average CTR</span>
-                      <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
-                        <TrendingUp className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-mono text-2xl sm:text-3xl font-bold text-amber-600 dark:text-amber-400">
-                        {avgCtr}%
-                      </span>
-                      <span className="text-xs text-[#8E8B82] font-mono">rate</span>
-                    </div>
-                    <span className="text-[11px] text-[#8E8B82] block mt-1 font-mono">Click-through conversion</span>
-                  </div>
-                </div>
-
-                {/* Footer Logic Bar */}
-                <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#8E8B82] gap-3">
-                  <span className="flex items-center gap-2 font-mono">
-                    <Globe className="w-4 h-4 text-[#C96442] shrink-0" />
-                    <span><strong className="text-[#1F1E1D] dark:text-[#F5F2EB] font-semibold">Seamless Fallback:</strong> If a domain desk has no active creative, readers automatically see the Global ad inventory.</span>
+                {/* Subtle 1-line Footer rule */}
+                <div className="pt-2.5 border-t border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between text-[11px] text-[#8E8B82] font-mono">
+                  <span className="flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-[#C96442] shrink-0" />
+                    <span>Desks without custom ads inherit Global fallback.</span>
                   </span>
-                  <span className="flex items-center gap-1.5 font-mono text-[#686660] dark:text-[#A8A59D] shrink-0">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Dual Engine: Custom HTML / Script Tags + Direct Image Banners</span>
+                  <span className="hidden md:flex items-center gap-1 text-[#686660] dark:text-[#A8A59D]">
+                    <CheckCircle className="w-3 h-3 text-emerald-500" />
+                    <span>Script Tags (AdSense) &amp; Direct Banner Images</span>
                   </span>
                 </div>
               </div>
@@ -3402,19 +3376,19 @@ console.log("Ingestion Response:", data);`
           })()}
 
           {/* Domain Desk Selector Grid */}
-          <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
+          <div className="p-4 sm:p-5 rounded-2xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-3.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#C96442]" />
                 <span className="text-xs font-mono uppercase tracking-wider text-[#686660] dark:text-[#A8A59D] font-bold">
                   Select Editorial Desk / Domain
                 </span>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-[#8E8B82]">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-[#8E8B82]">
                   {categories.length + 1} Channels
                 </span>
               </div>
               <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-[#8E8B82]">Configuring:</span>
+                <span className="text-[#8E8B82]">Active Target:</span>
                 <span className="px-2.5 py-0.5 rounded-lg bg-[#C96442]/10 border border-[#C96442]/20 text-[#C96442] font-bold">
                   {selectedAdDomain === "global"
                     ? "Global (Default Fallback)"
@@ -3424,7 +3398,7 @@ console.log("Ingestion Response:", data);`
             </div>
 
             {/* Structured 7-Column Executive Desk Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
               {/* 1. Global Desk Card */}
               {(() => {
                 const globalActiveCount = ads.filter((a) => a.domain === "global" && a.is_active).length;
@@ -3433,16 +3407,16 @@ console.log("Ingestion Response:", data);`
                   <button
                     type="button"
                     onClick={() => setSelectedAdDomain("global")}
-                    className={`p-3.5 rounded-2xl text-left transition-all flex flex-col justify-between gap-2.5 cursor-pointer border ${
+                    className={`p-2.5 sm:p-3 rounded-xl text-left transition-all flex flex-col justify-between gap-2 cursor-pointer border ${
                       isSelected
                         ? "bg-[#C96442] border-[#C96442] text-white shadow-md ring-2 ring-[#C96442] ring-offset-2 ring-offset-white dark:ring-offset-[#181816]"
                         : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:bg-white dark:hover:bg-[#20201D] hover:border-[#C96442]/40 text-[#1F1E1D] dark:text-[#F5F2EB]"
                     }`}
                   >
                     <div className="flex items-center justify-between w-full">
-                      <span className="text-xl">🌐</span>
+                      <span className="text-lg">🌐</span>
                       <span
-                        className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full font-semibold ${
+                        className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full font-semibold ${
                           isSelected
                             ? "bg-white text-[#C96442]"
                             : globalActiveCount > 0
@@ -3455,7 +3429,7 @@ console.log("Ingestion Response:", data);`
                     </div>
 
                     <div>
-                      <span className={`text-xs sm:text-sm font-bold block truncate ${isSelected ? "text-white" : "text-[#1F1E1D] dark:text-[#F5F2EB]"}`}>
+                      <span className={`text-xs font-bold block truncate ${isSelected ? "text-white" : "text-[#1F1E1D] dark:text-[#F5F2EB]"}`}>
                         Global Base
                       </span>
                       <span className={`text-[10px] font-mono block mt-0.5 truncate ${isSelected ? "text-white/80" : "text-[#8E8B82]"}`}>
@@ -3485,16 +3459,16 @@ console.log("Ingestion Response:", data);`
                     key={c.id}
                     type="button"
                     onClick={() => setSelectedAdDomain(c.slug)}
-                    className={`p-3.5 rounded-2xl text-left transition-all flex flex-col justify-between gap-2.5 cursor-pointer border ${
+                    className={`p-2.5 sm:p-3 rounded-xl text-left transition-all flex flex-col justify-between gap-2 cursor-pointer border ${
                       isSelected
                         ? "bg-[#C96442] border-[#C96442] text-white shadow-md ring-2 ring-[#C96442] ring-offset-2 ring-offset-white dark:ring-offset-[#181816]"
                         : "border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] hover:bg-white dark:hover:bg-[#20201D] hover:border-[#C96442]/40 text-[#1F1E1D] dark:text-[#F5F2EB]"
                     }`}
                   >
                     <div className="flex items-center justify-between w-full">
-                      <span className="text-xl">{emoji}</span>
+                      <span className="text-lg">{emoji}</span>
                       <span
-                        className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full font-semibold ${
+                        className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full font-semibold ${
                           isSelected
                             ? "bg-white text-[#C96442]"
                             : domainActiveCount > 0
@@ -3507,7 +3481,7 @@ console.log("Ingestion Response:", data);`
                     </div>
 
                     <div>
-                      <span className={`text-xs sm:text-sm font-bold block truncate ${isSelected ? "text-white" : "text-[#1F1E1D] dark:text-[#F5F2EB]"}`}>
+                      <span className={`text-xs font-bold block truncate ${isSelected ? "text-white" : "text-[#1F1E1D] dark:text-[#F5F2EB]"}`}>
                         {c.name}
                       </span>
                       <span className={`text-[10px] font-mono block mt-0.5 truncate ${isSelected ? "text-white/80" : "text-[#8E8B82]"}`}>
