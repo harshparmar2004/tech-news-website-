@@ -579,6 +579,10 @@ export function AdminDashboardClient({
   const [selectedAdDomain, setSelectedAdDomain] = useState<string>("global");
   const [savingSlot, setSavingSlot] = useState<string | null>(null);
 
+  // API Ingestion Snippet State
+  const [apiSnippetLang, setApiSnippetLang] = useState<"python" | "curl" | "node">("python");
+  const [copiedSnippet, setCopiedSnippet] = useState(false);
+
   // TypeSafe Jev API State
   const [jevKeyInput, setJevKeyInput] = useState("");
   const [jevMaskedKey, setJevMaskedKey] = useState(initialJevSettings?.masked_key || "");
@@ -1600,9 +1604,9 @@ export function AdminDashboardClient({
               </div>
 
               {/* Domain Breakdown & Recent Stories Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
                 {/* Left 2 Cols: Recent Articles Dispatched */}
-                <div className="lg:col-span-2 p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+                <div className="lg:col-span-2 h-full flex flex-col justify-between p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
                   <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                     <div>
                       <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
@@ -1668,7 +1672,7 @@ export function AdminDashboardClient({
                 </div>
 
                 {/* Right 1 Col: Category / Domain Inventory Breakdown */}
-                <div className="p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
+                <div className="h-full flex flex-col justify-between p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#20201D] shadow-xs space-y-4">
                   <div className="pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                     <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                       Domain Desk Volume
@@ -2061,10 +2065,10 @@ export function AdminDashboardClient({
       {/* TAB 2: MANUAL ARTICLE DISPATCH */}
       {activeTab === "create" && (
         <div className="w-full">
-          <form onSubmit={handleCreateArticle} className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <form onSubmit={handleCreateArticle} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Main Writing Canvas (8 cols) */}
-            <div className="lg:col-span-8 space-y-6">
-              <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+            <div className="lg:col-span-8 flex flex-col">
+              <div className="h-full flex flex-col justify-between p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
                 <div className="flex items-center justify-between pb-4 border-b border-[#EBE8DF] dark:border-[#33322E]">
                   <div className="flex items-center space-x-2.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#C96442]" />
@@ -2079,7 +2083,7 @@ export function AdminDashboardClient({
                   </div>
                 </div>
 
-                <div className="space-y-5">
+                <div className="space-y-5 flex-1 flex flex-col">
                   {/* Headline */}
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
@@ -2089,7 +2093,7 @@ export function AdminDashboardClient({
                       <button
                         type="button"
                         onClick={() => handleOpenAiAssist("title", "create", newTitle, newCategory)}
-                        className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                        className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>✨ AI Headline Copilot</span>
@@ -2114,7 +2118,7 @@ export function AdminDashboardClient({
                       <button
                         type="button"
                         onClick={() => handleOpenAiAssist("summary", "create", newSummary || newTitle, newCategory)}
-                        className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline"
+                        className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>✨ AI Hook Assist</span>
@@ -2131,7 +2135,7 @@ export function AdminDashboardClient({
                   </div>
 
                   {/* Markdown Body */}
-                  <div>
+                  <div className="flex-1 flex flex-col min-h-[260px]">
                     <div className="flex items-center justify-between mb-1.5">
                       <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
                         Article Body (Markdown Supported) *
@@ -2147,9 +2151,9 @@ export function AdminDashboardClient({
                       value={newBody}
                       onChange={(e) => setNewBody(e.target.value)}
                       placeholder="## Section 1: The Core Breakthrough&#10;&#10;In-depth technical analysis and context here...&#10;&#10;## Market Implications&#10;&#10;Strategic impact on founders, builders and enterprise..."
-                      rows={14}
+                      rows={10}
                       required
-                      className="w-full p-4 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] font-mono leading-relaxed focus:outline-none focus:border-[#C96442]"
+                      className="w-full flex-1 min-h-[220px] p-4 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#1C1C19] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] font-mono leading-relaxed focus:outline-none focus:border-[#C96442]"
                     />
                   </div>
                 </div>
@@ -2157,117 +2161,184 @@ export function AdminDashboardClient({
             </div>
 
             {/* Publishing & Metadata Sidebar (4 cols) */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
-                {/* 1. Header & Live Dispatch Action */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                    <div className="flex items-center space-x-2">
-                      <Send className="w-4 h-4 text-[#C96442]" />
-                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        Publishing Desk
-                      </h3>
+            <div className="lg:col-span-4 flex flex-col">
+              <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+                <div className="space-y-6">
+                  {/* 1. Header & Live Dispatch Action */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                      <div className="flex items-center space-x-2">
+                        <Send className="w-4 h-4 text-[#C96442]" />
+                        <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                          Publishing Desk
+                        </h3>
+                      </div>
+                      <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                        Ready to Dispatch
+                      </span>
                     </div>
-                    <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
-                      Ready to Dispatch
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3.5 px-6 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                    >
+                      <Send className="w-4 h-4" />
+                      <span>{loading ? "Publishing Story..." : "Publish Article Immediately"}</span>
+                    </button>
+
+                    <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] cursor-pointer hover:border-[#C96442]/40 transition-colors">
+                      <input
+                        type="checkbox"
+                        id="isFeatured"
+                        checked={newFeatured}
+                        onChange={(e) => setNewFeatured(e.target.checked)}
+                        className="w-4 h-4 mt-0.5 rounded text-[#C96442] accent-[#C96442]"
+                      />
+                      <div className="space-y-0.5">
+                        <span className="text-xs font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] block">
+                          Pin as Featured Story
+                        </span>
+                        <span className="text-[11px] text-[#8E8B82] block leading-tight">
+                          Display prominently in homepage hero spotlight
+                        </span>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* 2. Editorial Domain Desk */}
+                  <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                        Editorial Domain Desk
+                      </label>
+                      <Tag className="w-3.5 h-3.5 text-[#C96442]" />
+                    </div>
+                    <select
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-medium text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
+                    >
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.name}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 3. Cover Media */}
+                  <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                        Cover Media
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenImagePicker("create")}
+                        className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline cursor-pointer"
+                      >
+                        <Camera className="w-3.5 h-3.5" />
+                        <span>🔍 Browse Photos</span>
+                      </button>
+                    </div>
+
+                    <input
+                      type="url"
+                      value={newCover}
+                      onChange={(e) => setNewCover(e.target.value)}
+                      placeholder="https://images.unsplash.com/..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
+                    />
+
+                    {/* Live Thumbnail Box */}
+                    {newCover ? (
+                      <div className="relative aspect-video rounded-xl overflow-hidden border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] shadow-2xs">
+                        <img
+                          src={newCover}
+                          alt="Cover Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = "none";
+                          }}
+                        />
+                        <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">
+                          Live Cover Preview
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aspect-video rounded-xl border border-dashed border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/50 dark:bg-[#181816]/50 flex flex-col items-center justify-center p-4 text-center">
+                        <Camera className="w-6 h-6 text-[#8E8B82] mb-1.5" />
+                        <span className="text-xs text-[#8E8B82]">No cover image set</span>
+                        <span className="text-[10px] text-[#8E8B82]/80 mt-0.5">Click &apos;Browse Photos&apos; or paste URL</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 4. Pre-Flight Publication Checklist */}
+                <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                      Pre-Flight Editorial Health
+                    </span>
+                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      {[
+                        newTitle.trim().length >= 10,
+                        newSummary.trim().length >= 15,
+                        (newBody ? newBody.trim().split(/\s+/).filter(Boolean).length : 0) >= 30,
+                        Boolean(newCover),
+                      ].filter(Boolean).length} / 4 Checks
                     </span>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-3.5 px-6 rounded-xl bg-[#C96442] hover:bg-[#B35334] text-white text-sm font-semibold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-                  >
-                    <Send className="w-4 h-4" />
-                    <span>{loading ? "Publishing Story..." : "Publish Article Immediately"}</span>
-                  </button>
-
-                  <label className="flex items-start gap-3 p-3.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] cursor-pointer hover:border-[#C96442]/40 transition-colors">
-                    <input
-                      type="checkbox"
-                      id="isFeatured"
-                      checked={newFeatured}
-                      onChange={(e) => setNewFeatured(e.target.checked)}
-                      className="w-4 h-4 mt-0.5 rounded text-[#C96442] accent-[#C96442]"
-                    />
-                    <div className="space-y-0.5">
-                      <span className="text-xs font-semibold text-[#1F1E1D] dark:text-[#F5F2EB] block">
-                        Pin as Featured Story
-                      </span>
-                      <span className="text-[11px] text-[#8E8B82] block leading-tight">
-                        Display prominently in homepage hero spotlight
-                      </span>
+                  <div className="space-y-2 p-3.5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#686660] dark:text-[#A8A59D]">Headline Signal</span>
+                      {newTitle.trim().length >= 10 ? (
+                        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
+                          <Check className="w-3.5 h-3.5" /> High Signal
+                        </span>
+                      ) : (
+                        <span className="text-amber-600 dark:text-amber-400 font-semibold">Drafting headline</span>
+                      )}
                     </div>
-                  </label>
-                </div>
 
-                {/* 2. Editorial Domain Desk */}
-                <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
-                      Editorial Domain Desk
-                    </label>
-                    <Tag className="w-3.5 h-3.5 text-[#C96442]" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#686660] dark:text-[#A8A59D]">Executive Hook</span>
+                      {newSummary.trim().length >= 15 ? (
+                        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
+                          <Check className="w-3.5 h-3.5" /> Hook Formed
+                        </span>
+                      ) : (
+                        <span className="text-amber-600 dark:text-amber-400 font-semibold">Summary needed</span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#686660] dark:text-[#A8A59D]">Body Depth</span>
+                      {(newBody ? newBody.trim().split(/\s+/).filter(Boolean).length : 0) >= 30 ? (
+                        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
+                          <Check className="w-3.5 h-3.5" /> {newBody.trim().split(/\s+/).filter(Boolean).length} words
+                        </span>
+                      ) : (
+                        <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                          {newBody ? newBody.trim().split(/\s+/).filter(Boolean).length : 0} words (draft)
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#686660] dark:text-[#A8A59D]">Cover Visual</span>
+                      {newCover ? (
+                        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
+                          <Check className="w-3.5 h-3.5" /> Creative Attached
+                        </span>
+                      ) : (
+                        <span className="text-[#8E8B82]">Optional editorial</span>
+                      )}
+                    </div>
                   </div>
-                  <select
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-medium text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
-                  >
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.name}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 3. Cover Media */}
-                <div className="pt-4 border-t border-[#EBE8DF] dark:border-[#33322E] space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
-                      Cover Media
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => handleOpenImagePicker("create")}
-                      className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#C96442] hover:underline cursor-pointer"
-                    >
-                      <Camera className="w-3.5 h-3.5" />
-                      <span>🔍 Browse Photos</span>
-                    </button>
-                  </div>
-
-                  <input
-                    type="url"
-                    value={newCover}
-                    onChange={(e) => setNewCover(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-sm font-mono text-[#1F1E1D] dark:text-[#F5F2EB] focus:outline-none focus:border-[#C96442]"
-                  />
-
-                  {/* Live Thumbnail Box */}
-                  {newCover ? (
-                    <div className="relative aspect-video rounded-xl overflow-hidden border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] shadow-2xs">
-                      <img
-                        src={newCover}
-                        alt="Cover Preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = "none";
-                        }}
-                      />
-                      <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">
-                        Live Cover Preview
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="aspect-video rounded-xl border border-dashed border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0]/50 dark:bg-[#181816]/50 flex flex-col items-center justify-center p-4 text-center">
-                      <Camera className="w-6 h-6 text-[#8E8B82] mb-1.5" />
-                      <span className="text-xs text-[#8E8B82]">No cover image set</span>
-                      <span className="text-[10px] text-[#8E8B82]/80 mt-0.5">Click &apos;Browse Photos&apos; or paste URL</span>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -2280,34 +2351,36 @@ export function AdminDashboardClient({
         <div className="w-full space-y-8">
           {/* Top Full-Width Hero Card: Key & Ingest Controls */}
           <div className="p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
               {/* Left Side: Agent Ingestion Key (7 cols) */}
-              <div className="lg:col-span-7 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
-                      <KeyRound className="w-4 h-4" />
+              <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                        <KeyRound className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                          NewsFlow Agent Ingestion Key
+                        </h3>
+                        <p className="text-xs text-[#8E8B82]">
+                          Bearer authentication token for autonomous background crawlers
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                        NewsFlow Agent Ingestion Key
-                      </h3>
-                      <p className="text-xs text-[#8E8B82]">
-                        Bearer authentication token for autonomous background crawlers
-                      </p>
-                    </div>
+                    <button
+                      onClick={copyApiKey}
+                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs font-mono font-medium text-[#C96442] hover:border-[#C96442]/50 transition-colors cursor-pointer"
+                    >
+                      {copiedKey ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedKey ? "Copied Key" : "Copy Token"}</span>
+                    </button>
                   </div>
-                  <button
-                    onClick={copyApiKey}
-                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-[#EBE8DF] dark:border-[#33322E] bg-[#FAF7F0] dark:bg-[#181816] text-xs font-mono font-medium text-[#C96442] hover:border-[#C96442]/50 transition-colors cursor-pointer"
-                  >
-                    {copiedKey ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedKey ? "Copied Key" : "Copy Token"}</span>
-                  </button>
-                </div>
 
-                <div className="p-4 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] font-mono text-sm text-[#1F1E1D] dark:text-[#F5F2EB] select-all break-all shadow-2xs">
-                  {apiKey}
+                  <div className="p-4 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] font-mono text-sm text-[#1F1E1D] dark:text-[#F5F2EB] select-all break-all shadow-2xs">
+                    {apiKey}
+                  </div>
                 </div>
 
                 <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
@@ -2316,22 +2389,24 @@ export function AdminDashboardClient({
               </div>
 
               {/* Right Side: Immediate Pipeline Controller (5 cols) */}
-              <div className="lg:col-span-5 p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                  <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
-                    Ingest Cycle Controller
-                  </span>
-                  <div className="flex items-center space-x-2">
-                    <span className={`w-2.5 h-2.5 rounded-full ${pipelineRunning ? "bg-amber-500 animate-ping" : "bg-emerald-500"}`} />
-                    <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
-                      {pipelineRunning ? "Ingesting..." : "Armed & Ready"}
+              <div className="lg:col-span-5 h-full flex flex-col justify-between p-5 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                    <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D]">
+                      Ingest Cycle Controller
                     </span>
+                    <div className="flex items-center space-x-2">
+                      <span className={`w-2.5 h-2.5 rounded-full ${pipelineRunning ? "bg-amber-500 animate-ping" : "bg-emerald-500"}`} />
+                      <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                        {pipelineRunning ? "Ingesting..." : "Armed & Ready"}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <p className="text-xs text-[#8E8B82] leading-relaxed">
-                  Trigger an immediate autonomous ingestion pass across active RSS feeds and HackerNews APIs.
-                </p>
+                  <p className="text-xs text-[#8E8B82] leading-relaxed">
+                    Trigger an immediate autonomous ingestion pass across active RSS feeds and HackerNews APIs.
+                  </p>
+                </div>
 
                 <button
                   type="button"
@@ -2347,70 +2422,167 @@ export function AdminDashboardClient({
           </div>
 
           {/* Bottom Symmetrical 2-Column Section: Schema & Python Snippet */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             {/* Left Column: API Specification & cURL */}
-            <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
-              <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
-                    <Database className="w-4 h-4" />
+            <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442]">
+                      <Database className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        API Protocol &amp; Endpoints
+                      </h3>
+                      <p className="text-xs text-[#8E8B82]">
+                        Direct HTTP interfaces for crawler dispatch
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    API Protocol &amp; Endpoints
-                  </h3>
-                </div>
-                <span className="text-xs font-mono text-emerald-600 font-semibold">REST JSON</span>
-              </div>
-
-              {/* Endpoints List */}
-              <div className="space-y-2.5">
-                <div className="p-3 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase text-[#8E8B82] block font-semibold">Article Ingest</span>
-                    <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">POST /api/articles</code>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
-                    Protected
+                  <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold">
+                    REST JSON
                   </span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase text-[#8E8B82] block font-semibold">Trigger Webhook</span>
-                    <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">POST /api/pipeline/trigger</code>
+                {/* Endpoints List */}
+                <div className="space-y-2.5">
+                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[10px] font-mono uppercase text-[#8E8B82] font-semibold">Article Ingest</span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#C96442]/10 text-[#C96442] font-semibold">POST</span>
+                      </div>
+                      <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-0.5 block">/api/articles</code>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
+                      Protected
+                    </span>
                   </div>
-                  <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
-                    Protected
-                  </span>
+
+                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[10px] font-mono uppercase text-[#8E8B82] font-semibold">Trigger Webhook</span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#C96442]/10 text-[#C96442] font-semibold">POST</span>
+                      </div>
+                      <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-0.5 block">/api/pipeline/trigger</code>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono font-semibold">
+                      Protected
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[10px] font-mono uppercase text-[#8E8B82] font-semibold">Taxonomy Desks</span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-stone-500/10 text-stone-600 dark:text-stone-300 font-semibold">GET</span>
+                      </div>
+                      <code className="text-xs font-mono font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-0.5 block">/api/categories</code>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-md bg-stone-500/10 text-stone-600 dark:text-stone-400 border border-stone-500/20 text-[11px] font-mono font-semibold">
+                      Public
+                    </span>
+                  </div>
+                </div>
+
+                {/* Authentication Spec */}
+                <div className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-1 text-xs font-mono">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#8E8B82] uppercase text-[10px] font-semibold">Required Auth Header</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold">x-api-key</span>
+                  </div>
+                  <div className="text-[11px] text-[#686660] dark:text-[#A8A59D] truncate">
+                    Format: <code className="text-[#C96442] font-bold">x-api-key: {apiKey ? `${apiKey.substring(0, 10)}...` : "your_token"}</code>
+                  </div>
                 </div>
               </div>
 
               {/* cURL Probe */}
-              <div className="space-y-2 pt-2 border-t border-[#EBE8DF] dark:border-[#33322E]">
-                <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] block">
-                  Terminal cURL Test Probe
-                </span>
-                <pre className="p-3.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
+              <div className="space-y-2 pt-3 border-t border-[#EBE8DF] dark:border-[#33322E]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono uppercase tracking-wider font-semibold text-[#686660] dark:text-[#A8A59D] block">
+                    Terminal cURL Quick Probe
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`curl -X POST http://localhost:3000/api/pipeline/trigger -H "x-api-key: ${apiKey}"`);
+                      showToast("cURL command copied to clipboard!");
+                    }}
+                    className="text-xs font-mono text-[#C96442] hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <Copy className="w-3 h-3" />
+                    <span>Copy cURL</span>
+                  </button>
+                </div>
+                <pre className="p-3 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] text-xs font-mono overflow-x-auto border border-[#EBE8DF] dark:border-[#33322E] select-all">
 {`curl -X POST http://localhost:3000/api/pipeline/trigger \\
   -H "x-api-key: ${apiKey}"`}
                 </pre>
               </div>
             </div>
 
-            {/* Right Column: Python Ingestion Code */}
-            <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
-                <div className="flex items-center space-x-2.5">
-                  <Code2 className="w-5 h-5 text-[#C96442]" />
-                  <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
-                    Python Client Integration
-                  </h3>
-                </div>
-                <span className="text-xs font-mono text-[#8E8B82]">crawler.py</span>
-              </div>
+            {/* Right Column: Multi-Language Ingestion Code */}
+            <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-4">
+              <div className="space-y-4 flex-1 flex flex-col">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E] gap-2">
+                  <div className="flex items-center space-x-2.5">
+                    <Code2 className="w-5 h-5 text-[#C96442]" />
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                        Client Integration SDK
+                      </h3>
+                      <p className="text-xs text-[#8E8B82]">
+                        Production dispatch code for your crawlers
+                      </p>
+                    </div>
+                  </div>
 
-              <pre className="p-4 rounded-2xl bg-[#181816] text-[#F5F2EB] text-xs font-mono overflow-x-auto leading-relaxed border border-[#33322E]">
-{`import requests
+                  {/* Language Switcher Tabs */}
+                  <div className="flex items-center space-x-1 p-1 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                    <button
+                      type="button"
+                      onClick={() => setApiSnippetLang("python")}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                        apiSnippetLang === "python"
+                          ? "bg-[#C96442] text-white shadow-2xs"
+                          : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+                      }`}
+                    >
+                      Python
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setApiSnippetLang("curl")}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                        apiSnippetLang === "curl"
+                          ? "bg-[#C96442] text-white shadow-2xs"
+                          : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+                      }`}
+                    >
+                      cURL
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setApiSnippetLang("node")}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                        apiSnippetLang === "node"
+                          ? "bg-[#C96442] text-white shadow-2xs"
+                          : "text-[#686660] dark:text-[#A8A59D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+                      }`}
+                    >
+                      Node.js
+                    </button>
+                  </div>
+                </div>
+
+                {/* Code Container */}
+                <div className="relative flex-1 flex flex-col">
+                  <pre className="flex-1 p-4 rounded-2xl bg-[#181816] text-[#F5F2EB] text-xs font-mono overflow-auto max-h-[380px] leading-relaxed border border-[#33322E]">
+                    {apiSnippetLang === "python" && (
+`import requests
 
 url = "http://localhost:3000/api/articles"
 headers = {
@@ -2430,8 +2602,74 @@ payload = {
 }
 
 response = requests.post(url, json=payload, headers=headers)
-print(response.json())`}
-              </pre>
+print(response.json())`
+                    )}
+                    {apiSnippetLang === "curl" && (
+`curl -X POST http://localhost:3000/api/articles \\
+  -H "x-api-key: ${apiKey}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "title": "Quantum Supremacy Milestone Reached",
+    "summary": "Breakthrough in topological error correction enables sustained coherence.",
+    "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",
+    "category": "AI & Robotics",
+    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
+    "source_url": "https://nature.com/articles/...",
+    "rank_score": 94,
+    "tags": ["Quantum", "Hardware", "DeepTech"],
+    "status": "published"
+  }'`
+                    )}
+                    {apiSnippetLang === "node" && (
+`// Node.js (v18+) or TypeScript Ingestion Client
+const response = await fetch("http://localhost:3000/api/articles", {
+  method: "POST",
+  headers: {
+    "x-api-key": "${apiKey}",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    title: "Quantum Supremacy Milestone Reached",
+    summary: "Breakthrough in topological error correction enables sustained coherence.",
+    body: "## The Coherence Threshold\\n\\nResearchers have crossed...",
+    category: "AI & Robotics",
+    cover_image_url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",
+    source_url: "https://nature.com/articles/...",
+    rank_score": 94,
+    tags: ["Quantum", "Hardware", "DeepTech"],
+    status: "published",
+  }),
+});
+
+const data = await response.json();
+console.log(data);`
+                    )}
+                  </pre>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const snippet = apiSnippetLang === "python"
+                        ? `import requests\n\nurl = "http://localhost:3000/api/articles"\nheaders = {\n    "x-api-key": "${apiKey}",\n    "Content-Type": "application/json"\n}\npayload = {\n    "title": "Quantum Supremacy Milestone Reached",\n    "summary": "Breakthrough in topological error correction enables sustained coherence.",\n    "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",\n    "category": "AI & Robotics",\n    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    "source_url": "https://nature.com/articles/...",\n    "rank_score": 94,\n    "tags": ["Quantum", "Hardware", "DeepTech"],\n    "status": "published"\n}\n\nresponse = requests.post(url, json=payload, headers=headers)\nprint(response.json())`
+                        : apiSnippetLang === "curl"
+                        ? `curl -X POST http://localhost:3000/api/articles \\\n  -H "x-api-key: ${apiKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "title": "Quantum Supremacy Milestone Reached",\n    "summary": "Breakthrough in topological error correction enables sustained coherence.",\n    "body": "## The Coherence Threshold\\n\\nResearchers have crossed...",\n    "category": "AI & Robotics",\n    "cover_image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    "source_url": "https://nature.com/articles/...",\n    "rank_score": 94,\n    "tags": ["Quantum", "Hardware", "DeepTech"],\n    "status": "published"\n  }'`
+                        : `const response = await fetch("http://localhost:3000/api/articles", {\n  method: "POST",\n  headers: {\n    "x-api-key": "${apiKey}",\n    "Content-Type": "application/json",\n  },\n  body: JSON.stringify({\n    title: "Quantum Supremacy Milestone Reached",\n    summary: "Breakthrough in topological error correction enables sustained coherence.",\n    body: "## The Coherence Threshold\\n\\nResearchers have crossed...",\n    category: "AI & Robotics",\n    cover_image_url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb",\n    source_url: "https://nature.com/articles/...",\n    rank_score": 94,\n    tags: ["Quantum", "Hardware", "DeepTech"],\n    status: "published",\n  }),\n});\nconst data = await response.json();\nconsole.log(data);`;
+                      navigator.clipboard.writeText(snippet);
+                      setCopiedSnippet(true);
+                      setTimeout(() => setCopiedSnippet(false), 2000);
+                      showToast("SDK snippet copied to clipboard!");
+                    }}
+                    className="absolute top-3 right-3 inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white text-xs font-mono backdrop-blur-xs transition-colors cursor-pointer"
+                  >
+                    {copiedSnippet ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedSnippet ? "Copied" : "Copy"}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-2 text-[11px] font-mono text-[#8E8B82] flex items-center justify-between border-t border-[#EBE8DF]/60 dark:border-[#33322E]/60">
+                <span>Format: application/json</span>
+                <span>Tested: Python 3.10+, Node 18+, cURL</span>
+              </div>
             </div>
           </div>
         </div>
@@ -2498,10 +2736,10 @@ print(response.json())`}
           </div>
 
           {/* 2-Column Grid: Settings & Playground */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             {/* Column 1: Configuration Form Card */}
-            <div className="space-y-6">
-              <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
+            <div className="flex flex-col space-y-6">
+              <div className="flex-1 flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-6">
                 <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                   <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
                     API Key &amp; Triage Settings
@@ -2690,7 +2928,8 @@ print(response.json())`}
             </div>
 
             {/* Column 2: Interactive Sandbox Playground Card */}
-            <div className="p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
+            <div className="flex flex-col">
+              <div className="h-full flex flex-col justify-between p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
                 <div>
                   <h3 className="font-serif text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
@@ -2829,6 +3068,7 @@ print(response.json())`}
             </div>
           </div>
         </div>
+      </div>
       )}
 
       {/* TAB 5: MONETIZATION & DOMAIN ADS */}
