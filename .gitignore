@@ -46,3 +46,4 @@ next-env.d.ts
 *.db-wal
 *.db-shm
 !.env.example
+pipeline_status.json

@@ -1168,7 +1168,7 @@ export function AdminDashboardClient({
 
       {/* LEFT SIDEBAR */}
       <aside
-        className={`fixed md:sticky top-0 left-0 z-40 h-screen w-64 lg:w-72 bg-[#F7F4EC] dark:bg-[#1A1917] border-r border-[#EBE8DF] dark:border-[#282724] flex flex-col justify-between transition-transform duration-200 ease-in-out shrink-0 ${
+        className={`fixed md:sticky top-0 left-0 z-40 h-screen w-72 lg:w-80 bg-[#F7F4EC] dark:bg-[#1A1917] border-r border-[#EBE8DF] dark:border-[#282724] flex flex-col justify-between transition-transform duration-200 ease-in-out shrink-0 ${
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -1179,7 +1179,7 @@ export function AdminDashboardClient({
               <span className="font-serif text-2xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
                 NewsFlow
               </span>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25 font-semibold">
+              <span className="text-xs font-mono uppercase px-2.5 py-0.5 rounded-md bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20 font-bold">
                 Admin
               </span>
             </div>
@@ -1190,27 +1190,27 @@ export function AdminDashboardClient({
               <X className="w-5 h-5" />
             </button>
           </div>
-          <p className="text-[11px] font-mono text-[#8E8B82] mt-1">
+          <p className="text-xs font-mono text-[#8E8B82] mt-1.5">
             Editorial Cockpit &amp; Pipeline Hub
           </p>
         </div>
 
         {/* Sidebar Navigation Links */}
-        <nav className="flex-1 p-3.5 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-2.5 overflow-y-auto">
           {/* Overview */}
           <button
             onClick={() => {
               setActiveTab("overview");
               setMobileSidebarOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-[15px] font-semibold ${
               activeTab === "overview"
-                ? "bg-[#C96442] text-white font-semibold shadow-xs"
-                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+                ? "bg-[#C96442] border-[#C96442] text-white shadow-sm"
+                : "border-[#EBE8DF] dark:border-[#2C2B27] bg-white/80 dark:bg-[#20201D] text-[#1F1E1D] dark:text-[#F5F2EB] shadow-2xs hover:border-[#C96442] hover:bg-white dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
             }`}
           >
-            <div className="flex items-center space-x-3">
-              <LayoutDashboard className="w-4 h-4" />
+            <div className="flex items-center space-x-3.5">
+              <LayoutDashboard className="w-5 h-5 shrink-0" />
               <span>Overview</span>
             </div>
           </button>
@@ -1221,21 +1221,21 @@ export function AdminDashboardClient({
               setActiveTab("articles");
               setMobileSidebarOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-[15px] font-semibold ${
               activeTab === "articles"
-                ? "bg-[#C96442] text-white font-semibold shadow-xs"
-                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+                ? "bg-[#C96442] border-[#C96442] text-white shadow-sm"
+                : "border-[#EBE8DF] dark:border-[#2C2B27] bg-white/80 dark:bg-[#20201D] text-[#1F1E1D] dark:text-[#F5F2EB] shadow-2xs hover:border-[#C96442] hover:bg-white dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
             }`}
           >
-            <div className="flex items-center space-x-3">
-              <Database className="w-4 h-4" />
+            <div className="flex items-center space-x-3.5">
+              <Database className="w-5 h-5 shrink-0" />
               <span>Articles Vault</span>
             </div>
             <span
-              className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+              className={`text-xs font-mono font-bold px-2.5 py-1 rounded-md ${
                 activeTab === "articles"
-                  ? "bg-white/20 text-white"
-                  : "bg-[#EBE8DF] dark:bg-[#252422] text-[#686660] dark:text-[#A8A59D]"
+                  ? "bg-white/25 text-white border border-white/30"
+                  : "bg-[#FAF7F0] dark:bg-[#181816] text-[#686660] dark:text-[#A8A59D] border border-[#EBE8DF] dark:border-[#33322E]"
               }`}
             >
               {articles.length}
@@ -1248,14 +1248,14 @@ export function AdminDashboardClient({
               setActiveTab("create");
               setMobileSidebarOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-[15px] font-semibold ${
               activeTab === "create"
-                ? "bg-[#C96442] text-white font-semibold shadow-xs"
-                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+                ? "bg-[#C96442] border-[#C96442] text-white shadow-sm"
+                : "border-[#EBE8DF] dark:border-[#2C2B27] bg-white/80 dark:bg-[#20201D] text-[#1F1E1D] dark:text-[#F5F2EB] shadow-2xs hover:border-[#C96442] hover:bg-white dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
             }`}
           >
-            <div className="flex items-center space-x-3">
-              <PlusCircle className="w-4 h-4" />
+            <div className="flex items-center space-x-3.5">
+              <PlusCircle className="w-5 h-5 shrink-0" />
               <span>Manual Dispatch</span>
             </div>
           </button>
@@ -1266,21 +1266,21 @@ export function AdminDashboardClient({
               setActiveTab("jev");
               setMobileSidebarOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-[15px] font-semibold ${
               activeTab === "jev"
-                ? "bg-[#C96442] text-white font-semibold shadow-xs"
-                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+                ? "bg-[#C96442] border-[#C96442] text-white shadow-sm"
+                : "border-[#EBE8DF] dark:border-[#2C2B27] bg-white/80 dark:bg-[#20201D] text-[#1F1E1D] dark:text-[#F5F2EB] shadow-2xs hover:border-[#C96442] hover:bg-white dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
             }`}
           >
-            <div className="flex items-center space-x-3">
-              <Zap className="w-4 h-4" />
+            <div className="flex items-center space-x-3.5">
+              <Zap className="w-5 h-5 shrink-0" />
               <span>TypeSafe Jev AI</span>
             </div>
             {jevHasKey ? (
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System 1 Armed" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" title="System 1 Armed" />
             ) : (
-              <span className={`text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-full ${
-                activeTab === "jev" ? "bg-white/20 text-white" : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
+              <span className={`text-[11px] uppercase font-mono px-2 py-0.5 rounded-md ${
+                activeTab === "jev" ? "bg-white/25 text-white" : "bg-amber-500/10 text-amber-600 border border-amber-500/20"
               }`}>
                 Setup
               </span>
@@ -1293,20 +1293,20 @@ export function AdminDashboardClient({
               setActiveTab("ads");
               setMobileSidebarOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-[15px] font-semibold ${
               activeTab === "ads"
-                ? "bg-[#C96442] text-white font-semibold shadow-xs"
-                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+                ? "bg-[#C96442] border-[#C96442] text-white shadow-sm"
+                : "border-[#EBE8DF] dark:border-[#2C2B27] bg-white/80 dark:bg-[#20201D] text-[#1F1E1D] dark:text-[#F5F2EB] shadow-2xs hover:border-[#C96442] hover:bg-white dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
             }`}
           >
-            <div className="flex items-center space-x-3">
-              <Megaphone className="w-4 h-4" />
+            <div className="flex items-center space-x-3.5">
+              <Megaphone className="w-5 h-5 shrink-0" />
               <span>Monetization &amp; Ads</span>
             </div>
             <span
-              className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
+              className={`text-xs font-mono font-bold px-2.5 py-1 rounded-md ${
                 activeTab === "ads"
-                  ? "bg-white/20 text-white"
+                  ? "bg-white/25 text-white border border-white/30"
                   : "bg-[#C96442]/10 text-[#C96442] border border-[#C96442]/20"
               }`}
             >
@@ -1320,59 +1320,69 @@ export function AdminDashboardClient({
               setActiveTab("api");
               setMobileSidebarOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl border transition-all text-[15px] font-semibold ${
               activeTab === "api"
-                ? "bg-[#C96442] text-white font-semibold shadow-xs"
-                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/60 dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
+                ? "bg-[#C96442] border-[#C96442] text-white shadow-sm"
+                : "border-[#EBE8DF] dark:border-[#2C2B27] bg-white/80 dark:bg-[#20201D] text-[#1F1E1D] dark:text-[#F5F2EB] shadow-2xs hover:border-[#C96442] hover:bg-white dark:hover:bg-[#252422] hover:text-[#C96442] dark:hover:text-[#C96442]"
             }`}
           >
-            <div className="flex items-center space-x-3">
-              <KeyRound className="w-4 h-4" />
+            <div className="flex items-center space-x-3.5">
+              <KeyRound className="w-5 h-5 shrink-0" />
               <span>Pipeline &amp; API Keys</span>
             </div>
           </button>
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-[#EBE8DF] dark:border-[#282724] space-y-2">
+        <div className="p-4 border-t border-[#EBE8DF] dark:border-[#282724] space-y-2.5">
           {/* Health & Live Site */}
           <div className="flex items-center justify-between px-1 py-1 text-xs font-mono text-[#8E8B82]">
             <a
               href="/api/health"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center space-x-1.5 hover:text-emerald-500 transition-colors"
+              className="flex items-center space-x-1.5 hover:text-emerald-500 transition-colors font-medium"
               title="Health Status"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>Health: OK</span>
             </a>
             <a
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center space-x-1 hover:text-[#C96442] transition-colors"
+              className="flex items-center space-x-1 text-[#C96442] hover:underline transition-colors font-medium"
               title="View Public Site"
             >
               <span>Live Site</span>
-              <ExternalLink className="w-3 h-3" />
+              <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>
 
-          <div className="pt-2 border-t border-[#EBE8DF] dark:border-[#282724] flex items-center justify-between">
+          <div className="pt-2 border-t border-[#EBE8DF] dark:border-[#282724] flex items-center justify-between gap-2">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl border border-[#EBE8DF] dark:border-[#282724] hover:bg-[#EBE8DF]/50 dark:hover:bg-[#252422] text-[#686660] dark:text-[#A8A59D] transition-colors"
+              className="flex-1 inline-flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl border border-[#EBE8DF] dark:border-[#282724] bg-white/80 dark:bg-[#20201D] hover:bg-white dark:hover:bg-[#252422] text-xs font-medium text-[#686660] dark:text-[#A8A59D] transition-colors shadow-2xs"
               title="Toggle Theme"
             >
-              {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#1F1E1D]" />}
+              {theme === "dark" ? (
+                <>
+                  <Sun className="w-4 h-4 text-amber-400" />
+                  <span>Light</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-4 h-4 text-[#1F1E1D]" />
+                  <span>Dark</span>
+                </>
+              )}
             </button>
 
             {/* Logout Button */}
             <button
               onClick={handleLogout}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-[#EBE8DF] dark:border-[#282724] text-xs text-[#686660] dark:text-[#A8A59D] hover:text-red-600 hover:border-red-300 dark:hover:border-red-900 transition-colors"
+              className="flex-1 inline-flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl border border-[#EBE8DF] dark:border-[#282724] bg-white/80 dark:bg-[#20201D] text-xs font-medium text-[#686660] dark:text-[#A8A59D] hover:text-red-600 hover:border-red-300 dark:hover:border-red-900 transition-colors shadow-2xs"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Logout</span>
