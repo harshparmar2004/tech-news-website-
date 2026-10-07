@@ -92,7 +92,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Resolve or Auto-create Category
+    // 2b. Duplicate protection: same source_url => return existing article
+    if (body.source_url) {
+      const duplicate = await prisma.article.findFirst({
+        where: { source_url: body.source_url },
+        include: { category: true },
+      });
+      if (duplicate) {
+        return NextResponse.json(
+          {
+            success: true,
+            duplicate: true,
+            message: "Article with this source_url already exists",
+            article: {
+              id: duplicate.id,
+              slug: duplicate.slug,
+              url: `/article/${duplicate.slug}`,
+              title: duplicate.title,
+              status: duplicate.status,
+              published_at: duplicate.published_at,
+              category: duplicate.category.name,
+            },
+          },
+          { status: 200 }
+        );
+      }
+    }
+
     const categoryName = body.category || "AI & Robotics";
     const categorySlug = generateSlug(categoryName);
 

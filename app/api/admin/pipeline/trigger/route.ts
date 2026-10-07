@@ -81,13 +81,22 @@ export async function POST(req: NextRequest) {
     last_message: "Autonomous ingestion cycle executing...",
   });
 
-  // Spawn python run.py --max-articles 3 asynchronously
+  // Spawn python run.py (all sources) asynchronously, logging to news-auto-pipeline/logs/admin_trigger.log
   try {
     const pythonExe = process.platform === "win32" ? "python" : "python3";
-    const child = spawn(pythonExe, ["run.py", "--max-articles", "2"], {
+    const logDir = path.join(pipelineDir, "logs");
+    fs.mkdirSync(logDir, { recursive: true });
+    const logFd = fs.openSync(path.join(logDir, "admin_trigger.log"), "a");
+    fs.writeSync(logFd, `\n===== Run started ${startedAt} (via NewsFlow Admin) =====\n`);
+
+    const args = ["run.py"];
+    if (process.env.NEWSFLOW_RUN_MAX_ARTICLES) {
+      args.push("--max-articles", process.env.NEWSFLOW_RUN_MAX_ARTICLES);
+    }
+    const child = spawn(pythonExe, args, {
       cwd: pipelineDir,
       detached: true,
-      stdio: "ignore",
+      stdio: ["ignore", logFd, logFd],
     });
 
     child.unref();

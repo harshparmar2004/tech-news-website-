@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeContext";
+import { AdPreferencesProvider } from "@/components/AdPreferencesContext";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
@@ -76,9 +77,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#FBF9F5] dark:bg-[#181816] text-[#1F1E1D] dark:text-[#F5F2EB] transition-colors duration-200">
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <AdPreferencesProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </AdPreferencesProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -6,6 +6,7 @@ import { Search, X, Layers, ChevronRight } from "lucide-react";
 import { ArticleCard } from "@/components/ArticleCard";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightAdsSidebar } from "@/components/RightAdsSidebar";
+import { useAdPreferences } from "@/components/AdPreferencesContext";
 
 interface SearchArticle {
   id: string;
@@ -38,6 +39,7 @@ interface Props {
 }
 
 export function SearchClient({ initialArticles, categories, totalArticles }: Props) {
+  const { isAdFree } = useAdPreferences();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
@@ -155,8 +157,14 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
         </span>
       </div>
 
-      {/* Results Grid (3 in a row) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">
+      {/* Results Grid (2 in ad-free vs 3 in standard) */}
+      <div
+        className={`grid gap-5 transition-all duration-200 ${
+          isAdFree
+            ? "grid-cols-1 sm:grid-cols-2 max-w-[840px]"
+            : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
+        }`}
+      >
         {filteredArticles.map((art) => (
           <ArticleCard
             key={art.id}
