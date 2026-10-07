@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyApiKey, verifyAdminSession } from "@/lib/auth";
 import { generateSlug, calculateReadingTime } from "@/lib/utils";
+import { getThematicCoverImage } from "@/lib/imagePool";
 
 /**
  * GET /api/articles
@@ -81,12 +82,21 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    // 2. Validate mandatory fields
-    if (!body.title || !body.body || !body.summary) {
+    // 2. Validate mandatory fields (support aliases)
+    const title = (body.title || body.headline || "").trim();
+    const bodyContent = (body.body || body.content || body.article || "").trim();
+    const summary = (
+      body.summary ||
+      body.description ||
+      body.excerpt ||
+      (bodyContent.length > 250 ? bodyContent.slice(0, 250) + "..." : bodyContent)
+    ).trim();
+
+    if (!title || !bodyContent) {
       return NextResponse.json(
         {
           success: false,
-          error: "Missing required fields: title, summary, and body are mandatory.",
+          error: "Missing required fields: title (or headline) and body (or content) are mandatory.",
         },
         { status: 400 }
       );
@@ -119,7 +129,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const categoryName = body.category || "AI & Robotics";
+    const categoryName = body.category || body.domain || "AI & Robotics";
     const categorySlug = generateSlug(categoryName);
 
     let category = await prisma.category.findFirst({
@@ -138,8 +148,23 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Resolve cover image (accept flexible aliases or assign thematic pool image)
+    const rawCover =
+      body.cover_image_url ||
+      body.image_url ||
+      body.image ||
+      body.lead_image_url ||
+      body.cover_image ||
+      body.photo ||
+      null;
+
+    const finalCoverImage =
+      rawCover && typeof rawCover === "string" && rawCover.trim().length > 0
+        ? rawCover.trim()
+        : getThematicCoverImage(category.slug, title);
+
     // 4. Resolve slug and timestamps
-    let slug = body.slug ? generateSlug(body.slug) : generateSlug(body.title);
+    let slug = body.slug ? generateSlug(body.slug) : generateSlug(title);
 
     // Ensure slug uniqueness
     const existing = await prisma.article.findUnique({ where: { slug } });
@@ -166,21 +191,25 @@ export async function POST(req: NextRequest) {
       status = "scheduled";
     }
 
-    const readingTime = calculateReadingTime(body.body);
+    const readingTime = calculateReadingTime(bodyContent);
 
     // 5. Create Article Record
     const article = await prisma.article.create({
       data: {
-        title: body.title,
+        title,
         slug,
-        summary: body.summary,
-        body: body.body,
-        cover_image_url: body.cover_image_url || null,
+        summary,
+        body: bodyContent,
+        cover_image_url: finalCoverImage,
         gallery_images: body.gallery_images
           ? JSON.stringify(body.gallery_images)
           : null,
         categoryId: category.id,
-        tags: body.tags ? JSON.stringify(body.tags) : null,
+        tags: body.tags
+          ? typeof body.tags === "string"
+            ? body.tags
+            : JSON.stringify(body.tags)
+          : null,
         author: body.author || "NewsFlow AI",
         published_at: publishedAt,
         status,

@@ -53,9 +53,11 @@ import {
   Square,
   Camera,
   Send,
+  Bot,
 } from "lucide-react";
 import { useTheme } from "@/components/ThemeContext";
 import { formatArticleDate } from "@/lib/utils";
+import { AiCrawlerTrackerDesk } from "./AiCrawlerTrackerDesk";
 
 interface ArticleItem {
   id: string;
@@ -568,7 +570,7 @@ export function AdminDashboardClient({
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [articles, setArticles] = useState<ArticleItem[]>(initialArticles);
-  const [activeTab, setActiveTab] = useState<"overview" | "articles" | "create" | "api" | "jev" | "ads" | "rss">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "articles" | "create" | "api" | "jev" | "ads" | "rss" | "crawlers">("overview");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<ArticleItem | null>(null);
   const [copiedKey, setCopiedKey] = useState(false);
@@ -1394,6 +1396,33 @@ export function AdminDashboardClient({
               Live XML
             </span>
           </button>
+
+          {/* AI Crawler & Bot Telemetry */}
+          <button
+            onClick={() => {
+              setActiveTab("crawlers");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              activeTab === "crawlers"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#55534E] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/70 dark:hover:bg-[#252422] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <Bot className="w-4.5 h-4.5 shrink-0" />
+              <span>AI Crawlers</span>
+            </div>
+            <span
+              className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md ${
+                activeTab === "crawlers"
+                  ? "bg-white/20 text-white font-semibold"
+                  : "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"
+              }`}
+            >
+              Telemetry
+            </span>
+          </button>
         </nav>
 
         {/* Sidebar Footer */}
@@ -1475,6 +1504,7 @@ export function AdminDashboardClient({
                   {activeTab === "ads" && "Monetization & Domain Ads"}
                   {activeTab === "api" && "Pipeline Ingestion & API Keys"}
                   {activeTab === "rss" && "RSS 2.0 Syndication Feeds"}
+                  {activeTab === "crawlers" && "AI Crawler & Agent Telemetry"}
                 </h1>
                 <p className="text-[11px] font-mono text-[#8E8B82] hidden sm:block">
                   {activeTab === "overview" && "System health, real-time KPI metrics & quick editorial controls"}
@@ -1484,6 +1514,7 @@ export function AdminDashboardClient({
                   {activeTab === "ads" && "High-impact domain desk ad inventory and click metrics"}
                   {activeTab === "api" && "Autonomous agent ingestion tokens and integration endpoints"}
                   {activeTab === "rss" && "Machine-readable XML broadcasting, automation endpoints & aggregator compatibility"}
+                  {activeTab === "crawlers" && "Real-time bot tracking, AI lab indexing shares & LLM intelligence feeds"}
                 </p>
               </div>
             </div>
@@ -3939,6 +3970,11 @@ console.log("Ingestion Response:", data);`
             </div>
           </div>
         </div>
+      )}
+
+      {/* AI CRAWLERS & BOT TELEMETRY DESK */}
+      {activeTab === "crawlers" && (
+        <AiCrawlerTrackerDesk />
       )}
         </main>
       </div>

@@ -67,7 +67,7 @@ export default async function ArticlePage({ params }: PageProps) {
     },
   });
 
-  if (!article || article.status !== "published") {
+  if (!article) {
     notFound();
   }
 
@@ -103,6 +103,17 @@ export default async function ArticlePage({ params }: PageProps) {
       <JsonLd article={article} siteUrl={siteUrl} />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {article.status !== "published" && (
+          <div className="mb-6 px-4 py-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs flex items-center justify-between">
+            <span className="flex items-center gap-2 font-medium">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+              Editorial Preview Mode — Queued in NewsFlow Desk
+            </span>
+            <span className="font-mono uppercase text-[10px] bg-amber-500/20 px-2 py-0.5 rounded font-semibold">
+              {article.status}
+            </span>
+          </div>
+        )}
         <article className="space-y-8">
           {/* Breadcrumb Navigation & Return to Feed */}
           <nav className="flex items-center justify-between text-xs text-[#8E8B82] dark:text-[#A8A59D] pb-4 border-b border-[#EBE8DF] dark:border-[#33322E]">
