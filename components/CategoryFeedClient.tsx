@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { ArticleCard } from "@/components/ArticleCard";
 import { CategoryDeskBanner } from "@/components/CategoryDeskBanner";
+import { EditorialColophon } from "@/components/EditorialColophon";
 import { useAdPreferences } from "./AdPreferencesContext";
 
 interface ArticleItem {
@@ -77,6 +78,9 @@ export function CategoryFeedClient({ category }: CategoryFeedClientProps) {
           </div>
         )}
       </div>
+
+      {/* In-feed colophon footer */}
+      <EditorialColophon />
     </div>
   );
 }

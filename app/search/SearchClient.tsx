@@ -6,6 +6,7 @@ import { Search, X, ChevronRight, RotateCcw } from "lucide-react";
 import { ArticleCard } from "@/components/ArticleCard";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightAdsSidebar } from "@/components/RightAdsSidebar";
+import { EditorialColophon } from "@/components/EditorialColophon";
 import { useAdPreferences } from "@/components/AdPreferencesContext";
 
 interface SearchArticle {
@@ -258,8 +259,8 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
           </div>
         )}
 
-        {/* Bottom spacer for comfortable scroll */}
-        <div className="h-10" />
+        {/* In-feed colophon footer */}
+        <EditorialColophon />
       </main>
 
       {/* 3. Right Sidebar: Future Ad Slots (Fixed) */}

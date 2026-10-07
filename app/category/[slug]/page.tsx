@@ -69,8 +69,6 @@ export default async function CategoryPage({ params }: PageProps) {
       {/* 2. Middle Main Content: Scrollable Top to Down */}
       <main className="flex-1 min-w-0 h-full overflow-y-auto px-5 sm:px-8 py-6">
         <CategoryFeedClient category={category} />
-        {/* Subtle spacing padding at bottom of scroll */}
-        <div className="h-10" />
       </main>
 
       {/* 3. Right Sidebar: Future Ad Slots (Fixed) */}

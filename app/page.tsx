@@ -74,8 +74,6 @@ export default async function HomePage() {
           recentArticles={recentArticles}
           categorySections={categorySections}
         />
-        {/* Footer padding for scroll */}
-        <div className="h-10" />
       </main>
 
       {/* 3. Right Sidebar: Future Ad Slots (Fixed) */}

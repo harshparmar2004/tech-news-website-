@@ -6,6 +6,7 @@ import { Rss, Copy, ExternalLink, ChevronRight, Check, ArrowRight, Radio } from 
 import { formatArticleDate } from "@/lib/utils";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightAdsSidebar } from "@/components/RightAdsSidebar";
+import { EditorialColophon } from "@/components/EditorialColophon";
 
 interface RssArticle {
   id: string;
@@ -336,8 +337,8 @@ export function RssClient({ articles, categories, totalArticles, initialSiteUrl 
           ))}
         </div>
 
-        {/* Bottom padding for comfortable scrolling */}
-        <div className="h-10" />
+        {/* In-feed colophon footer */}
+        <EditorialColophon />
       </main>
 
       {/* 3. Right Sidebar: Future Ad Slots (Fixed) */}

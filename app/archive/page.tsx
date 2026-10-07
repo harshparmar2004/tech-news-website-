@@ -5,6 +5,7 @@ import { formatArticleDate, formatTimeAgo } from "@/lib/utils";
 import { Clock, ChevronLeft, ChevronRight, Archive as ArchiveIcon, RotateCcw, ArrowRight } from "lucide-react";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightAdsSidebar } from "@/components/RightAdsSidebar";
+import { EditorialColophon } from "@/components/EditorialColophon";
 
 export const metadata: Metadata = {
   title: "Chronological Archive | NewsFlow",
@@ -288,8 +289,8 @@ export default async function ArchivePage({ searchParams }: PageProps) {
           </div>
         )}
 
-        {/* Bottom padding for comfortable scrolling */}
-        <div className="h-10" />
+        {/* In-feed colophon footer */}
+        <EditorialColophon />
       </main>
 
       {/* 3. Right Sidebar: Future Ad Slots (Fixed) */}
