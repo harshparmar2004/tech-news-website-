@@ -21,9 +21,12 @@ export default async function HomePage() {
     orderBy: { name: "asc" },
   });
 
-  // 3. Fetch top recent articles (multiples of 3 for clean rows)
-  const recentArticles = await prisma.article.findMany({
-    where: { status: "published" },
+  // 3. Fetch recent intelligence news uploaded by the Research Agent for "All Intelligence"
+  const researchArticles = await prisma.article.findMany({
+    where: {
+      status: "published",
+      author: { contains: "Research" },
+    },
     orderBy: [{ published_at: "desc" }, { created_at: "desc" }],
     take: 9,
     include: {
@@ -32,6 +35,22 @@ export default async function HomePage() {
       },
     },
   });
+
+  // Populate All Intelligence strictly with news uploaded by the Research Agent.
+  // Fall back to general articles only if no research agent articles exist yet.
+  const recentArticles =
+    researchArticles.length > 0
+      ? researchArticles
+      : await prisma.article.findMany({
+          where: { status: "published" },
+          orderBy: [{ published_at: "desc" }, { created_at: "desc" }],
+          take: 9,
+          include: {
+            category: {
+              select: { name: true, slug: true },
+            },
+          },
+        });
 
   // 4. Fetch articles for each category news desk (ordered by published_at desc, created_at desc)
   const categorySections = await Promise.all(

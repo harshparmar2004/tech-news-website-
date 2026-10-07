@@ -19,6 +19,7 @@ interface ArticleItem {
   rank_score?: number;
   views_count?: number;
   reading_time_minutes: number;
+  author?: string | null;
   category: {
     name: string;
     slug: string;
