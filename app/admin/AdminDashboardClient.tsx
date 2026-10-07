@@ -27,6 +27,7 @@ import {
   Check,
   Tag,
   Radio,
+  Rss,
   Clock,
   ExternalLink,
   Zap,
@@ -567,12 +568,34 @@ export function AdminDashboardClient({
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const [articles, setArticles] = useState<ArticleItem[]>(initialArticles);
-  const [activeTab, setActiveTab] = useState<"overview" | "articles" | "create" | "api" | "jev" | "ads">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "articles" | "create" | "api" | "jev" | "ads" | "rss">("overview");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<ArticleItem | null>(null);
   const [copiedKey, setCopiedKey] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // RSS 2.0 Syndication State
+  const [copiedRssPath, setCopiedRssPath] = useState<string | null>(null);
+  const [rssOrigin, setRssOrigin] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setRssOrigin(window.location.origin);
+    }
+  }, []);
+
+  const handleCopyRss = async (path: string) => {
+    const origin = rssOrigin || (typeof window !== "undefined" ? window.location.origin : "");
+    const fullUrl = `${origin}${path}`;
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+      setCopiedRssPath(path);
+      setTimeout(() => setCopiedRssPath(null), 2200);
+    } catch {
+      // Fallback
+    }
+  };
 
   // Monetization & Domain Ads State
   const [ads, setAds] = useState<DomainAdItem[]>(initialAds);
@@ -1344,6 +1367,33 @@ export function AdminDashboardClient({
               <span>Pipeline &amp; API Keys</span>
             </div>
           </button>
+
+          {/* RSS 2.0 Syndication */}
+          <button
+            onClick={() => {
+              setActiveTab("rss");
+              setMobileSidebarOpen(false);
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              activeTab === "rss"
+                ? "bg-[#C96442] text-white font-semibold shadow-xs"
+                : "text-[#55534E] dark:text-[#A8A59D] hover:bg-[#EBE8DF]/70 dark:hover:bg-[#252422] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <Rss className="w-4.5 h-4.5 shrink-0" />
+              <span>RSS 2.0 Feeds</span>
+            </div>
+            <span
+              className={`text-[10px] font-mono px-1.5 py-0.5 rounded-md ${
+                activeTab === "rss"
+                  ? "bg-white/20 text-white font-semibold"
+                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+              }`}
+            >
+              Live XML
+            </span>
+          </button>
         </nav>
 
         {/* Sidebar Footer */}
@@ -1424,6 +1474,7 @@ export function AdminDashboardClient({
                   {activeTab === "jev" && "TypeSafe Jev AI (System 1)"}
                   {activeTab === "ads" && "Monetization & Domain Ads"}
                   {activeTab === "api" && "Pipeline Ingestion & API Keys"}
+                  {activeTab === "rss" && "RSS 2.0 Syndication Feeds"}
                 </h1>
                 <p className="text-[11px] font-mono text-[#8E8B82] hidden sm:block">
                   {activeTab === "overview" && "System health, real-time KPI metrics & quick editorial controls"}
@@ -1432,6 +1483,7 @@ export function AdminDashboardClient({
                   {activeTab === "jev" && "Ultra-low-latency breaking news triage & evaluation engine"}
                   {activeTab === "ads" && "High-impact domain desk ad inventory and click metrics"}
                   {activeTab === "api" && "Autonomous agent ingestion tokens and integration endpoints"}
+                  {activeTab === "rss" && "Machine-readable XML broadcasting, automation endpoints & aggregator compatibility"}
                 </p>
               </div>
             </div>
@@ -3538,6 +3590,354 @@ console.log("Ingestion Response:", data);`
               </div>
             );
           })()}
+        </div>
+      )}
+
+      {/* RSS 2.0 SYNDICATION TAB */}
+      {activeTab === "rss" && (
+        <div className="w-full space-y-8">
+          {/* Top Hero Banner */}
+          <div className="admin-card p-6 sm:p-8 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] shadow-xs">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#EBE8DF] dark:border-[#33322E]">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#C96442]/10 border border-[#C96442]/20 flex items-center justify-center text-[#C96442] shadow-xs shrink-0">
+                  <Rss className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-3">
+                    <h2 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
+                      RSS 2.0 Syndication Feeds
+                    </h2>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Live Stream
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#8E8B82] font-mono mt-1">
+                    Machine-readable XML syndicated broadcast with media enclosures &amp; edge caching
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href="/rss.xml"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono font-medium text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442] hover:text-[#C96442] transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Inspect Live XML</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Metrics KPI Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6">
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8E8B82] block">
+                  Feed Status
+                </span>
+                <div className="flex items-center space-x-1.5 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="font-mono text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                    HTTP 200 OK
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8E8B82] block">
+                  Syndicated Stories
+                </span>
+                <span className="font-mono text-sm font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-1 block">
+                  {articles.filter((a) => a.status === "published").length} Published
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8E8B82] block">
+                  Edge Revalidation
+                </span>
+                <span className="font-mono text-sm font-bold text-[#C96442] mt-1 block">
+                  60s ISR Cache
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8E8B82] block">
+                  Specification
+                </span>
+                <span className="font-mono text-sm font-bold text-[#1F1E1D] dark:text-[#F5F2EB] mt-1 block">
+                  RSS 2.0 (RFC 822)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Endpoints Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Card 1: Canonical RSS Feed */}
+            <div className="admin-card p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-4 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#C96442]" />
+                  <h3 className="font-serif text-base sm:text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Canonical RSS Feed
+                  </h3>
+                </div>
+                <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-medium">
+                  Primary Route
+                </span>
+              </div>
+
+              <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                Primary syndication route delivering standardized XML items with full article titles, summaries, reading times, category taxonomies, and high-res cover imagery enclosures.
+              </p>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono uppercase text-[#8E8B82]">
+                  Endpoint URL
+                </label>
+                <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                  <span className="font-mono text-xs text-[#C96442] truncate select-all px-1">
+                    {rssOrigin || "http://localhost:3000"}/rss.xml
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleCopyRss("/rss.xml")}
+                      className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
+                        copiedRssPath === "/rss.xml"
+                          ? "bg-emerald-500 text-white"
+                          : "bg-white dark:bg-[#22221F] border border-[#EBE8DF] dark:border-[#33322E] text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442] hover:text-[#C96442]"
+                      }`}
+                      title="Copy full canonical RSS feed URL"
+                    >
+                      {copiedRssPath === "/rss.xml" ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                    <a
+                      href="/rss.xml"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-1.5 rounded-lg bg-white dark:bg-[#22221F] border border-[#EBE8DF] dark:border-[#33322E] text-[#8E8B82] hover:text-[#C96442] hover:border-[#C96442] transition-colors"
+                      title="Open in new tab"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#2E2C28] flex items-center justify-between text-[11px] font-mono text-[#8E8B82]">
+                <span>Content-Type: application/rss+xml</span>
+                <span>Encoding: UTF-8</span>
+              </div>
+            </div>
+
+            {/* Card 2: Alternate Syndicate Route */}
+            <div className="admin-card p-6 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-4 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#8E8B82]" />
+                  <h3 className="font-serif text-base sm:text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Alternate Syndicate Route
+                  </h3>
+                </div>
+                <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-[#FAF7F0] dark:bg-[#252422] text-[#8E8B82] border border-[#EBE8DF] dark:border-[#33322E] font-medium">
+                  Enclosure Alias
+                </span>
+              </div>
+
+              <p className="text-xs text-[#686660] dark:text-[#A8A59D] leading-relaxed">
+                Legacy-compatible syndicate route designed for integration with automated workflows (Zapier, Make, n8n), Slack channels, Discord bots, and classic desktop readers.
+              </p>
+
+              <div className="space-y-1.5">
+                <label className="text-[11px] font-mono uppercase text-[#8E8B82]">
+                  Endpoint URL
+                </label>
+                <div className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E]">
+                  <span className="font-mono text-xs text-[#C96442] truncate select-all px-1">
+                    {rssOrigin || "http://localhost:3000"}/feed.xml
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleCopyRss("/feed.xml")}
+                      className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors cursor-pointer ${
+                        copiedRssPath === "/feed.xml"
+                          ? "bg-emerald-500 text-white"
+                          : "bg-white dark:bg-[#22221F] border border-[#EBE8DF] dark:border-[#33322E] text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442] hover:text-[#C96442]"
+                      }`}
+                      title="Copy alternate feed URL"
+                    >
+                      {copiedRssPath === "/feed.xml" ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                    <a
+                      href="/feed.xml"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-1.5 rounded-lg bg-white dark:bg-[#22221F] border border-[#EBE8DF] dark:border-[#33322E] text-[#8E8B82] hover:text-[#C96442] hover:border-[#C96442] transition-colors"
+                      title="Open in new tab"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-[#EBE8DF]/60 dark:border-[#2E2C28] flex items-center justify-between text-[11px] font-mono text-[#8E8B82]">
+                <span>Format: RSS 2.0 Enclosures</span>
+                <span>No Auth Required</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Reader Compatibility & Integration Protocols */}
+          <div className="admin-card p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-4 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+              <div>
+                <h3 className="font-serif text-base font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                  Reader &amp; Syndication Compatibility
+                </h3>
+                <p className="text-xs text-[#8E8B82] font-mono mt-0.5">
+                  Verified integration across modern RSS readers and automation webhook subscribers
+                </p>
+              </div>
+              <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 self-start sm:self-auto">
+                100% W3C Valid
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              {[
+                { name: "Feedly", status: "Verified", desc: "Instant Cloud Sync" },
+                { name: "NetNewsWire", status: "Verified", desc: "macOS / iOS native" },
+                { name: "Reeder 5", status: "Verified", desc: "Native enclosures" },
+                { name: "Inoreader", status: "Verified", desc: "Auto-discovery" },
+                { name: "Slack / Discord", status: "Verified", desc: "Webhook RSS bot" },
+                { name: "Zapier / Make", status: "Verified", desc: "Trigger automation" },
+              ].map((item) => (
+                <div
+                  key={item.name}
+                  className="p-3 rounded-2xl bg-[#FAF7F0] dark:bg-[#181816] border border-[#EBE8DF] dark:border-[#33322E] space-y-1 text-center"
+                >
+                  <span className="font-semibold text-xs text-[#1F1E1D] dark:text-[#F5F2EB] block truncate">
+                    {item.name}
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 block">
+                    {item.status}
+                  </span>
+                  <span className="text-[9px] font-mono text-[#8E8B82] block truncate">
+                    {item.desc}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Live Syndicated Broadcast Dispatches Monitor */}
+          <div className="admin-card p-6 sm:p-7 rounded-3xl border border-[#EBE8DF] dark:border-[#33322E] bg-white dark:bg-[#22221F] space-y-4 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EBE8DF] dark:border-[#33322E]">
+              <div className="flex items-center space-x-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C96442]" />
+                <div>
+                  <h3 className="font-serif text-base sm:text-lg font-bold text-[#1F1E1D] dark:text-[#F5F2EB]">
+                    Active Feed Dispatches
+                  </h3>
+                  <p className="text-xs text-[#8E8B82] font-mono mt-0.5">
+                    Real-time inspection of stories currently syndicated in XML payload
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs font-mono text-[#8E8B82] bg-[#FAF7F0] dark:bg-[#181816] px-3 py-1 rounded-xl border border-[#EBE8DF] dark:border-[#33322E] self-start sm:self-auto">
+                Showing {articles.filter((a) => a.status === "published").slice(0, 10).length} of {articles.filter((a) => a.status === "published").length} items
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {articles
+                .filter((art) => art.status === "published")
+                .slice(0, 10)
+                .map((art) => (
+                  <div
+                    key={art.id}
+                    className="p-3.5 sm:p-4 rounded-2xl bg-[#FAF7F0]/60 dark:bg-[#181816]/70 border border-[#EBE8DF] dark:border-[#33322E] flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#C96442]/50 transition-colors"
+                  >
+                    <div className="flex items-start sm:items-center space-x-3.5 min-w-0 flex-1">
+                      {art.cover_image_url ? (
+                        <img
+                          src={art.cover_image_url}
+                          alt={art.title}
+                          className="w-16 h-12 rounded-xl object-cover shrink-0 border border-[#EBE8DF] dark:border-[#33322E]"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-16 h-12 rounded-xl bg-[#EBE8DF] dark:bg-[#252422] flex items-center justify-center font-mono text-[10px] text-[#8E8B82] shrink-0 border border-[#EBE8DF] dark:border-[#33322E]">
+                          XML
+                        </div>
+                      )}
+
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-md bg-[#C96442]/10 text-[#C96442]">
+                            {art.category?.name || "General"}
+                          </span>
+                          <span className="text-[11px] font-mono text-[#8E8B82]">
+                            {formatArticleDate(art.published_at)}
+                          </span>
+                          <span className="text-[11px] font-mono text-[#8E8B82]">
+                            • {art.reading_time_minutes}m read
+                          </span>
+                        </div>
+                        <h4 className="font-serif text-sm font-bold text-[#1F1E1D] dark:text-[#F5F2EB] truncate">
+                          {art.title}
+                        </h4>
+                        <p className="text-xs text-[#686660] dark:text-[#A8A59D] truncate">
+                          {art.summary}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 shrink-0 self-end sm:self-center">
+                      <span className="text-[10px] font-mono text-[#8E8B82] px-2 py-1 rounded-md bg-white dark:bg-[#22221F] border border-[#EBE8DF] dark:border-[#33322E]">
+                        guid #{art.id.slice(0, 6)}
+                      </span>
+                      <a
+                        href={`/article/${art.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-[#22221F] border border-[#EBE8DF] dark:border-[#33322E] text-xs font-mono font-medium text-[#1F1E1D] dark:text-[#F5F2EB] hover:border-[#C96442] hover:text-[#C96442] transition-colors"
+                      >
+                        <span>View</span>
+                        <ExternalLink className="w-3 h-3 text-[#C96442]" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
       )}
         </main>

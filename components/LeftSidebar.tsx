@@ -108,16 +108,6 @@ export function LeftSidebar({ categories, activeSlug, totalArticles }: LeftSideb
           >
             <span>Timeline archive</span>
           </Link>
-          <Link
-            href="/rss"
-            className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all ${
-              pathname === "/rss"
-                ? "bg-[#EBE8DF] dark:bg-[#2A2925] text-[#C96442] font-semibold shadow-xs"
-                : "text-[#686660] dark:text-[#A8A59D] hover:bg-[#FAF7F0] dark:hover:bg-[#20201D] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
-            }`}
-          >
-            <span>RSS 2.0 feed</span>
-          </Link>
         </div>
       </div>
 
