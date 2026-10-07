@@ -147,13 +147,22 @@ export async function POST(req: NextRequest) {
       slug = `${slug}-${Date.now().toString(36)}`;
     }
 
-    const publishedAt = body.published_at
-      ? new Date(body.published_at)
-      : new Date();
+    // Resolve published timestamp:
+    // When published by the AI agent, set published_at to the current moment (now)
+    // unless explicitly scheduled for a future time. This guarantees that newly published
+    // news is always at the top of its section (Tech & Innovation, AI & Robotics, etc.)
+    const now = new Date();
+    let publishedAt = now;
+    if (body.published_at) {
+      const parsed = new Date(body.published_at);
+      if (!isNaN(parsed.getTime()) && parsed > now) {
+        publishedAt = parsed;
+      }
+    }
 
     // Support scheduled status
     let status = body.status || "published";
-    if (publishedAt > new Date() && status === "published") {
+    if (publishedAt > now && status === "published") {
       status = "scheduled";
     }
 
@@ -191,7 +200,7 @@ export async function POST(req: NextRequest) {
 
     // 6. Immediate On-Demand Cache Invalidation (ISR)
     try {
-      revalidatePath("/");
+      revalidatePath("/", "layout");
       revalidatePath(`/article/${slug}`);
       revalidatePath(`/category/${category.slug}`);
       revalidatePath("/archive");

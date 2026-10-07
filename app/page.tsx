@@ -21,11 +21,11 @@ export default async function HomePage() {
     orderBy: { name: "asc" },
   });
 
-  // 3. Fetch top recent articles (6 or 9 items = multiples of 3 for clean rows)
+  // 3. Fetch top recent articles (multiples of 3 for clean rows)
   const recentArticles = await prisma.article.findMany({
     where: { status: "published" },
-    orderBy: { published_at: "desc" },
-    take: 6,
+    orderBy: [{ published_at: "desc" }, { created_at: "desc" }],
+    take: 9,
     include: {
       category: {
         select: { name: true, slug: true },
@@ -33,7 +33,7 @@ export default async function HomePage() {
     },
   });
 
-  // 4. Fetch 3 articles for each category news desk
+  // 4. Fetch articles for each category news desk (ordered by published_at desc, created_at desc)
   const categorySections = await Promise.all(
     categories
       .filter((cat) => (cat._count?.articles ?? 0) > 0)
@@ -43,8 +43,8 @@ export default async function HomePage() {
             categoryId: category.id,
             status: "published",
           },
-          orderBy: { published_at: "desc" },
-          take: 3, // Exactly 3 in one row
+          orderBy: [{ published_at: "desc" }, { created_at: "desc" }],
+          take: 6, // Fetch up to 6 stories per desk for live Latest/Top today/Most read sorting
           include: {
             category: {
               select: { name: true, slug: true },

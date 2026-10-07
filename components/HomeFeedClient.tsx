@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { ChevronRight, ArrowRight } from "lucide-react";
 import { ArticleCard } from "@/components/ArticleCard";
@@ -13,7 +14,10 @@ interface ArticleItem {
   title: string;
   summary: string;
   cover_image_url?: string | null;
-  published_at: Date;
+  published_at: Date | string;
+  created_at?: Date | string;
+  rank_score?: number;
+  views_count?: number;
   reading_time_minutes: number;
   category: {
     name: string;
@@ -35,12 +39,80 @@ interface HomeFeedClientProps {
   categorySections: CategorySection[];
 }
 
+/**
+ * Universal news sort engine for Latest, Top today, and Most read
+ */
+function sortArticlesList(list: ArticleItem[], filter: "latest" | "top" | "most_read"): ArticleItem[] {
+  const items = [...list];
+
+  if (filter === "latest") {
+    // 1. LATEST: Strictly newest published at the top, then newest created
+    return items.sort((a, b) => {
+      const timeA = new Date(a.published_at).getTime();
+      const timeB = new Date(b.published_at).getTime();
+      if (timeB !== timeA) return timeB - timeA;
+      const createdA = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const createdB = b.created_at ? new Date(b.created_at).getTime() : 0;
+      if (createdB !== createdA) return createdB - createdA;
+      return (b.id || "").localeCompare(a.id || "");
+    });
+  }
+
+  if (filter === "top") {
+    // 2. TOP TODAY: High-impact stories published today/within 48h ranked by rank_score,
+    // falling back to highest rank score across the desk
+    const now = Date.now();
+    const fortyEightHoursAgo = now - 48 * 60 * 60 * 1000;
+
+    return items.sort((a, b) => {
+      const timeA = new Date(a.published_at).getTime();
+      const timeB = new Date(b.published_at).getTime();
+      const aIsRecent = timeA >= fortyEightHoursAgo;
+      const bIsRecent = timeB >= fortyEightHoursAgo;
+
+      if (aIsRecent && !bIsRecent) return -1;
+      if (!aIsRecent && bIsRecent) return 1;
+
+      const scoreA = a.rank_score ?? 75;
+      const scoreB = b.rank_score ?? 75;
+      if (scoreB !== scoreA) return scoreB - scoreA;
+
+      return timeB - timeA;
+    });
+  }
+
+  if (filter === "most_read") {
+    // 3. MOST READ: Sorted by total reader views (views_count)
+    return items.sort((a, b) => {
+      const viewsA = a.views_count ?? 0;
+      const viewsB = b.views_count ?? 0;
+      if (viewsB !== viewsA) return viewsB - viewsA;
+
+      const scoreA = a.rank_score ?? 75;
+      const scoreB = b.rank_score ?? 75;
+      if (scoreB !== scoreA) return scoreB - scoreA;
+
+      const timeA = new Date(a.published_at).getTime();
+      const timeB = new Date(b.published_at).getTime();
+      return timeB - timeA;
+    });
+  }
+
+  return items;
+}
+
 export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedClientProps) {
   const { isAdFree } = useAdPreferences();
+  const [activeFilter, setActiveFilter] = useState<"latest" | "top" | "most_read">("latest");
+
+  // Dynamically sort Recent Dispatches
+  const sortedRecent = useMemo(() => {
+    return sortArticlesList(recentArticles, activeFilter);
+  }, [recentArticles, activeFilter]);
 
   // In Ad-Free mode (ads off), display 3 news slide boxes per row (6 recent = 2 rows of 3)
   // When ads are on, display 2 news boxes per row alongside the right ads sidebar
-  const displayedRecent = isAdFree ? recentArticles.slice(0, 6) : recentArticles.slice(0, 4);
+  const displayedRecent = isAdFree ? sortedRecent.slice(0, 6) : sortedRecent.slice(0, 4);
 
   return (
     <div className="space-y-8">
@@ -55,24 +127,31 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
         </span>
       </nav>
 
-      {/* Enhanced Desk Header Banner - Compact & Properly Sized */}
+      {/* Enhanced Desk Header Banner with interactive Latest / Top today / Most read controls */}
       <CategoryDeskBanner
         title="All Intelligence"
         description="Autonomous AI-synthesized news desk aggregating breakthrough stories from 50+ global sources 24/7."
         slug="tech"
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
       />
 
       {/* Section: Recent Intelligence */}
       <section className="space-y-4 pt-2">
         {/* Section Bar - Clean, properly sized, spans width */}
-        <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full text-xs font-mono">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-[#C96442]" />
             <h2 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
               Recent Dispatches
             </h2>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#C96442]/10 text-[#C96442] ml-1">
+              {activeFilter === "latest" && "Latest First"}
+              {activeFilter === "top" && "Top Today"}
+              {activeFilter === "most_read" && "Most Read"}
+            </span>
           </div>
-          <span className="text-xs font-mono text-[#8E8B82] dark:text-[#78756E]">
+          <span className="text-[#8E8B82] dark:text-[#78756E]">
             {isAdFree ? "3-story expanded view" : "2-story view with ads"}
           </span>
         </div>
@@ -86,7 +165,7 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
           }`}
         >
           {displayedRecent.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.id} article={article as any} />
           ))}
         </div>
 
@@ -104,8 +183,13 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
         {categorySections.map(({ category, articles }) => {
           if (articles.length === 0) return null;
 
+          // Dynamically sort each category desk by the active filter tab
+          const sortedCategoryArticles = sortArticlesList(articles, activeFilter);
+
           // When Ad-Free is enabled (ads off), show 3 news slide boxes across screen; else show 2 next to ads
-          const displayedCategoryArticles = isAdFree ? articles.slice(0, 3) : articles.slice(0, 2);
+          const displayedCategoryArticles = isAdFree
+            ? sortedCategoryArticles.slice(0, 3)
+            : sortedCategoryArticles.slice(0, 2);
 
           return (
             <section key={category.id} className="space-y-4">
@@ -135,7 +219,7 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
                 }`}
               >
                 {displayedCategoryArticles.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
+                  <ArticleCard key={article.id} article={article as any} />
                 ))}
               </div>
             </section>

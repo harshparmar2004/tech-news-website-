@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyAdminSession } from "@/lib/auth";
 
@@ -25,9 +26,12 @@ export async function POST(req: NextRequest) {
       case "publish": {
         const update = await prisma.article.updateMany({
           where: { id: { in: ids } },
-          data: { status: "published" },
+          data: { status: "published", published_at: new Date() },
         });
         resultCount = update.count;
+        try {
+          revalidatePath("/", "layout");
+        } catch {}
         break;
       }
       case "draft": {

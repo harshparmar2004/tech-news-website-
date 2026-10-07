@@ -17,6 +17,7 @@ interface CategoryDeskBannerProps {
   title: string;
   description?: string | null;
   slug?: string;
+  activeFilter?: "latest" | "top" | "most_read";
   onFilterChange?: (filter: "latest" | "top" | "most_read") => void;
 }
 
@@ -33,16 +34,19 @@ export function CategoryDeskBanner({
   title,
   description,
   slug,
+  activeFilter: controlledFilter,
   onFilterChange,
 }: CategoryDeskBannerProps) {
   const { isAdFree } = useAdPreferences();
-  const [activeFilter, setActiveFilter] = useState<"latest" | "top" | "most_read">("latest");
+  const [internalFilter, setInternalFilter] = useState<"latest" | "top" | "most_read">("latest");
   const [isFollowing, setIsFollowing] = useState(false);
+
+  const activeFilter = controlledFilter !== undefined ? controlledFilter : internalFilter;
 
   const IconComponent = (slug && CATEGORY_ICON_MAP[slug]) || Layers;
 
   const handleFilterClick = (filter: "latest" | "top" | "most_read") => {
-    setActiveFilter(filter);
+    setInternalFilter(filter);
     if (onFilterChange) onFilterChange(filter);
   };
 
@@ -89,34 +93,40 @@ export function CategoryDeskBanner({
       </div>
 
       {/* Filter Tabs: Latest, Top today, Most read */}
-      <div className="flex items-center space-x-2 pt-1">
+      <div className="flex items-center space-x-1.5 sm:space-x-2 pt-1">
         <button
+          type="button"
           onClick={() => handleFilterClick("latest")}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
             activeFilter === "latest"
-              ? "bg-[#1F1E1D] dark:bg-[#2E2C28] text-white shadow-xs"
-              : "text-[#8E8B82] dark:text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+              ? "bg-[#1F1E1D] dark:bg-[#2A2925] text-white dark:text-[#F5F2EB] shadow-xs border border-transparent dark:border-[#383630]"
+              : "text-[#8E8B82] dark:text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB] hover:bg-[#FAF7F0] dark:hover:bg-[#201F1D]"
           }`}
+          title="Show latest news published first"
         >
           Latest
         </button>
         <button
+          type="button"
           onClick={() => handleFilterClick("top")}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
             activeFilter === "top"
-              ? "bg-[#1F1E1D] dark:bg-[#2E2C28] text-white shadow-xs"
-              : "text-[#8E8B82] dark:text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+              ? "bg-[#1F1E1D] dark:bg-[#2A2925] text-white dark:text-[#F5F2EB] shadow-xs border border-transparent dark:border-[#383630]"
+              : "text-[#8E8B82] dark:text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB] hover:bg-[#FAF7F0] dark:hover:bg-[#201F1D]"
           }`}
+          title="Show highest impact news today"
         >
           Top today
         </button>
         <button
+          type="button"
           onClick={() => handleFilterClick("most_read")}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+          className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
             activeFilter === "most_read"
-              ? "bg-[#1F1E1D] dark:bg-[#2E2C28] text-white shadow-xs"
-              : "text-[#8E8B82] dark:text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB]"
+              ? "bg-[#1F1E1D] dark:bg-[#2A2925] text-white dark:text-[#F5F2EB] shadow-xs border border-transparent dark:border-[#383630]"
+              : "text-[#8E8B82] dark:text-[#8E8B82] hover:text-[#1F1E1D] dark:hover:text-[#F5F2EB] hover:bg-[#FAF7F0] dark:hover:bg-[#201F1D]"
           }`}
+          title="Show most read news"
         >
           Most read
         </button>

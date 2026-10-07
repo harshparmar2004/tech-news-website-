@@ -35,7 +35,7 @@ export default async function CategoryPage({ params }: PageProps) {
       include: {
         articles: {
           where: { status: "published" },
-          orderBy: { published_at: "desc" },
+          orderBy: [{ published_at: "desc" }, { created_at: "desc" }],
           include: { category: true },
         },
       },
