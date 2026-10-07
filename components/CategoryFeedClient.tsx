@@ -55,13 +55,13 @@ export function CategoryFeedClient({ category }: CategoryFeedClientProps) {
         slug={category.slug}
       />
 
-      {/* Dynamic Articles Grid: 2 columns vs 3 columns adjusting for screen */}
+      {/* Dynamic Articles Grid: 3 columns when ads off, 2 columns next to ads when ads on */}
       <div className="space-y-6 pt-1">
         <div
           className={`grid gap-6 transition-all duration-200 w-full ${
             isAdFree
-              ? "grid-cols-1 md:grid-cols-2"
-              : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
+              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              : "grid-cols-1 md:grid-cols-2"
           }`}
         >
           {category.articles.map((article) => (

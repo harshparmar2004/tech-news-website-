@@ -198,7 +198,7 @@ export function Navbar() {
               <div>
                 <span className="text-xs font-semibold block text-[#1F1E1D] dark:text-[#F5F2EB]">Ad-Free Reading</span>
                 <span className="text-[10px] font-mono text-[#8E8B82] dark:text-[#A8A59D]">
-                  {isAdFree ? "2-story focus view" : "Standard view (ads)"}
+                  {isAdFree ? "3-story focus view" : "Standard view (ads)"}
                 </span>
               </div>
               <button

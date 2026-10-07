@@ -37,8 +37,9 @@ interface HomeFeedClientProps {
 export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedClientProps) {
   const { isAdFree } = useAdPreferences();
 
-  // In Ad-Free mode, show 4 recent articles (2 rows of 2), otherwise 6 (2 rows of 3)
-  const displayedRecent = isAdFree ? recentArticles.slice(0, 4) : recentArticles;
+  // In Ad-Free mode (ads off), display 3 news slide boxes per row (6 recent = 2 rows of 3)
+  // When ads are on, display 2 news boxes per row alongside the right ads sidebar
+  const displayedRecent = isAdFree ? recentArticles.slice(0, 6) : recentArticles.slice(0, 4);
 
   return (
     <div className="space-y-8">
@@ -71,16 +72,16 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
             </h2>
           </div>
           <span className="text-xs font-mono text-[#8E8B82] dark:text-[#78756E]">
-            {isAdFree ? "2-col focus view" : `${recentArticles.length} latest stories`}
+            {isAdFree ? "3-story expanded view" : "2-story view with ads"}
           </span>
         </div>
 
-        {/* Dynamic Grid: 2 articles vs 3 articles adjusting for screen */}
+        {/* Dynamic Grid: 3 news slide boxes when ads off; 2 news boxes next to ads when ads on */}
         <div
           className={`grid gap-6 transition-all duration-200 w-full ${
             isAdFree
-              ? "grid-cols-1 md:grid-cols-2"
-              : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
+              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              : "grid-cols-1 md:grid-cols-2"
           }`}
         >
           {displayedRecent.map((article) => (
@@ -102,8 +103,8 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
         {categorySections.map(({ category, articles }) => {
           if (articles.length === 0) return null;
 
-          // When Ad-Free is enabled, show 2 articles instead of 3; else show 3
-          const displayedCategoryArticles = isAdFree ? articles.slice(0, 2) : articles.slice(0, 3);
+          // When Ad-Free is enabled (ads off), show 3 news slide boxes across screen; else show 2 next to ads
+          const displayedCategoryArticles = isAdFree ? articles.slice(0, 3) : articles.slice(0, 2);
 
           return (
             <section key={category.id} className="space-y-4">
@@ -124,12 +125,12 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
                 </Link>
               </div>
 
-              {/* Dynamic Grid: 2 articles vs 3 articles adjusting for screen */}
+              {/* Dynamic Grid: 3 news slide boxes when ads off; 2 news boxes next to ads when ads on */}
               <div
                 className={`grid gap-6 transition-all duration-200 w-full ${
                   isAdFree
-                    ? "grid-cols-1 md:grid-cols-2"
-                    : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
+                    ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                    : "grid-cols-1 md:grid-cols-2"
                 }`}
               >
                 {displayedCategoryArticles.map((article) => (

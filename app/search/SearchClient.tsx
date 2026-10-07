@@ -157,12 +157,12 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
         </span>
       </div>
 
-      {/* Results Grid (2 in ad-free vs 3 in standard) */}
+      {/* Results Grid (3 in ad-free vs 2 in standard with ads) */}
       <div
         className={`grid gap-6 transition-all duration-200 w-full ${
           isAdFree
-            ? "grid-cols-1 md:grid-cols-2"
-            : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
+            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            : "grid-cols-1 md:grid-cols-2"
         }`}
       >
         {filteredArticles.map((art) => (

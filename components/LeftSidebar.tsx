@@ -134,7 +134,7 @@ export function LeftSidebar({ categories, activeSlug, totalArticles }: LeftSideb
                 </span>
               </div>
               <p className="text-[10px] font-mono text-[#8E8B82] dark:text-[#A8A59D] truncate">
-                {isAdFree ? "2-story focus view" : "Standard view (ads)"}
+                {isAdFree ? "3-story focus view" : "Standard view (ads)"}
               </p>
             </div>
 
@@ -147,7 +147,7 @@ export function LeftSidebar({ categories, activeSlug, totalArticles }: LeftSideb
               className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full p-0.5 transition-colors duration-200 ease-in-out focus:outline-hidden ${
                 isAdFree ? "bg-[#C96442]" : "bg-[#D6D2C4] dark:bg-[#383631]"
               }`}
-              title={isAdFree ? "Ad-Free Mode is ON (showing 2 stories without ads). Click to turn OFF." : "Ad-Free Mode is OFF. Click to hide ads and show 2 stories."}
+              title={isAdFree ? "Ad-Free Mode is ON (showing 3 stories across screen). Click to turn OFF." : "Ad-Free Mode is OFF. Click to hide ads and show 3 stories."}
             >
               <span className="sr-only">Toggle Ad-Free Focus Mode</span>
               <span
