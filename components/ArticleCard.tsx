@@ -23,7 +23,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
       {/* Cover Image Thumbnail */}
       <Link
         href={`/article/${article.slug}`}
-        className="block relative w-full aspect-16/10 overflow-hidden bg-[#FAF7F0] dark:bg-[#252422]"
+        className="block relative w-full aspect-16/10 max-h-72 overflow-hidden bg-[#FAF7F0] dark:bg-[#252422]"
       >
         {article.cover_image_url ? (
           <img

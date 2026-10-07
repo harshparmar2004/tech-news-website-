@@ -159,9 +159,9 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
 
       {/* Results Grid (2 in ad-free vs 3 in standard) */}
       <div
-        className={`grid gap-5 transition-all duration-200 ${
+        className={`grid gap-6 transition-all duration-200 w-full ${
           isAdFree
-            ? "grid-cols-1 sm:grid-cols-2 max-w-[840px]"
+            ? "grid-cols-1 md:grid-cols-2"
             : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
         }`}
       >

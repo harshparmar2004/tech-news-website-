@@ -55,12 +55,12 @@ export function CategoryFeedClient({ category }: CategoryFeedClientProps) {
         slug={category.slug}
       />
 
-      {/* Dynamic Articles Grid: 2 columns vs 3 columns with SAME length and size */}
+      {/* Dynamic Articles Grid: 2 columns vs 3 columns adjusting for screen */}
       <div className="space-y-6 pt-1">
         <div
-          className={`grid gap-5 transition-all duration-200 ${
+          className={`grid gap-6 transition-all duration-200 w-full ${
             isAdFree
-              ? "grid-cols-1 sm:grid-cols-2 max-w-[840px]"
+              ? "grid-cols-1 md:grid-cols-2"
               : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
           }`}
         >

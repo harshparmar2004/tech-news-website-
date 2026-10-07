@@ -47,7 +47,7 @@ export function CategoryDeskBanner({
   };
 
   return (
-    <div className={`space-y-3.5 transition-all duration-200 ${isAdFree ? "max-w-[840px]" : "max-w-full"}`}>
+    <div className="space-y-3.5 transition-all duration-200 w-full">
       {/* Editorial Banner Card - Sleek, properly sized */}
       <div className="relative rounded-2xl border border-[#EBE8DF] dark:border-[#2C2A26] bg-white dark:bg-[#1C1B19] p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 overflow-hidden">
         {/* Left Side: Icon & Details */}

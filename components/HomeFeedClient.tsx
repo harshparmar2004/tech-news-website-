@@ -62,12 +62,8 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
 
       {/* Section: Recent Intelligence */}
       <section className="space-y-4 pt-2">
-        {/* Compact Section Bar - Smaller in width and sleek */}
-        <div
-          className={`flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] transition-all duration-200 ${
-            isAdFree ? "max-w-[840px]" : "max-w-full"
-          }`}
-        >
+        {/* Section Bar - Clean, properly sized, spans width */}
+        <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-[#C96442]" />
             <h2 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
@@ -79,11 +75,11 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
           </span>
         </div>
 
-        {/* Dynamic Grid: 2 articles vs 3 articles with SAME card length and size */}
+        {/* Dynamic Grid: 2 articles vs 3 articles adjusting for screen */}
         <div
-          className={`grid gap-5 transition-all duration-200 ${
+          className={`grid gap-6 transition-all duration-200 w-full ${
             isAdFree
-              ? "grid-cols-1 sm:grid-cols-2 max-w-[840px]"
+              ? "grid-cols-1 md:grid-cols-2"
               : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
           }`}
         >
@@ -93,7 +89,7 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
         </div>
 
         {recentArticles.length === 0 && (
-          <div className="text-center py-16 p-8 rounded-3xl border border-dashed border-[#EBE8DF] dark:border-[#2C2A26] bg-white dark:bg-[#1A1917] max-w-[840px]">
+          <div className="text-center py-16 p-8 rounded-3xl border border-dashed border-[#EBE8DF] dark:border-[#2C2A26] bg-white dark:bg-[#1A1917] w-full">
             <p className="text-sm font-mono text-[#8E8B82]">
               No stories indexed yet. Pipeline cycles will stream articles automatically.
             </p>
@@ -111,12 +107,8 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
 
           return (
             <section key={category.id} className="space-y-4">
-              {/* Compact Section Bar - Smaller in width, properly proportioned */}
-              <div
-                className={`flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] transition-all duration-200 ${
-                  isAdFree ? "max-w-[840px]" : "max-w-full"
-                }`}
-              >
+              {/* Section Bar - Clean, properly proportioned */}
+              <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full">
                 <div className="flex items-center space-x-2">
                   <span className="w-2 h-2 rounded-full bg-[#C96442]" />
                   <h3 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
@@ -132,11 +124,11 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
                 </Link>
               </div>
 
-              {/* Dynamic Grid: 2 articles vs 3 articles with SAME length and size */}
+              {/* Dynamic Grid: 2 articles vs 3 articles adjusting for screen */}
               <div
-                className={`grid gap-5 transition-all duration-200 ${
+                className={`grid gap-6 transition-all duration-200 w-full ${
                   isAdFree
-                    ? "grid-cols-1 sm:grid-cols-2 max-w-[840px]"
+                    ? "grid-cols-1 md:grid-cols-2"
                     : "grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"
                 }`}
               >
