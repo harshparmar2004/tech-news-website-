@@ -50,3 +50,4 @@ pipeline_status.json
 
 public/images/scraped/*
 !public/images/scraped/.gitkeep
+.neon
