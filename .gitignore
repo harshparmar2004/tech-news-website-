@@ -47,3 +47,6 @@ next-env.d.ts
 *.db-shm
 !.env.example
 pipeline_status.json
+
+public/images/scraped/*
+!public/images/scraped/.gitkeep

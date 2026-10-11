@@ -26,7 +26,6 @@ const PUBLIC_NAV_LINKS = [
   { name: "Startups & VC", href: "/category/startups-vc" },
   { name: "Gadgets", href: "/category/gadgets-hardware" },
   { name: "Cybersecurity", href: "/category/cybersecurity" },
-  { name: "Policy", href: "/category/policy-big-tech" },
   { name: "Tech & Innovation", href: "/category/tech" },
 ];
 
@@ -55,8 +54,8 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-[#FBF9F5]/90 dark:bg-[#181816]/90 border-b border-[#EBE8DF] dark:border-[#282724] transition-colors duration-200">
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="w-full px-3.5 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           
           {/* Logo & Context Badge */}
           <div className="flex items-center space-x-3">

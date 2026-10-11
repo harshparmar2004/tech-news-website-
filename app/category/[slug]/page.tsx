@@ -63,8 +63,8 @@ export default async function CategoryPage({ params }: PageProps) {
   }
 
   return (
-    <div className="w-full flex h-[calc(100vh-4rem)] overflow-hidden bg-[#FAF7F0] dark:bg-[#121211]">
-      {/* 1. Left Sidebar: Fixed & Non-Scrollable */}
+    <div className="w-full flex min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] lg:overflow-hidden bg-[#FAF7F0] dark:bg-[#121211]">
+      {/* 1. Left Sidebar: Fixed & Non-Scrollable on Desktop */}
       <div className="hidden lg:block shrink-0">
         <LeftSidebar
           categories={categories}
@@ -73,12 +73,12 @@ export default async function CategoryPage({ params }: PageProps) {
         />
       </div>
 
-      {/* 2. Middle Main Content: Scrollable Top to Down */}
-      <main className="flex-1 min-w-0 h-full overflow-y-auto px-5 sm:px-8 py-6">
+      {/* 2. Middle Main Content: Natural scroll on mobile, scrollable pane on desktop */}
+      <main className="flex-1 min-w-0 lg:h-full lg:overflow-y-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-6">
         <CategoryFeedClient category={category} />
       </main>
 
-      {/* 3. Right Sidebar: Future Ad Slots (Fixed) */}
+      {/* 3. Right Sidebar: Future Ad Slots (Desktop only) */}
       <div className="hidden xl:block shrink-0">
         <RightAdsSidebar domain={category.slug} />
       </div>

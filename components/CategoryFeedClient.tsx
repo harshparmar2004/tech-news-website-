@@ -127,16 +127,16 @@ export function CategoryFeedClient({ category }: CategoryFeedClientProps) {
       />
 
       {/* Sub-bar indicator showing active view filter metadata */}
-      <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full text-xs font-mono">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full text-xs font-mono gap-1 sm:gap-0">
         <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-[#C96442]" />
+          <span className="w-2 h-2 rounded-full bg-[#C96442] shrink-0" />
           <span className="font-semibold text-[#1F1E1D] dark:text-[#F5F2EB]">
             {activeFilter === "latest" && "Latest Dispatches"}
             {activeFilter === "top" && "Top Stories Today"}
             {activeFilter === "most_read" && "Most Read Stories"}
           </span>
         </div>
-        <span className="text-[#8E8B82] dark:text-[#78756E]">
+        <span className="text-[#8E8B82] dark:text-[#78756E] text-[11px] sm:text-xs">
           {activeFilter === "latest" && `Newest on top • ${sortedArticles.length} stories`}
           {activeFilter === "top" && `Ranked by editorial impact • ${sortedArticles.length} stories`}
           {activeFilter === "most_read" && `Ranked by reader views • ${sortedArticles.length} stories`}
@@ -146,7 +146,7 @@ export function CategoryFeedClient({ category }: CategoryFeedClientProps) {
       {/* Dynamic Articles Grid: 3 columns when ads off, 2 columns next to ads when ads on */}
       <div className="space-y-6 pt-1">
         <div
-          className={`grid gap-6 transition-all duration-200 w-full ${
+          className={`grid gap-4 sm:gap-6 transition-all duration-200 w-full ${
             isAdFree
               ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               : "grid-cols-1 md:grid-cols-2"

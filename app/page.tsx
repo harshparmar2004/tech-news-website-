@@ -3,7 +3,8 @@ import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightAdsSidebar } from "@/components/RightAdsSidebar";
 import { HomeFeedClient } from "@/components/HomeFeedClient";
 
-export const revalidate = 60; // Incremental Static Regeneration
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
   // 1. Fetch total published count
@@ -21,12 +22,9 @@ export default async function HomePage() {
     orderBy: [{ display_order: "asc" }, { name: "asc" }],
   });
 
-  // 3. Fetch recent intelligence news uploaded by the Research Agent for "All Intelligence"
-  const researchArticles = await prisma.article.findMany({
-    where: {
-      status: "published",
-      author: { contains: "Research" },
-    },
+  // 3. Fetch latest published news for "All Intelligence / Recent Dispatches"
+  const recentArticles = await prisma.article.findMany({
+    where: { status: "published" },
     orderBy: [{ published_at: "desc" }, { created_at: "desc" }],
     take: 9,
     include: {
@@ -35,22 +33,6 @@ export default async function HomePage() {
       },
     },
   });
-
-  // Populate All Intelligence strictly with news uploaded by the Research Agent.
-  // Fall back to general articles only if no research agent articles exist yet.
-  const recentArticles =
-    researchArticles.length > 0
-      ? researchArticles
-      : await prisma.article.findMany({
-          where: { status: "published" },
-          orderBy: [{ published_at: "desc" }, { created_at: "desc" }],
-          take: 9,
-          include: {
-            category: {
-              select: { name: true, slug: true },
-            },
-          },
-        });
 
   // 4. Fetch articles for each category news desk (ordered by published_at desc, created_at desc)
   const categorySections = await Promise.all(
@@ -78,8 +60,8 @@ export default async function HomePage() {
   );
 
   return (
-    <div className="w-full flex h-[calc(100vh-4rem)] overflow-hidden bg-[#FAF7F0] dark:bg-[#121211]">
-      {/* 1. Left Sidebar: Fixed & Non-Scrollable */}
+    <div className="w-full flex min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] lg:overflow-hidden bg-[#FAF7F0] dark:bg-[#121211]">
+      {/* 1. Left Sidebar: Fixed & Non-Scrollable on Desktop */}
       <div className="hidden lg:block shrink-0">
         <LeftSidebar
           categories={categories}
@@ -87,15 +69,15 @@ export default async function HomePage() {
         />
       </div>
 
-      {/* 2. Middle Main Content: Scrollable Top to Down */}
-      <main className="flex-1 min-w-0 h-full overflow-y-auto px-5 sm:px-8 py-6">
+      {/* 2. Middle Main Content: Natural scroll on mobile, scrollable pane on desktop */}
+      <main className="flex-1 min-w-0 lg:h-full lg:overflow-y-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-6">
         <HomeFeedClient
           recentArticles={recentArticles}
           categorySections={categorySections}
         />
       </main>
 
-      {/* 3. Right Sidebar: Future Ad Slots (Fixed) */}
+      {/* 3. Right Sidebar: Future Ad Slots (Desktop only) */}
       <div className="hidden xl:block shrink-0">
         <RightAdsSidebar />
       </div>

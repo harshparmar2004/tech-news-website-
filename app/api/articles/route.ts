@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { verifyApiKey, verifyAdminSession } from "@/lib/auth";
-import { generateSlug, calculateReadingTime } from "@/lib/utils";
+import { generateSlug, calculateReadingTime, formatArticleContent } from "@/lib/utils";
 import { getThematicCoverImage } from "@/lib/imagePool";
 
 // Canonical domain taxonomy
@@ -13,7 +13,6 @@ const CANONICAL_CATEGORIES: Record<string, { name: string; slug: string }> = {
   "startups-vc": { name: "Startups & VC", slug: "startups-vc" },
   "gadgets-hardware": { name: "Gadgets & Hardware", slug: "gadgets-hardware" },
   "cybersecurity": { name: "Cybersecurity", slug: "cybersecurity" },
-  "policy-big-tech": { name: "Policy & Big Tech", slug: "policy-big-tech" },
   "tech": { name: "Tech & Innovation", slug: "tech" },
 };
 
@@ -36,12 +35,6 @@ const CATEGORY_PATTERNS: Array<{
       /\b(?:funding|seed round|series [a-g]|venture capital|vcs?|valuation|investor|investors|pre-seed|unicorn|angel investor|y combinator|sequoia|a16z|andreessen|acqui(?:re|res|red|sition)|buyout|ipo|merger|venture-backed|bootstrapped startup)\b/i,
       /\b(?:vc bashing|vc firm|seed funding|series a funding|series b funding)\b/i,
       /\b(?:raises \$|raised \$|secures \$|closes \$|valued at \$|raising \$)\b/i,
-    ],
-  },
-  {
-    key: "policy-big-tech",
-    patterns: [
-      /\b(?:antitrust|fcc|ftc|sec|doj|lawsuit|sued|sues|suing|judge|court|verdict|monopoly|eu ai act|digital markets act|dma|legislation|congress|senate|banned?|privacy law|regulat(?:ion|ions|or|ors|ory)|subpoena)\b/i,
     ],
   },
   {
@@ -207,7 +200,8 @@ export async function POST(req: NextRequest) {
 
     // 2. Validate mandatory fields (support aliases)
     const title = (body.title || body.headline || "").trim();
-    const bodyContent = (body.body || body.content || body.article || "").trim();
+    const rawBody = (body.body || body.content || body.article || "").trim();
+    const bodyContent = formatArticleContent(rawBody, title);
     const summary = (
       body.summary ||
       body.description ||

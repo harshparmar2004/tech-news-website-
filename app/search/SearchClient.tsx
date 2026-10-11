@@ -89,8 +89,8 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
   };
 
   return (
-    <div className="w-full flex h-[calc(100vh-4rem)] overflow-hidden bg-[#FAF7F0] dark:bg-[#121211]">
-      {/* 1. Left Sidebar: Fixed & Non-Scrollable */}
+    <div className="w-full flex min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] lg:overflow-hidden bg-[#FAF7F0] dark:bg-[#121211]">
+      {/* 1. Left Sidebar: Fixed & Non-Scrollable on Desktop */}
       <div className="hidden lg:block shrink-0">
         <LeftSidebar
           categories={categories}
@@ -98,8 +98,8 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
         />
       </div>
 
-      {/* 2. Middle Main Content: Scrollable Top to Down */}
-      <main className="flex-1 min-w-0 h-full overflow-y-auto px-5 sm:px-8 py-6 space-y-6">
+      {/* 2. Middle Main Content: Natural scroll on mobile, scrollable pane on desktop */}
+      <main className="flex-1 min-w-0 lg:h-full lg:overflow-y-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-6 space-y-6">
         {/* Breadcrumb Navigation */}
         <nav className="flex items-center space-x-2 text-xs text-[#8E8B82] dark:text-[#A8A59D]">
           <Link href="/" className="hover:text-[#C96442] transition-colors">
@@ -152,12 +152,13 @@ export function SearchClient({ initialArticles, categories, totalArticles }: Pro
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8E8B82]" />
             <input
               ref={inputRef}
-              type="text"
+              type="search"
+              inputMode="search"
+              enterKeyHint="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search keywords, topics, or models (e.g. Claude, reasoning, robotics, M5)..."
               className="w-full pl-10 pr-20 py-2.5 sm:py-3 rounded-xl border border-[#EBE8DF] dark:border-[#2E2C28] bg-[#FAF7F0] dark:bg-[#141413] text-sm text-[#1F1E1D] dark:text-[#F5F2EB] placeholder-[#8E8B82] focus:outline-hidden focus:border-[#C96442] focus:ring-1 focus:ring-[#C96442] transition-all"
-              autoFocus
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1.5">
               {query ? (

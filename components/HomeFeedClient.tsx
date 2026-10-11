@@ -140,26 +140,26 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
       {/* Section: Recent Intelligence */}
       <section className="space-y-4 pt-2">
         {/* Section Bar - Clean, properly sized, spans width */}
-        <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full text-xs font-mono">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full text-xs font-mono gap-1.5 sm:gap-0">
           <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-[#C96442]" />
+            <span className="w-2 h-2 rounded-full bg-[#C96442] shrink-0" />
             <h2 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
               Recent Dispatches
             </h2>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#C96442]/10 text-[#C96442] ml-1">
+            <span className="text-[10px] sm:text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#C96442]/10 text-[#C96442] ml-1 shrink-0">
               {activeFilter === "latest" && "Latest First"}
               {activeFilter === "top" && "Top Today"}
               {activeFilter === "most_read" && "Most Read"}
             </span>
           </div>
-          <span className="text-[#8E8B82] dark:text-[#78756E]">
+          <span className="hidden sm:inline text-[#8E8B82] dark:text-[#78756E]">
             {isAdFree ? "3-story expanded view" : "2-story view with ads"}
           </span>
         </div>
 
         {/* Dynamic Grid: 3 news slide boxes when ads off; 2 news boxes next to ads when ads on */}
         <div
-          className={`grid gap-6 transition-all duration-200 w-full ${
+          className={`grid gap-4 sm:gap-6 transition-all duration-200 w-full ${
             isAdFree
               ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
               : "grid-cols-1 md:grid-cols-2"
@@ -179,8 +179,8 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
         )}
       </section>
 
-      {/* Dedicated News Type Sections (AI & Robotics, Startups & VC, etc.) */}
-      <div className="space-y-9 pt-2">
+      {/* Dedicated News Type Sections (AI, Robotics, Startups & VC, etc.) */}
+      <div className="space-y-8 sm:space-y-9 pt-2">
         {categorySections.map(({ category, articles }) => {
           if (articles.length === 0) return null;
 
@@ -197,7 +197,7 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
               {/* Section Bar - Clean, properly proportioned */}
               <div className="flex items-center justify-between pb-2 border-b border-[#EBE8DF] dark:border-[#262522] w-full">
                 <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-[#C96442]" />
+                  <span className="w-2 h-2 rounded-full bg-[#C96442] shrink-0" />
                   <h3 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#1F1E1D] dark:text-[#F5F2EB]">
                     {category.name}
                   </h3>
@@ -213,7 +213,7 @@ export function HomeFeedClient({ recentArticles, categorySections }: HomeFeedCli
 
               {/* Dynamic Grid: 3 news slide boxes when ads off; 2 news boxes next to ads when ads on */}
               <div
-                className={`grid gap-6 transition-all duration-200 w-full ${
+                className={`grid gap-4 sm:gap-6 transition-all duration-200 w-full ${
                   isAdFree
                     ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
                     : "grid-cols-1 md:grid-cols-2"
