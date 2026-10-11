@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -14,6 +14,9 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  if (slug === "ai-robotics") {
+    return { title: "Artificial Intelligence Intelligence | NewsFlow" };
+  }
   const category = await prisma.category.findUnique({
     where: { slug },
   });
@@ -28,6 +31,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;
+
+  if (slug === "ai-robotics") {
+    redirect("/category/ai");
+  }
 
   const [category, categories, totalArticles] = await Promise.all([
     prisma.category.findUnique({
@@ -46,7 +53,7 @@ export default async function CategoryPage({ params }: PageProps) {
           select: { articles: { where: { status: "published" } } },
         },
       },
-      orderBy: { name: "asc" },
+      orderBy: [{ display_order: "asc" }, { name: "asc" }],
     }),
     prisma.article.count({ where: { status: "published" } }),
   ]);

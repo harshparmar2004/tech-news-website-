@@ -21,7 +21,8 @@ import { useTheme } from "./ThemeContext";
 import { useAdPreferences } from "./AdPreferencesContext";
 
 const PUBLIC_NAV_LINKS = [
-  { name: "AI & Robotics", href: "/category/ai-robotics" },
+  { name: "AI", href: "/category/ai" },
+  { name: "Robotics", href: "/category/robotics" },
   { name: "Startups & VC", href: "/category/startups-vc" },
   { name: "Gadgets", href: "/category/gadgets-hardware" },
   { name: "Cybersecurity", href: "/category/cybersecurity" },

@@ -9,7 +9,8 @@ import {
   Scale, 
   Sparkles, 
   Layers, 
-  Check 
+  Check,
+  Bot
 } from "lucide-react";
 import { useAdPreferences } from "./AdPreferencesContext";
 
@@ -22,6 +23,8 @@ interface CategoryDeskBannerProps {
 }
 
 const CATEGORY_ICON_MAP: Record<string, any> = {
+  "ai": Cpu,
+  "robotics": Bot,
   "ai-robotics": Cpu,
   "startups-vc": TrendingUp,
   "gadgets-hardware": Smartphone,

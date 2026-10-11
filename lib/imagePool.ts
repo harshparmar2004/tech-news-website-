@@ -4,22 +4,31 @@
  */
 
 export const THEMATIC_IMAGE_POOLS: Record<string, string[]> = {
+  "ai": [
+    "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1617791160505-6f008e1e263c?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1516110833967-0b5788f6a9e1?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=1600&q=80",
+  ],
+  "robotics": [
+    "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1589254065878-42c9da997008?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=1600&q=80",
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80",
+  ],
   "ai-robotics": [
     "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1600&q=80",
     "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1535378917042-10a22c95931a?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1617791160505-6f008e1e263c?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1516110833967-0b5788f6a9e1?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1600&q=80",
-    "https://images.unsplash.com/photo-1589254065878-42c9da997008?auto=format&fit=crop&w=1600&q=80",
   ],
   "startups-vc": [
     "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1600&q=80",
@@ -80,7 +89,8 @@ export const THEMATIC_IMAGE_POOLS: Record<string, string[]> = {
 
 export function normalizeCategoryKey(catKey: string): string {
   const c = (catKey || "").toLowerCase().trim();
-  if (c.includes("ai") || c.includes("robot") || c.includes("agent") || c.includes("llm")) return "ai-robotics";
+  if (c.includes("robot") || c.includes("humanoid") || c.includes("drone") || c.includes("actuator") || c.includes("bipedal")) return "robotics";
+  if (c.includes("ai") || c.includes("agent") || c.includes("llm") || c.includes("neural") || c.includes("intelligence")) return "ai";
   if (c.includes("startup") || c.includes("vc") || c.includes("venture")) return "startups-vc";
   if (c.includes("gadget") || c.includes("hardware") || c.includes("chip") || c.includes("silicon")) return "gadgets-hardware";
   if (c.includes("cyber") || c.includes("security") || c.includes("hack") || c.includes("zero-day")) return "cybersecurity";

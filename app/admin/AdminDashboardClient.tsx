@@ -639,7 +639,7 @@ export function AdminDashboardClient({
   const [newTitle, setNewTitle] = useState("");
   const [newSummary, setNewSummary] = useState("");
   const [newBody, setNewBody] = useState("");
-  const [newCategory, setNewCategory] = useState(categories[0]?.name || "AI & Robotics");
+  const [newCategory, setNewCategory] = useState(categories[0]?.name || "Artificial Intelligence");
   const [newCover, setNewCover] = useState("");
   const [newFeatured, setNewFeatured] = useState(false);
 
@@ -658,7 +658,7 @@ export function AdminDashboardClient({
   const [aiTargetForm, setAiTargetForm] = useState<"create" | "edit">("create");
   const [aiSeed, setAiSeed] = useState("");
   const [aiMode, setAiMode] = useState<"headline" | "hook" | "seo" | "tags">("headline");
-  const [aiCategory, setAiCategory] = useState("AI & Robotics");
+  const [aiCategory, setAiCategory] = useState("Artificial Intelligence");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
 
@@ -800,7 +800,7 @@ export function AdminDashboardClient({
     setAiTargetField(field);
     setAiTargetForm(form);
     setAiSeed(seedText || "");
-    setAiCategory(categoryName || "AI & Robotics");
+    setAiCategory(categoryName || "Artificial Intelligence");
     const initialMode = field === "title" ? "headline" : field === "summary" ? "hook" : "tags";
     setAiMode(initialMode);
     setAiModalOpen(true);

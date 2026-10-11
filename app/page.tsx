@@ -18,7 +18,7 @@ export default async function HomePage() {
         select: { articles: { where: { status: "published" } } },
       },
     },
-    orderBy: { name: "asc" },
+    orderBy: [{ display_order: "asc" }, { name: "asc" }],
   });
 
   // 3. Fetch recent intelligence news uploaded by the Research Agent for "All Intelligence"

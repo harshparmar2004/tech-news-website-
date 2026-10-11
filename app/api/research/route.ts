@@ -252,8 +252,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const domainName = (body.domain || body.category || body.section || body.topic || "AI & Robotics").trim();
-    const domainSlug = generateSlug(domainName);
+    const rawDomain = (body.domain || body.category || body.section || body.topic || "AI").trim();
+    let domainSlug = generateSlug(rawDomain);
+    let domainName = rawDomain;
+
+    if (domainSlug === "robotics" || domainSlug.includes("robot")) {
+      domainSlug = "robotics";
+      domainName = "Robotics";
+    } else if (domainSlug === "ai" || domainSlug === "artificial-intelligence" || domainSlug === "ai-robotics") {
+      domainSlug = "ai";
+      domainName = "Artificial Intelligence";
+    }
 
     // Resolve or create category
     let category = await prisma.category.findFirst({
@@ -267,9 +276,8 @@ export async function POST(request: NextRequest) {
     });
 
     if (!category) {
-      // Try fallback to AI & Robotics or create
       category = await prisma.category.findFirst({
-        where: { slug: "ai-robotics" },
+        where: { slug: "ai" },
       });
 
       if (!category) {

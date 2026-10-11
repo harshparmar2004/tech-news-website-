@@ -48,8 +48,13 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-[#686660] dark:text-[#A8A59D]">
               <li>
-                <Link href="/category/ai-robotics" className="hover:text-[#C96442] transition-colors">
-                  AI & Robotics
+                <Link href="/category/ai" className="hover:text-[#C96442] transition-colors">
+                  Artificial Intelligence
+                </Link>
+              </li>
+              <li>
+                <Link href="/category/robotics" className="hover:text-[#C96442] transition-colors">
+                  Robotics
                 </Link>
               </li>
               <li>

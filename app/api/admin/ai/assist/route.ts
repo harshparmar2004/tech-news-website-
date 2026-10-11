@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { prompt = "", mode = "headline", category = "AI & Robotics" } = body;
+    const { prompt = "", mode = "headline", category = "Artificial Intelligence" } = body;
 
     const { gemini, groq } = getApiKey();
 

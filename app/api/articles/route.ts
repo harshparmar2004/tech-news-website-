@@ -5,6 +5,129 @@ import { verifyApiKey, verifyAdminSession } from "@/lib/auth";
 import { generateSlug, calculateReadingTime } from "@/lib/utils";
 import { getThematicCoverImage } from "@/lib/imagePool";
 
+// Canonical domain taxonomy
+const CANONICAL_CATEGORIES: Record<string, { name: string; slug: string }> = {
+  "ai": { name: "Artificial Intelligence", slug: "ai" },
+  "robotics": { name: "Robotics", slug: "robotics" },
+  "ai-robotics": { name: "Artificial Intelligence", slug: "ai" },
+  "startups-vc": { name: "Startups & VC", slug: "startups-vc" },
+  "gadgets-hardware": { name: "Gadgets & Hardware", slug: "gadgets-hardware" },
+  "cybersecurity": { name: "Cybersecurity", slug: "cybersecurity" },
+  "policy-big-tech": { name: "Policy & Big Tech", slug: "policy-big-tech" },
+  "tech": { name: "Tech & Innovation", slug: "tech" },
+};
+
+// Precise regex patterns with word boundaries to prevent substring collisions (e.g. 'mainstream' != 'ai')
+const CATEGORY_PATTERNS: Array<{
+  key: string;
+  patterns: RegExp[];
+}> = [
+  {
+    key: "cybersecurity",
+    patterns: [
+      /\b(?:ransomware|malware|phishing|breach(?:es|ed)?|zero-day|vulnerabilit(?:y|ies)|cve-\d+|cisa|ddos|spyware|trojan|infostealer|cyber(?:attack|security|crime)|data leak|exploit(?:s|ed)?|botnet|dark web|backdoor|patch tuesday|bug bounty)\b/i,
+      /\b(?:cyber threat|threat actor|hacked account|hacked database|hackers breach)\b/i,
+      /(?<!hacker\s)\b(?:hackers?|hacked)\b(?!\snews)/i,
+    ],
+  },
+  {
+    key: "startups-vc",
+    patterns: [
+      /\b(?:funding|seed round|series [a-g]|venture capital|vcs?|valuation|investor|investors|pre-seed|unicorn|angel investor|y combinator|sequoia|a16z|andreessen|acqui(?:re|res|red|sition)|buyout|ipo|merger|venture-backed|bootstrapped startup)\b/i,
+      /\b(?:vc bashing|vc firm|seed funding|series a funding|series b funding)\b/i,
+      /\b(?:raises \$|raised \$|secures \$|closes \$|valued at \$|raising \$)\b/i,
+    ],
+  },
+  {
+    key: "policy-big-tech",
+    patterns: [
+      /\b(?:antitrust|fcc|ftc|sec|doj|lawsuit|sued|sues|suing|judge|court|verdict|monopoly|eu ai act|digital markets act|dma|legislation|congress|senate|banned?|privacy law|regulat(?:ion|ions|or|ors|ory)|subpoena)\b/i,
+    ],
+  },
+  {
+    key: "gadgets-hardware",
+    patterns: [
+      /\b(?:smartphone|iphone|ipad|pixel (?:fold|\d+)|macbook|laptop|laptops|gpus?|cpus?|nvidia rtx|amd radeon|intel core|qualcomm|snapdragon|tsmc|semiconductor|semiconductors|wafer|silicon|processor|processors|foldable|tablet|smartwatch|smartwatches|galaxy watch|apple watch|headphones|earbuds|oled|monitor|playstation|nintendo|xbox|bios|motherboard|firmware)\b/i,
+    ],
+  },
+  {
+    key: "robotics",
+    patterns: [
+      /\b(?:robot|robots|robotics|humanoid|humanoids|bipedal|quadruped|boston dynamics|electric atlas|figure 02|sanctuary ai|phoenix humanoid|unitree|optimus|tesla bot|drone|drones|dji|actuator|actuators|hydraulic|manipulator|dexterous manipulation|autonomous vehicle|self-driving|waymo|zoox|robotaxi|embodied ai|physical intelligence)\b/i,
+    ],
+  },
+  {
+    key: "ai",
+    patterns: [
+      /\b(?:ai|artificial intelligence|llms?|large language model|openai|chatgpt|gpt-[345]|claude|anthropic|gemini|deepmind|neural network|machine learning|deep learning|diffusion model|transformer|mistral|llama|ollama|grok|reasoning model|r1|agentic|copilot|multimodal|generative ai|devin|pixtral|qwen|sora|rag|prompt)\b/i,
+    ],
+  },
+];
+
+function scoreRegexMatches(patterns: RegExp[], text: string): number {
+  let count = 0;
+  for (const pat of patterns) {
+    const matches = text.match(new RegExp(pat.source, pat.flags + "g"));
+    if (matches) count += matches.length;
+  }
+  return count;
+}
+
+function cleanTextForTriage(text: string): string {
+  return text
+    .replace(/source:\s*hacker news/gi, "")
+    .replace(/#\w+/g, "")
+    .toLowerCase();
+}
+
+function classifyDomainWithJev(
+  title: string,
+  summary: string,
+  bodyContent: string,
+  explicitCategory?: string | null
+): { name: string; slug: string } {
+  // If explicitly specified a specific non-generic beat, honor it
+  if (explicitCategory) {
+    const normalized = explicitCategory.toLowerCase().trim();
+    for (const [key, cat] of Object.entries(CANONICAL_CATEGORIES)) {
+      if (
+        normalized === key ||
+        normalized === cat.name.toLowerCase() ||
+        normalized === cat.slug
+      ) {
+        if (key === "ai-robotics") {
+          return CANONICAL_CATEGORIES["ai"];
+        }
+        if (key !== "tech") {
+          return cat;
+        }
+      }
+    }
+  }
+
+  const cleanTitle = cleanTextForTriage(title);
+  const cleanSummary = cleanTextForTriage(summary || "");
+  const cleanBodySample = cleanTextForTriage(bodyContent.slice(0, 800));
+
+  let bestKey = "tech";
+  let maxScore = 0;
+
+  for (const item of CATEGORY_PATTERNS) {
+    // Title matches are strongest signal (4x), summary (2x), body sample (1x)
+    const tScore = scoreRegexMatches(item.patterns, cleanTitle) * 4;
+    const sScore = scoreRegexMatches(item.patterns, cleanSummary) * 2;
+    const bScore = scoreRegexMatches(item.patterns, cleanBodySample);
+    const total = tScore + sScore + bScore;
+
+    if (total > maxScore) {
+      maxScore = total;
+      bestKey = item.key;
+    }
+  }
+
+  return CANONICAL_CATEGORIES[bestKey] || CANONICAL_CATEGORIES["tech"];
+}
+
 /**
  * GET /api/articles
  * Query published articles with pagination and filtering
@@ -129,8 +252,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const categoryName = body.category || body.domain || "AI & Robotics";
-    const categorySlug = generateSlug(categoryName);
+
+    // 3. Resolve Category with TypeSafe JEV Domain Triage
+    const targetCat = classifyDomainWithJev(
+      title,
+      summary,
+      bodyContent,
+      body.category || body.domain
+    );
+    const categoryName = targetCat.name;
+    const categorySlug = targetCat.slug;
 
     let category = await prisma.category.findFirst({
       where: {
@@ -172,20 +303,17 @@ export async function POST(req: NextRequest) {
       slug = `${slug}-${Date.now().toString(36)}`;
     }
 
-    // Resolve published timestamp:
-    // When published by the AI agent, set published_at to the current moment (now)
-    // unless explicitly scheduled for a future time. This guarantees that newly published
-    // news is always at the top of its section (Tech & Innovation, AI & Robotics, etc.)
+    // Preserve authentic source publication timestamp
     const now = new Date();
     let publishedAt = now;
     if (body.published_at) {
       const parsed = new Date(body.published_at);
-      if (!isNaN(parsed.getTime()) && parsed > now) {
+      if (!isNaN(parsed.getTime())) {
         publishedAt = parsed;
       }
     }
 
-    // Support scheduled status
+    // Support scheduled status for future timestamps
     let status = body.status || "published";
     if (publishedAt > now && status === "published") {
       status = "scheduled";
