@@ -8,6 +8,7 @@ import {
   formatTimeAgo,
   renderMarkdown,
   safeJsonParse,
+  getOptimizedImageUrl,
   SeoMeta,
 } from "@/lib/utils";
 import { SocialShareBar } from "@/components/SocialShareBar";
@@ -204,10 +205,12 @@ export default async function ArticlePage({ params }: PageProps) {
           {article.cover_image_url && (
             <figure className="relative w-full aspect-16/9 rounded-3xl overflow-hidden bg-[#FAF7F0] dark:bg-[#22221F] border border-[#EBE8DF] dark:border-[#33322E] shadow-sm">
               <img
-                src={article.cover_image_url}
+                src={getOptimizedImageUrl(article.cover_image_url, 1200)}
                 alt={article.title}
                 className="w-full h-full object-cover"
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 referrerPolicy="no-referrer"
               />
               <figcaption className="absolute bottom-2 right-3 text-[10px] font-mono px-2 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
