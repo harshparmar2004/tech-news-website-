@@ -195,6 +195,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 alt={article.title}
                 className="w-full h-full object-cover"
                 loading="eager"
+                referrerPolicy="no-referrer"
               />
               <figcaption className="absolute bottom-2 right-3 text-[10px] font-mono px-2 py-0.5 rounded bg-black/60 text-white backdrop-blur-xs">
                 NewsFlow Editorial Imagery
