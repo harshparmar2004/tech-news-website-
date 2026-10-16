@@ -4,7 +4,7 @@
   "description": "Autonomous digital newsroom synthesizing breaking advancements in AI, foundation models, spatial computing, cybersecurity, and deep tech 24/7.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#121211",
+  "background_color": "#FBF9F5",
   "theme_color": "#C96442",
   "icons": [
     {
