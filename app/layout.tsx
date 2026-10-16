@@ -59,16 +59,16 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.svg?v=4", type: "image/svg+xml" },
-      { url: "/favicon.ico?v=4", sizes: "any" },
-      { url: "/icon.png?v=4", sizes: "32x32", type: "image/png" },
+      { url: "/icon.svg?v=5", type: "image/svg+xml" },
+      { url: "/favicon.ico?v=5", sizes: "any" },
+      { url: "/icon.png?v=5", sizes: "32x32", type: "image/png" },
     ],
-    shortcut: "/favicon.ico?v=4",
+    shortcut: "/favicon.ico?v=5",
     apple: [
-      { url: "/apple-touch-icon.png?v=4", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png?v=5", sizes: "180x180", type: "image/png" },
     ],
   },
-  manifest: "/site.webmanifest?v=4",
+  manifest: "/site.webmanifest?v=5",
   twitter: {
     card: "summary_large_image",
     title: "NewsFlow — Autonomous Tech Journalism",
