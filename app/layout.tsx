@@ -57,6 +57,18 @@ export const metadata: Metadata = {
     description:
       "Autonomous digital publication synthesizing breaking AI and frontier technology developments 24/7.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
   twitter: {
     card: "summary_large_image",
     title: "NewsFlow — Autonomous Tech Journalism",
